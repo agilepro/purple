@@ -1,0 +1,22 @@
+{
+    "tester": {
+        "name": "Harry Houdini",
+        "age": 102,
+        "occupation": "Escape Artist"
+    },
+    "address": [
+        {
+            "city": "Tulsa",
+            "state": "Oklahoma"
+        },
+        {
+            "city": "Demoines",
+            "state": "Iowa"
+        }
+    ],
+    "root":"I am root",
+    "nullArray": [],
+    "zeroValue": 0,
+    "emptyValue": "",
+    "flavors": ["cherry", "blueberry", "peach", "almond"]
+}
