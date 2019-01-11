@@ -19,35 +19,21 @@ package com.purplehillsbooks.xml;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.CDATASection;
 
-/**
- * This class contains code to attempt to generate a schema using an example
- * file. It does this simplistically, by walking the sample file, and adding
- * schema elements as children of a node are found. It should be obvious, of
- * course, it can only add schema elements for the actual elements that appear
- * in the file, so if the example file is not complete enough the schema will
- * not be complete. It makes a guess at plurality as well, assuming that only a
- * single elements is allowed until it sees a particular element with multiple
- * children, then it will mark it as plural.
- *
- * Like all MDF files, the tag name is assumed unique, and assumed to be the
- * same across the file, regardless of conttext.
- *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
- */
+@Deprecated
 public class SchemaGen {
 	public Vector<String> ambiguousCases = new Vector<String>();
 
 	private SchemaGen() {
 
 	}
-
+	@Deprecated
 	public static Schema generateFor(Mel me) throws Exception {
 		SchemaGen sg = new SchemaGen();
 		Schema schema = Mel.createEmpty("schema", Schema.class);
@@ -61,7 +47,7 @@ public class SchemaGen {
 
 		return schema;
 	}
-
+	@Deprecated
 	public void generateForChildren(Schema schema, Element parent) throws Exception {
 		// dive down to the children first
 		NodeList childNdList = parent.getChildNodes();
@@ -193,7 +179,7 @@ public class SchemaGen {
 		}
 
 	}
-
+	@Deprecated
 	public void finishAmbiguousCases(Schema schema) throws Exception {
 		Enumeration<String> e = ambiguousCases.elements();
 		while (e.hasMoreElements()) {

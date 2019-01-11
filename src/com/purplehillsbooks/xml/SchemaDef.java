@@ -19,13 +19,7 @@ package com.purplehillsbooks.xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- * This class represents the a node in a schema, either a "container" or a
- * "data" node. Use "isContainer" to tell which one.
- *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
- */
+@Deprecated
 public class SchemaDef extends Mel {
 	public SchemaDef(Document doc, Element ele) {
 		super(doc, ele);
@@ -35,10 +29,7 @@ public class SchemaDef extends Mel {
 		return ("container".equals(getName()));
 	}
 
-	/**
-	 * Declares that this container has an attribute. Pure data values are not
-	 * allowed to have attributes.
-	 */
+	@Deprecated
 	public Mel declareAttribute(String attrName) throws Exception {
 		Mel child = findChild("attr", "name", attrName, Mel.class);
 		if (child == null) {
@@ -50,12 +41,7 @@ public class SchemaDef extends Mel {
 		return child;
 	}
 
-	/**
-	 * Declares that this container contains something with the specified name
-	 * but does not specify whether plural or not. This will add the declaration
-	 * if it is not there. If it is there, it will leave the plural setting at
-	 * its previous value.
-	 */
+	@Deprecated
 	public Mel declareChild(String childName) throws Exception {
 		Mel child = findChild("contains", "name", childName, Mel.class);
 		if (child == null) {
@@ -67,19 +53,13 @@ public class SchemaDef extends Mel {
 		return child;
 	}
 
-	/**
-	 * Declares that this container contains something with the specified name
-	 * and also specifies the plurality of that entry. If a declaration already
-	 * exists, the plurality is set to the specified value.
-	 */
+	@Deprecated
 	public void declareChild(String childName, boolean allowPlural) throws Exception {
 		Mel child = declareChild(childName);
 		child.setAttribute("plural", allowPlural ? "true" : "false");
 	}
 
-	/**
-	 * Tells whether a specific declaration is allowed to be plural or not.
-	 */
+	@Deprecated
 	public boolean childIsPlural(String childName) throws Exception {
 		Mel child = findChild("contains", "name", childName, Mel.class);
 		if (child == null) {

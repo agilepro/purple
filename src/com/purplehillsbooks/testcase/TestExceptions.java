@@ -1,12 +1,9 @@
 package com.purplehillsbooks.testcase;
 
 import java.io.File;
-import java.io.PrintWriter;
-
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;
-import com.purplehillsbooks.streams.MemFile;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
@@ -101,15 +98,6 @@ public class TestExceptions implements TestSet {
         else {
             throw new Exception("course string in exception test had invalid character: "+ch);
         }
-    }
-
-    private void dumpTraceFile(File outFolder, String fileName, Exception testException) throws Exception {
-        MemFile mf = new MemFile();
-        PrintWriter pw = new PrintWriter(mf.getWriter());
-        testException.printStackTrace(pw);
-        pw.flush();
-        File generatedFile = new File(outFolder, fileName+".stack.txt");
-        mf.outToFile(generatedFile);
     }
 
     private void compareExceptions(String testCase, JSONObject ex1, JSONObject ex2) throws Exception {

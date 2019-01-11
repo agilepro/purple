@@ -173,8 +173,8 @@ public class Mel {
         Element docElement = doc.getDocumentElement();
         return construct(rootClass, doc, docElement);
     }
-    
-    
+
+
 
     /**
      * writeToOutputStream streams the entire XML output that reflects the
@@ -186,8 +186,8 @@ public class Mel {
         Transformer transformer = getXmlTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        
-        //after Java version 1.6 came out, the underlying support for XML can not produce the 
+
+        //after Java version 1.6 came out, the underlying support for XML can not produce the
         //right header.  Even when you specify the output to be UTF-8, it writes a header with
         //whatever character set the input was using, and then outputs the contents in UTF-8.
         //I have raised this as a bug, but no response from Java community.

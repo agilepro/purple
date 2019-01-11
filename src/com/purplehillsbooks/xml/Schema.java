@@ -21,17 +21,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- * This class represents the base node of a schema for an MDS file. The schema
- * file is itself an MDS file, and so is read in pretty much the same way, but
- * this class provides some extra capabilities for efficiently handling schemas.
- *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
- */
+@Deprecated
 public class Schema extends Mel {
 	Hashtable<String, SchemaDef> allElements;
 	boolean hasRoot = false;
@@ -63,20 +57,12 @@ public class Schema extends Mel {
 		}
 	}
 
-	/**
-	 * Given a File object (that points to a real existing MDS schema) This
-	 * global static method will read the file and return a Schema for the base
-	 * of the tree of the file.
-	 */
+	@Deprecated
 	public static Schema readFile(File inFile) throws Exception {
 		return readInputStream(new FileInputStream(inFile));
 	}
 
-	/**
-	 * Given a byte stream (that points to a real existing MDS file) this global
-	 * static method will read the stream and return a Mel for the base of the
-	 * tree of the file. Encoding is always UTF-8.
-	 */
+	@Deprecated
 	public static Schema readInputStream(InputStream is) throws Exception {
 		return Mel.readInputStream(is, Schema.class);
 	}
@@ -107,13 +93,7 @@ public class Schema extends Mel {
 		return sd;
 	}
 
-	/**
-	 * Can only set one root. Root can be set once, no way to remove it. The
-	 * warning works only if you are building a schema and never removing things
-	 * from the schema. Clearly if you remove the root the boolean will not be
-	 * cleared. If you wish to deconstruct a schema, you can use the Mel methods
-	 * directly.
-	 */
+	@Deprecated
 	public void addRoot(String rootName) throws Exception {
 		if (hasRoot) {
 			throw new Exception("This schema already has a root element.  Only one is allowed.");

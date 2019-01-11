@@ -19,20 +19,13 @@ package com.purplehillsbooks.xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- * This class represents the base node of a schema for an MDS file. The schema
- * file is itself an MDS file, and so is read in pretty much the same way, but
- * this class provides some extra capabilities for efficiently handlign schemas.
- *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
- */
+@Deprecated
 public class ValidationResults extends Mel {
-
+    @Deprecated
 	public ValidationResults(Document doc, Element ele) throws Exception {
 		super(doc, ele);
 	}
-
+    @Deprecated
 	public void addResult(String result) {
 		addVectorValue("result", result);
 	}

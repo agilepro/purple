@@ -36,8 +36,6 @@ import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
 import com.purplehillsbooks.xml.Mel;
-import com.purplehillsbooks.xml.Schema;
-import com.purplehillsbooks.xml.SchemaGen;
 
 /*
  *
@@ -111,11 +109,6 @@ public class Test1 implements TestSet {
 
         writeBothStylesAndCompare(me, "UP_Test002", hints);
 
-        Schema schema1 = Mel.readInputStream(getData2Stream(), Schema.class);
-        testVal(schema1.getName(), "schema", "root element of schema file name");
-
-        me.setSchema(schema1);
-
         testValidation(me, "Validation: initial file", "");
 
         userprofile.setScalar("username_bogus", "CCC_XXX");
@@ -135,9 +128,6 @@ public class Test1 implements TestSet {
                         + "\njava.lang.Exception: Element 'userprofile' has a child element 'username_bogus' that is not in the schema."
                         + "\n");
 
-        Schema generatedSchema = SchemaGen.generateFor(me);
-
-        writeBothStylesAndCompare(generatedSchema, "UP_Test003", hints);
     }
 
     public void TestEmpty() throws Exception {
@@ -303,17 +293,12 @@ public class Test1 implements TestSet {
         Mel me = Mel.readFile(new File(sourceFolder, "Loyalty.xpdl"), Mel.class);
         writeBothStylesAndCompare(me, "GEN_Test001", hints);
 
-        Schema generatedSchema = SchemaGen.generateFor(me);
-        writeBothStylesAndCompare(generatedSchema, "GEN_Test002", hints);
-
         me = Mel.readFile(new File(sourceFolder, "RawFeed1.rss"), Mel.class);
         writeBothStylesAndCompare(me, "GEN_Test003", hints);
 
         me.eliminateCData();
         writeBothStylesAndCompare(me, "GEN_Test004", hints);
 
-        generatedSchema = SchemaGen.generateFor(me);
-        writeBothStylesAndCompare(generatedSchema, "GEN_Test005", hints);
     }
 
 

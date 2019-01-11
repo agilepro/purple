@@ -445,7 +445,7 @@ public class TestDriver {
             Writer w = null;
             String firstParam = "";
             w = new OutputStreamWriter(System.out, "UTF-8");
-            TestRecorderText tr = new TestRecorderText(w, true, args, "./");
+            TestRecorderText tr = new TestRecorderText(w, true, args, "./", null);
 
             // please note, any important exception will happen within this try
             // block

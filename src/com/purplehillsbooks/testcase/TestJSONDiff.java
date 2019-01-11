@@ -43,9 +43,6 @@ public class TestJSONDiff implements TestSet {
         JSONObject ob1 = new JSONObject();
         JSONObject ob2 = new JSONObject();
 
-        JSONDiff jdFull = new JSONDiff(true);
-        JSONDiff jdLtd  = new JSONDiff(false);
-
         //test completely empty objects
         doit("JSONDiff-test1", ob1, ob2);
 
