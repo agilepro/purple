@@ -16,15 +16,15 @@
   "innerError": {},
   "stack": [
     "top level exception thrown by exception test when course string ran out",
-    "    TestExceptions.java: callHigher: 89",
-    "    TestExceptions.java: sampleMethod2: 76",
+    "    TestExceptions.java: callHigher: 86",
+    "    TestExceptions.java: sampleMethod2: 73",
     "    (continued below)",
     "caught and rethrow from level: ",
-    "    TestExceptions.java: sampleMethod2: 79",
-    "    TestExceptions.java: callHigher: 96",
-    "    TestExceptions.java: runCourse: 158",
-    "    TestExceptions.java: runTests: 42",
+    "    TestExceptions.java: sampleMethod2: 76",
+    "    TestExceptions.java: callHigher: 93",
+    "    TestExceptions.java: runCourse: 146",
+    "    TestExceptions.java: runTests: 39",
     "    TestRecorderText.java: parseArgsRunTests: 634",
-    "    TestExceptions.java: main: 196"
+    "    TestExceptions.java: main: 184"
   ]
 }}

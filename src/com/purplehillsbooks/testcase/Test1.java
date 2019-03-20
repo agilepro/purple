@@ -108,26 +108,6 @@ public class Test1 implements TestSet {
         testScalar(userprofile, "lastlogin", "1244512041541", "modified user profile object");
 
         writeBothStylesAndCompare(me, "UP_Test002", hints);
-
-        testValidation(me, "Validation: initial file", "");
-
-        userprofile.setScalar("username_bogus", "CCC_XXX");
-
-        testValidation(
-                me,
-                "Validation: after making bogus setting",
-                "java.lang.Exception: Element 'userprofile' has a child element 'username_bogus' that is not in the schema."
-                        + "\n");
-
-        idrec.setScalar("second_bogus", "on idrec");
-
-        testValidation(
-                me,
-                "Validation: after making bogus setting",
-                "java.lang.Exception: Element 'idrec' has a child element 'second_bogus' that is not in the schema."
-                        + "\njava.lang.Exception: Element 'userprofile' has a child element 'username_bogus' that is not in the schema."
-                        + "\n");
-
     }
 
     public void TestEmpty() throws Exception {
@@ -429,26 +409,6 @@ public class Test1 implements TestSet {
         tr.markPassed(note);
     }
 
-    public void testValidation(Mel me, String note, String expectedVal) throws Exception {
-        Vector<Exception> results = new Vector<Exception>();
-        me.validate(results);
-        Enumeration<Exception> ve = results.elements();
-        StringBuffer or = new StringBuffer();
-        while (ve.hasMoreElements()) {
-            or.append(ve.nextElement().toString());
-            or.append("\n");
-        }
-        String actualVal = or.toString();
-
-        if (compareStringIgnoringCR(expectedVal, actualVal)) {
-            tr.markPassed(note);
-        }
-        else {
-            tr.markFailed(note, "values do not match");
-            writeLiteralValue("expected", expectedVal);
-            writeLiteralValue("actual", actualVal);
-        }
-    }
 
     public boolean compareStringIgnoringCR(String s1, String s2) {
         int i1 = 0;

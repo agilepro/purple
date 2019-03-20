@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -36,6 +37,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -70,7 +72,6 @@ import org.xml.sax.SAXParseException;
 public class Mel {
     private Document fDoc;
     private Element fEle;
-    private Schema schema;
 
     @SuppressWarnings("rawtypes")
     private static Class[] constructParams = new Class[] { Document.class, Element.class };
@@ -139,7 +140,6 @@ public class Mel {
      */
     private <T extends Mel> T constructRelative(Element ele, Class<T> childClass) throws Exception {
         T me = construct(childClass, fDoc, ele);
-        me.setSchema(schema);
         return me;
     }
 
@@ -360,152 +360,7 @@ public class Mel {
         return textValueOf(fEle);
     }
 
-    /**
-     * If the MDS file has a corresponding schema, this method can be used to
-     * set the schema on the MDS file, and consequently allow interactions to be
-     * validated by the schema.
-     */
-    public void setSchema(Schema desiredSchema) {
-        schema = desiredSchema;
-    }
 
-    /**
-     * Pass in an empty vector, and it will be filled with any schema violations
-     * that are discovered in this element and all children.
-     */
-    public void validate(Vector<Exception> results) throws Exception {
-        // first check to see if the three is constructed properly in order to
-        // validate.
-        // there must be a schema.
-        String myName = getName();
-        if (schema == null) {
-            results.add(new Exception(
-                    "Unable to validate because there is no schema defined for element (" + myName
-                            + ")"));
-            return;
-        }
-
-        // Now check if the schema includes an entry for this object
-        SchemaDef sd = schema.lookUpDefinition(myName);
-        if (sd == null) {
-            results.add(new Exception(
-                    "Unable to validate schema, unable to find a schema definition for element ("
-                            + myName + ")"));
-            return;
-        }
-
-        NodeList childNdList = fEle.getChildNodes();
-        for (int i = 0; i < childNdList.getLength(); i++) {
-            org.w3c.dom.Node n = childNdList.item(i);
-            if (n.getNodeType() != org.w3c.dom.Node.ELEMENT_NODE) {
-                // we are not really interested in any of the text nodes at this
-                // point
-                // no validation necessary at this time
-                continue;
-            }
-
-            Element ne = (Element) n;
-            String childName = getElementName(ne);
-
-            if (childName == null) {
-                results.add(new Exception(
-                        "strange, there exists an element node in the DOM tree that does not have a name...this should never happen.  Some sort of programming logic mistake with the DOM API"));
-                return;
-            }
-
-            // only element tags. See what the schema says
-            SchemaDef sd2 = schema.lookUpDefinition(childName);
-
-            if (sd2 == null) {
-                results.add(new Exception("Element '" + myName + "' has a child element '"
-                        + childName + "' that is not in the schema."));
-                continue;
-            }
-
-            if (sd2.isContainer()) {
-                Mel child = constructRelative(ne, Mel.class);
-                child.validate(results);
-            }
-        }
-    }
-
-    /**
-     * Pass in an empty ValidationResults object, and it will be filled with any
-     * schema violations that are discovered in this element and all children.
-     */
-    public void validate(ValidationResults results) throws Exception {
-        // first check to see if the three is constructed properly in order to
-        // validate.
-        // there must be a schema.
-        String myName = getName();
-        if (schema == null) {
-            results.addResult("Unable to validate because there is no schema defined for element ("
-                    + myName + ")");
-            return;
-        }
-
-        // Now check if the schema includes an entry for this object
-        SchemaDef sd = schema.lookUpDefinition(myName);
-        if (sd == null) {
-            results.addResult("Unable to validate schema, unable to find a schema definition for element ("
-                    + myName + ")");
-            return;
-        }
-
-        NodeList childNdList = fEle.getChildNodes();
-        for (int i = 0; i < childNdList.getLength(); i++) {
-            org.w3c.dom.Node n = childNdList.item(i);
-            if (n.getNodeType() != org.w3c.dom.Node.ELEMENT_NODE) {
-                // we are not really interested in any of the text nodes at this
-                // point
-                // no validation necessary at this time
-                continue;
-            }
-
-            Element ne = (Element) n;
-            String childName = getElementName(ne);
-
-            if (childName == null) {
-                results.addResult("strange, there exists an element node in the DOM tree that does not have a name...this should never happen.  Some sort of programming logic mistake with the DOM API");
-                return;
-            }
-
-            // only element tags. See what the schema says
-            SchemaDef sd2 = schema.lookUpDefinition(childName);
-
-            if (sd2 == null) {
-                results.addResult("Element '" + myName + "' has a child element '" + childName
-                        + "' that is not in the schema.");
-                continue;
-            }
-
-            if (sd2.isContainer()) {
-                Mel child = constructRelative(ne, Mel.class);
-                child.validate(results);
-            }
-        }
-    }
-
-    /**
-     * Returns a vector of strings, each string being the name of a
-     */
-    public Vector<String> childElementNames() throws Exception {
-        if (schema == null) {
-            throw new Exception(
-                    "Schema is not defined on this tree.  Define the schema if you wish to get a list of the child elements");
-        }
-        String myName = getName();
-        Vector<Mel> definedElements = schema.getChildren("container");
-        for (Mel me : definedElements) {
-            if (myName.equals(me.getAttribute("name"))) {
-                // found my entry
-                Vector<String> childNames = me.getVector("contains");
-                return childNames;
-            }
-        }
-        throw new Exception("Schema is defined, but it does not have an element for the element '"
-                + myName + "'.");
-    }
 
     /********************* ATTRIBUTE ***********************/
 

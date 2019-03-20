@@ -249,34 +249,23 @@ public class JavaScriptWriter extends Writer {
 		int last = literalString.length();
 		while (pos < last) {
 			char ch = literalString.charAt(pos++);
-			switch (ch) {
-			case '\"':
-				throw new Exception("JavaScriptStream.decode received a string which is not "
-						+ "properly JS encoded, a double quote character appeared without a slash "
-						+ "before it at position " + (pos - 1));
-			case '\'':
-				throw new Exception("JavaScriptStream.decode received a string which is not "
-						+ "properly JS encoded, a single quote character appeared without a slash "
-						+ "before it at position " + (pos - 1));
-			case '\n':
-				throw new Exception("JavaScriptStream.decode received a string which is not "
-						+ "properly JS encoded, a newline character appeared at position "
-						+ (pos - 1));
-			case '\\':
-				// do nothing for slash, flow continues to bottom of loop
-				break;
-			default:
-				res.append(ch);
-				continue;
+
+			//for all non-escaped characters, just copy them into the output string.
+			//note that if a unescaped newline, double-quote or apostrophe is seen, even though
+			//these should never appear in a properly encoded string, they will simply
+			//be copied to the output since that seems the best thing to do.
+			if (ch!='\\') {
+			    res.append(ch);
+                continue;
 			}
 
-			// now handle what follows the slash
+			//if the slash appears at the end, with nothing following it, then
+		    //ignore it even though this should never happen in a properly encoded string literal
 			if (pos >= last) {
-				// there is no character after it, so complain
-				throw new Exception(
-						"JavaScriptStream.decode received a string which is not "
-								+ "properly JS encoded, a slash appears at the end without anything after it.");
+			    return;
 			}
+
+			// now handle whatever follows the slash
 			ch = literalString.charAt(pos++);
 			switch (ch) {
 			case 'n':
