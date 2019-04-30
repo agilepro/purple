@@ -28,7 +28,12 @@ public class JSONException extends Exception {
         params = new Object[0];
     }
 
-    public JSONException(String message, Throwable cause) {
+    /**
+     * Constructs a JSONException with an explanatory message.
+     * Wraps the passed throwable as the 'cause' exception.
+     * @param message Detail about the reason for the exception.
+     */
+   public JSONException(String message, Throwable cause) {
         super(message, cause);
         params = new Object[0];
     }
@@ -37,7 +42,7 @@ public class JSONException extends Exception {
      * Construct the exception with a template by using variable parameters
      * Use a template like this:
      *
-     * JSONException("Error when contemplating {0} in context of {1}", value0, value1)
+     * <pre>JSONException("Error when contemplating {0} in context of {1}", value0, value1)</pre>
      *
      * Tokens are braces with a single digit numeral between them.
      * The message will ultimately include the main string template with the values
@@ -49,6 +54,14 @@ public class JSONException extends Exception {
         this.template = template;
         this.params = params;
     }
+    /**
+     * Construct the exception with a template by using variable parameters
+     * with a pattern like this:
+     *
+     * <pre>JSONException("Error when contemplating {0} in context of {1}", ex, value0, value1)</pre>
+     *
+     * See JSONException constructor without Throwable for more details.
+     */
     public JSONException(String template, Throwable cause, Object ... params) {
         super(formatString(template, params), cause);
         this.template = template;
