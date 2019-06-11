@@ -61,7 +61,16 @@ public class TemplateJSONRetriever implements TemplateTokenRetriever {
         try {
             Object val = getValueFromContext(token);
 
-            if (val!=null) {
+            if (val==null) {
+                //do nothing
+            }
+            else if (val instanceof JSONObject) {
+                ((JSONObject)val).write(out, 2, 2);
+            }
+            else if (val instanceof JSONArray) {
+                ((JSONArray)val).write(out, 2, 2);
+            }
+            else {
                 TemplateStreamer.writeHtml(out, val.toString());
             }
         }
@@ -83,7 +92,7 @@ public class TemplateJSONRetriever implements TemplateTokenRetriever {
         }
     }
 
-    
+
     public void writeTokenDate(Writer out, String token, String format) throws Exception {
         try {
             Object val = getValueFromContext(token);
@@ -102,9 +111,9 @@ public class TemplateJSONRetriever implements TemplateTokenRetriever {
             throw new Exception("Unable to write Date value from path "+token+", with format "+format, e);
         }
     }
-    
-    
-    
+
+
+
     private Object getValueFromContext(String token) throws Exception {
         ArrayList<String> tokens = splitDots(token);
         if (tokens.size()==0) {
@@ -203,8 +212,8 @@ public class TemplateJSONRetriever implements TemplateTokenRetriever {
     public void debugDump(Writer out) throws Exception {
         data.write(out, 2, 0);
     }
-    
-    
+
+
     private static Object getValuefromObject(ArrayList<String> tokens, int index, JSONObject d) throws Exception {
         String thisToken = tokens.get(index);
         if (!d.has(thisToken)) {
@@ -295,8 +304,8 @@ public class TemplateJSONRetriever implements TemplateTokenRetriever {
         }
         return res;
     }
-    
-    
+
+
     /**
      * Breaks a string into a list of strings using dots (periods)
      * as separators of the token, and trimming each token of
