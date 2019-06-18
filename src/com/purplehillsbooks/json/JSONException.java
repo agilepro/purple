@@ -317,14 +317,17 @@ public class JSONException extends Exception {
     public static JSONObject traceException(PrintStream out, Throwable e, String context) {
         if (out==null) {
             System.out.println("$$$$$$$$ traceException requires an out parameter");
+            e.printStackTrace();
             return null;
         }
         if (e==null) {
             System.out.println("$$$$$$$$ traceException requires an e parameter");
+            e.printStackTrace();
             return null;
         }
         if (context==null || context.length()==0) {
             System.out.println("$$$$$$$$ traceException requires a context parameter");
+            e.printStackTrace();
             return null;
         }
         try {
@@ -345,14 +348,17 @@ public class JSONException extends Exception {
     public static JSONObject traceException(Writer w, Throwable e, String context) {
         if (w==null) {
             System.out.println("$$$$$$$$ traceException requires an w parameter");
+            e.printStackTrace();
             return null;
         }
         if (e==null) {
             System.out.println("$$$$$$$$ traceException requires an e parameter");
+            e.printStackTrace();
             return null;
         }
         if (context==null || context.length()==0) {
             System.out.println("$$$$$$$$ traceException requires a context parameter");
+            e.printStackTrace();
             return null;
         }
         try {
