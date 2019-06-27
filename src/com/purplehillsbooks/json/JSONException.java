@@ -2,6 +2,7 @@ package com.purplehillsbooks.json;
 
 import java.io.PrintStream;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -411,7 +412,9 @@ public class JSONException extends Exception {
     public static String getTraceExceptionFormat(JSONObject errOb) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n~~~~~~~~~~~~~EXCEPTION~~~~~~~~~~~~~~~~ ");
-        sb.append(new Date().toString());
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
+        String exceptionTime = dateFormatter.format(new Date());
+        sb.append(exceptionTime);
         sb.append("\n");
         sb.append(errOb.toString(2));
         sb.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
