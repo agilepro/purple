@@ -412,7 +412,6 @@ public class JSONException extends Exception {
     public static String getTraceExceptionFormat(JSONObject errOb) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n~~~~~~~~~~~~~EXCEPTION~~~~~~~~~~~~~~~~ ");
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
         String exceptionTime = dateFormatter.format(new Date());
         sb.append(exceptionTime);
         sb.append("\n");
@@ -420,6 +419,7 @@ public class JSONException extends Exception {
         sb.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
         return sb.toString();
     }
+    static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Given a JSON representation of an exception, this re-constructs the Exception
