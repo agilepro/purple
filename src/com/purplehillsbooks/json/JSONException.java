@@ -314,15 +314,18 @@ public class JSONException extends Exception {
 
     /**
      * A standardized way to trace a given exception to the system out.
+     *
+     * Because this is a method designed to be used during exception
+     * handling, it is written to avoid throwing any exceptions.
+     * All errors in the running of this routine are written to standard out.
      */
     public static JSONObject traceException(PrintStream out, Throwable e, String context) {
-        if (out==null) {
-            System.out.println("$$$$$$$$ traceException requires an out parameter");
-            e.printStackTrace();
-            return null;
-        }
         if (e==null) {
             System.out.println("$$$$$$$$ traceException requires an e parameter");
+            return null;
+        }
+        if (out==null) {
+            System.out.println("$$$$$$$$ traceException requires an out parameter");
             e.printStackTrace();
             return null;
         }

@@ -21,9 +21,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
+import com.purplehillsbooks.streams.MemFile;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
@@ -45,6 +48,7 @@ public class JSONTest implements TestSet {
         tr = newTr;
 
         testAllWriteAndReadOperations();
+        testLongValues();
     }
 
 
@@ -128,5 +132,223 @@ public class JSONTest implements TestSet {
         TestRecorderText.parseArgsRunTests(args, thisTest);
     }
 
+
+    private void testLongValues() throws Exception {
+        testOneLongValue(-1);
+        testOneLongValue(0);
+        testOneLongValue(1);
+        long big = 7;
+        testOneLongValue(big); //3
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //4
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //5
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //6
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //7
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //8
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //9
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //10
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //11
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //12
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //13
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //14
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //15
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //16
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //17
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //18
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //19
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //20
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //21
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //22
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //23
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //24
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //25
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //26
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //27
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //28
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //29
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //30
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //31
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //32
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //33
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //34
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //35
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //36
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //37
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //38
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //39
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //40
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //41
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //42
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //43
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //44
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //45
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //46
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //47
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //48
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //49
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //50
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //51
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //52
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //53
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //54
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //55
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //56
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //57
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //58
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //59
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //60
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //61
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //62
+        testOneLongValue(0-big);
+        big = big * 2 + 1;
+        testOneLongValue(big); //63 largest long
+        testOneLongValue(0-big);
+        testOneLongValue(0-big-1);  //the most negative number
+
+        testOneLongValue(big+1);  //wrap around to most negative
+        testOneLongValue(big+2);  //next most negative
+    }
+
+    private void testOneLongValue(long testVal) throws Exception {
+        String testId = "Test JSON long value: "+testVal;
+        JSONObject jo = new JSONObject();
+        jo.put("dummy", "dummy");
+        jo.put("testVal", testVal);
+        MemFile mf = new MemFile();
+        Writer w = mf.getWriter();
+        jo.write(w);
+        w.close();
+
+
+        Reader r = mf.getReader();
+        JSONObject jo2 = new JSONObject(new JSONTokener(r));
+        r.close();
+
+        long finalVal = jo2.getLong("testVal");
+
+        if (finalVal == testVal) {
+            tr.markPassed(testId);
+        }
+        else {
+            tr.markFailed(testId, "Expected '" + testVal + "' but got '" + finalVal + "' instead.");
+        }
+    }
 
 }
