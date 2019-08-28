@@ -56,7 +56,6 @@ import java.util.Hashtable;
  *         ljf.unlock();
  *     }
  * }
- * ljf.free();
  * </pre>
  *
  * <p>Get the lockable file just before the use.   In order to prevent overlapped reads and writes
@@ -90,6 +89,18 @@ import java.util.Hashtable;
  * to call unlock in a finally block.  If you want to read and update the new file, use the regular readAndLock
  * method to assure that this process has exclusive access, just like normal.
  *
+ * <h1>USAGE - reading but NOT updating a file</h1>
+ *
+ * <pre>
+ * File myFile = new File("c:/a/b/c/file.json");
+ * LockableJSONFile ljf = LockableJSONFile.getSurrogate(myFile);   //declare
+ * JSONObject jo = ljf.lockReadUnlock();
+ * </pre>
+ * 
+ * <p>This convenience method does all the required locking and unlocking of the 
+ * file in a single method.  You may NOT update the file after reading it this 
+ * way without implementing the full pattern for update.</p>
+ * 
  * <h1>USAGE - exceptions</h1>
  *
  * <pre>
@@ -110,7 +121,6 @@ import java.util.Hashtable;
  *         ljf.unlock();                                  //unlock WITHOUT writing content
  *     }
  * }
- * ljf.free();
  * </pre>
  *
  * <p>It is important to assure that if you lock the file, you also unlock it.
