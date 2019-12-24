@@ -1,0 +1,43 @@
+{
+  "properties": {
+    "Christopher Eric Hitchens": {"type": "array"},
+    "Noam Chomsky": {
+      "items": {
+        "properties": {
+          "available": {"type": "boolean"},
+          "title": {"type": "string"},
+          "year": {"type": "integer"}
+        },
+        "required": [
+          "year",
+          "available",
+          "title"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "Richard Dawkins": {
+      "items": {
+        "properties": {
+          "available": {"type": "boolean"},
+          "title": {"type": "string"},
+          "year": {"type": "integer"}
+        },
+        "required": [
+          "year",
+          "available",
+          "title"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "Richard Dawkins",
+    "Noam Chomsky",
+    "Christopher Eric Hitchens"
+  ],
+  "type": "object"
+}

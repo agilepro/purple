@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "author": {"type": "string"},
+    "available": {"type": "boolean"},
+    "title": {"type": "string"},
+    "year": {"type": "integer"}
+  },
+  "required": [
+    "year",
+    "author",
+    "available",
+    "title"
+  ],
+  "type": "object"
+}

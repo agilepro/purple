@@ -1,0 +1,17 @@
+{
+    "The Selfish Gene": {
+        "author": "Richard Dawkins",
+        "year": 1976,
+        "available": true
+    },
+    "The Extended Phenotype": {
+        "available": true,
+        "author": "Richard Dawkins",
+        "year": 1982
+    },
+    "Language and Mind": {
+        "year": 1968,
+        "available": false,
+        "author": "Noam Chomsky"
+    }
+}

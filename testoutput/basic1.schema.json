@@ -1,0 +1,5 @@
+{
+  "properties": {"author": {"type": "string"}},
+  "required": ["author"],
+  "type": "object"
+}

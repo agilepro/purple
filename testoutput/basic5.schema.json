@@ -1,0 +1,49 @@
+{
+  "properties": {
+    "Language and Mind": {
+      "properties": {
+        "author": {"type": "string"},
+        "available": {"type": "boolean"},
+        "year": {"type": "integer"}
+      },
+      "required": [
+        "year",
+        "author",
+        "available"
+      ],
+      "type": "object"
+    },
+    "The Extended Phenotype": {
+      "properties": {
+        "author": {"type": "string"},
+        "available": {"type": "boolean"},
+        "year": {"type": "integer"}
+      },
+      "required": [
+        "year",
+        "author",
+        "available"
+      ],
+      "type": "object"
+    },
+    "The Selfish Gene": {
+      "properties": {
+        "author": {"type": "string"},
+        "available": {"type": "boolean"},
+        "year": {"type": "integer"}
+      },
+      "required": [
+        "year",
+        "author",
+        "available"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "The Extended Phenotype",
+    "The Selfish Gene",
+    "Language and Mind"
+  ],
+  "type": "object"
+}

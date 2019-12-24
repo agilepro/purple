@@ -1,0 +1,22 @@
+{
+  "Richard Dawkins":[
+    {
+        "title": "The Selfish Gene",
+        "year": 1976,
+        "available": true
+    },
+    {
+        "available": true,
+        "title": "The Extended Phenotype",
+        "year": 1982
+    }
+  ],
+  "Noam Chomsky": [
+    {
+        "year": 1968,
+        "available": false,
+        "title": "Language and Mind"
+    }
+  ],
+  "Christopher Eric Hitchens": []
+}
