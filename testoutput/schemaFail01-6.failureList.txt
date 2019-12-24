@@ -1,0 +1,4 @@
+0: @results.[0].closedTime. - found an object but schema is expecting a boolean
+1: @results.[0].creationTime required property not found
+2: @results.[0].dueDate required property not found
+3: @results.[0].description required property not found

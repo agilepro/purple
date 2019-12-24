@@ -189,24 +189,31 @@ public class JSONSchema {
     }
 
     private boolean checkSchemaRunner(String path, JSONObject data, JSONObject schema) throws Exception {
+        if (errors.size()>this.errorLimit) {
+            return false;
+        }
         if (!schema.has("type")) {
             //we don't know the type, so don't check any further.
-            addLog(":: found Object at '"+path+"' but schema does not specify type");
+            addLog("Found Object at '"+path+"' but schema does not specify type");
             return true;
         }
         String mainType = schema.getString("type");
         if (!"object".equals(mainType)) {
-            addErrorLog(":: "+path+" - found an object but schema is expecting a "+mainType);
+            addErrorLog("@"+path+" - found an object but schema is expecting a "+mainType);
             return false;
         }
         //it is a json object, so there have to be properties
         if (!schema.has("properties") && !schema.has("additionalProperties")) {
-            addErrorLog(":: "+path+" - schema does not have any properties for this object");
+            addErrorLog("@"+path+" - schema does not have any properties for this object");
             return false;
         }
-        addLog(":: found Object at '"+path+"'");
+        addLog(" "+path+" - Found Object");
         JSONObject properties = schema.getJSONObject("properties");
+        boolean resultCode = true;
         for (String key : data.keySet()) {
+            if (errors.size()>this.errorLimit) {
+                return false;
+            }
             Object d = data.get(key);
             JSONObject p = null;
             if (properties.has(key)) {
@@ -219,8 +226,9 @@ public class JSONSchema {
                 p = schema.getJSONObject("additionalProperties");
             }
             else {
-                addErrorLog("nothing found in schema for '"+path+key+"' - FAILING");
-                return false;
+                addErrorLog("@"+path+key+" - No entry in schema corresponding to this.");
+                resultCode = false;
+                continue;
             }
             if (!p.has("type")) {
                 //the schema does not specify the type, so don't check this property at all
@@ -230,59 +238,72 @@ public class JSONSchema {
             String dataType = p.getString("type");
             if (d instanceof JSONArray) {
                 if (!checkSchemaArray(path+key+".", ((JSONArray)d), p)) {
-                    return false;
+                    resultCode = false;
                 }
             }
             else if (d instanceof JSONObject) {
                 if (!checkSchemaRunner(path+key+".", ((JSONObject)d), p)) {
-                    return false;
+                    resultCode = false;
                 }
             }
             else if (d instanceof String) {
                 if (!"string".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a string but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+key+". - found a string but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property string '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found number");
+                }
             }
             else if (d instanceof Integer) {
-                if (!"integer".equals(dataType) && !"long".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a integer but expecting a "+dataType);
-                    return false;
+                if (!"integer".equals(dataType) && !"long".equals(dataType) && !"number".equals(dataType)) {
+                    addErrorLog("@"+path+key+". - found a integer but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property integer '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found number");
+                }
             }
             else if (d instanceof Long) {
-                if (!"integer".equals(dataType) && !"long".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a long but expecting a "+dataType);
-                    return false;
+                if (!"integer".equals(dataType) && !"long".equals(dataType) && !"number".equals(dataType)) {
+                    addErrorLog("@"+path+key+". - found a long but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property long '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found number");
+                }
             }
             else if (d instanceof Float) {
                 if (!"number".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a number but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+key+". - found a number but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property number '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found number");
+                }
             }
             else if (d instanceof Double) {
                 if (!"number".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a number but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+key+". - found a number but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property number '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found number");
+                }
             }
             else if (d instanceof Boolean) {
                 if (!"boolean".equals(dataType)) {
-                    addErrorLog(":: "+path+key+". - found a boolean but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+key+". - found a boolean but expecting a "+dataType);
+                    resultCode = false;
                 }
-                addLog(":: property number '"+path+key+".'");
+                else {
+                    addLog(" "+path+key+" - Found boolean");
+                }
             }
             else {
                 //something unexpected happened, marking as a problem now
-                addErrorLog(":: unhandled member '"+path+key+".'");
+                addErrorLog("@"+path+key+". unhandled property of type: "+(d.getClass().getName()));
+                resultCode = false;
             }
         }
         if (schema.has("required")) {
@@ -290,18 +311,23 @@ public class JSONSchema {
             for (int i=0; i<required.length(); i++) {
                 String requiredPropertyName = required.getString(i);
                 if (!data.has(requiredPropertyName)) {
-                    addErrorLog("Required property '"+path+requiredPropertyName+"' not found\n");
+                    addErrorLog("@"+path+requiredPropertyName+" required property not found");
+                    resultCode = false;
                 }
             }
         }
-        return true;
+        return resultCode;
     }
 
 
     private boolean checkSchemaArray(String path, JSONArray data, JSONObject schema) throws Exception {
-        addLog(":: found Array at '"+path+"'");
+        if (errors.size()>this.errorLimit) {
+            return false;
+        }
+        boolean resultCode = true;
+        addLog(" "+path+" - Found Array");
         if (!"array".equals(schema.getString("type"))) {
-            addErrorLog(":: "+path+" - schema does not declare an array to be an array, but expects instead: "+schema.getString("type"));
+            addErrorLog("@"+path+" - found an array, but schema expects it to be: "+schema.getString("type"));
             return false;
         }
         if (data.length()==0) {
@@ -309,7 +335,7 @@ public class JSONSchema {
             return true;
         }
         if (!schema.has("items")) {
-            addErrorLog("strangely this array schema object does not have an 'items' member at path: "+path);
+            addErrorLog("Schema array declaration does not have an 'items' member at path: "+path);
             return false;
         }
         JSONObject s = schema.getJSONObject("items");
@@ -319,42 +345,81 @@ public class JSONSchema {
         }
         String dataType = s.getString("type");
         for (int i=0; i<data.length(); i++) {
+            if (errors.size()>this.errorLimit) {
+                return false;
+            }
             Object d = data.get(i);
             if (d instanceof JSONArray) {
                 if (!checkSchemaArray(path+"["+i+"].", ((JSONArray)d), s)) {
-                    return false;
+                    resultCode = false;
                 }
             }
             else if (d instanceof JSONObject) {
                 if (!checkSchemaRunner(path+"["+i+"].", ((JSONObject)d), s)) {
-                    return false;
+                    resultCode = false;
                 }
             }
             else if (d instanceof String) {
                 if (!"string".equals(dataType)) {
-                    addErrorLog(":: "+path+"["+i+"]. - found a string but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+"["+i+"]. - found a string but expecting a "+dataType);
+                    resultCode = false;
+                }
+                else {
+                    addLog(" "+path+"["+i+"]. - Found string");
                 }
             }
             else if (d instanceof Integer) {
                 if (!"integer".equals(dataType) && !"number".equals(dataType)) {
-                    addErrorLog(":: "+path+"["+i+"]. - found a integer but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+"["+i+"]. - found a integer but expecting a "+dataType);
+                    resultCode = false;
+                }
+                else {
+                    addLog(" "+path+"["+i+"]. - Found number");
                 }
             }
             else if (d instanceof Float) {
                 if (!"number".equals(dataType)) {
-                    addErrorLog(":: "+path+"["+i+"]. - found a number but expecting a "+dataType);
-                    return false;
+                    addErrorLog("@"+path+"["+i+"]. - found a number but expecting a "+dataType);
+                    resultCode = false;
+                }
+                else {
+                    addLog(" "+path+"["+i+"]. - Found number");
                 }
             }
+            else if (d instanceof Boolean) {
+                if (!"boolean".equals(dataType)) {
+                    addErrorLog("@"+path+"["+i+"]. - found a boolean but expecting a "+dataType);
+                    resultCode = false;
+                }
+                else {
+                    addLog(" "+path+"["+i+"]. - Found boolean");
+                }
+            }
+            else {
+                //something unexpected happened, marking as a problem now
+                addErrorLog("@"+path+"["+i+"]. - Unidentified property of type: "+(d.getClass().getName()));
+                resultCode = false;
+            }
         }
-        return true;
+        return resultCode;
     }
 
-    public List<String> checkSchema(JSONObject data, JSONObject schema) throws Exception {
-        checkSchemaRunner("", data, schema);
+    public boolean checkSchema(JSONObject data, JSONObject schema) throws Exception {
+        return checkSchemaRunner("", data, schema);
+    }
+
+    /**
+     * if the schema validation returns false, then you can ask for a 
+     * detailed list of what went wrong with this method.
+     * 
+     * Each string in the list is a separate validation error.
+     * 
+     * You will only get up to the number of errors specified in
+     * the errorLimit variable.
+     */
+    public List<String> getErrorList() {
         return errors;
     }
+        
 
 }

@@ -1,0 +1,7 @@
+0: @results.[0].initiator. - found an array, but schema expects it to be: string
+1: @results.[0].closedTime. - found an object but schema is expecting a boolean
+2: @results.[0].name. - found an array, but schema expects it to be: string
+3: @results.[0].state. - found an array, but schema expects it to be: integer
+4: @results.[0].creationTime required property not found
+5: @results.[0].dueDate required property not found
+6: @results.[0].description required property not found

@@ -29,14 +29,34 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
     public void runTests(TestRecorder newTr) throws Exception {
         super.initForTests(newTr);
 
-        FileTest("one-string object schema", "basic1");
-        FileTest("simple object schema", "basic2");
-        FileTest("list schema", "basic3");
-        FileTest("multi-list schema", "basic4");
-        FileTest("nested object schema", "basic5");
+        generatedSchemaTest("one-string object schema", "basic1");
+        generatedSchemaTest("simple object schema", "basic2");
+        generatedSchemaTest("list schema", "basic3");
+        generatedSchemaTest("multi-list schema", "basic4");
+        generatedSchemaTest("nested object schema", "basic5");
+
+        for (File child : this.sourceDataFolder.listFiles()) {
+            String childName = child.getName();
+            
+            if (childName.startsWith("genSchemaTest") && childName.endsWith(".sample.json")) {
+                //strip the ".sample.json" from the end
+                generatedSchemaTest("Gen schema for "+childName, childName.substring(0, childName.length()-12));
+            }
+        }
+        
+        for (File child : this.sourceDataFolder.listFiles()) {
+            String childName = child.getName();
+            
+            if (childName.startsWith("schemaFail") && childName.endsWith(".schema.json")) {
+                //strip the ".sample.json" from the end
+                schemaFailTest("Schema validation fail "+childName, childName.substring(0, childName.length()-12));
+            }
+        }
     }
 
-    private void FileTest(String testId, String coreName) throws Exception {
+    
+    
+    private void generatedSchemaTest(String testId, String coreName) throws Exception {
         File sampleFile = new File(sourceDataFolder, coreName+".sample.json");
         JSONObject sample = JSONObject.readFromFile(sampleFile);
 
@@ -47,27 +67,48 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
 
         //we just generated it, so it had better validate correctly
         JSONSchema validator = new JSONSchema();
-        List<String> checkList = validator.checkSchema(sample, generatedSchema);
-
-        if (checkList.size()>0) {
-            File failureList = new File(testOutputFolder, coreName+".failureList.txt");
-            Writer fw = new OutputStreamWriter(new FileOutputStream(failureList), "UTF-8");
-            int count = 0;
-            for (String line : checkList) {
-                fw.write(Integer.toString(count++));
-                fw.write(": ");
-                fw.write(line);
-                fw.write("\n");
-            }
-            fw.close();
-            tr.markFailed(testId, "Validation of generated schema failed see: "+failureList);
+        if (!validator.checkSchema(sample, generatedSchema)) {
+            File failureListFile = new File(testOutputFolder, coreName+".failureList.txt");
+            writeListToFile(validator.getErrorList(), failureListFile);
+            tr.markFailed(testId, "Validation of generated schema failed see: "+failureListFile);
             return;
         }
 
-        this.compareGeneratedFile(testId, coreName+".schema.json");
+        this.compareGeneratedTextFile(testId, coreName+".schema.json");
     }
 
 
+    
+    public void schemaFailTest(String testId, String coreName) throws Exception {
+        File schemaFile = new File(sourceDataFolder, coreName+".schema.json");
+        JSONObject schema = JSONObject.readFromFile(schemaFile);
+        
+        for (File child : this.sourceDataFolder.listFiles()) {
+            String childName = child.getName();
+            
+            if (childName.startsWith(coreName) && childName.endsWith(".bad.json")) {
+                //strip the ".sample.json" from the end
+                schemaFailOne(testId+" & "+childName, schema, child);
+            }
+        }
+    }
+    
+    private void schemaFailOne(String testId, JSONObject schema, File testFile) throws Exception {
+        JSONObject testObject = JSONObject.readFromFile(testFile);
+        
+        JSONSchema validator = new JSONSchema();
+        if (validator.checkSchema(testObject, schema)) {
+            tr.markFailed(testId, "Supposed to be testing validator errors, but did not find any errors");
+            return;
+        }
+        
+        String childName = testFile.getName();
+        String coreName = childName.substring(0, childName.length()-9);
+        
+        File failureListFile = new File(testOutputFolder, coreName+".failureList.txt");
+        writeListToFile(validator.getErrorList(), failureListFile);
+        this.compareGeneratedTextFile(testId, failureListFile.getName());
+    }
 
     public static void main(String args[]) {
         TestJSONSchema thisTest = new TestJSONSchema();

@@ -1,0 +1,59 @@
+{"results": [
+  {
+    "closedTime": "DD",
+    "creationTime": "FF",
+    "description": 444,
+    "dueDate": "das",
+    "idDef": false,
+    "idInst": true,
+    "initiator": 33.3,
+    "name": "SystemTest",
+    "ownersBogus": [
+      "admin",
+      "admin1@example.com",
+      "admin2@example.com",
+      "admin3@example.com",
+      "admin@fujitsu.com",
+      "alex@example.com"
+    ],
+	"owners": 5,
+    "uda": {
+      "Customer Type": "",
+      "Product": 555,
+      "TimeToStart": 0,
+      "jsonArray": [
+        "New York",
+        "Boston"
+      ],
+      "jsonRecord": {
+        "a": 1,
+        "b": 2
+      }
+    }
+  },
+  {
+    "initiator": "alex@example.com",
+    "name": "SystemTest",
+    "owners": {"a":"b"},
+    "parentProcess": "true",
+    "priority": "dd",
+    "sequence": 3,
+    "state": "DD",
+    "title": 234234234,
+    "type": "WW",
+    "uda": {
+      "Customer Type": "",
+      "Product": "",
+      "Region": false,
+      "TimeToStart": true,
+      "jsonRecord": [
+        "New York",
+        "Boston"
+      ],
+      "jsonArray": {
+        "a": 1,
+        "b": 2
+      }
+    }
+  }
+]}

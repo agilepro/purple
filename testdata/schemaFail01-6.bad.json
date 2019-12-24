@@ -1,0 +1,41 @@
+{"results": [
+  {
+    "closedTime": {
+		"creationTime": 1577146452347,
+		"description": "Five tasks that can be accessed in any order, includes two JSON type UDAs",
+		"dueDate": 1577146512353
+	},
+    "idDef": 199625,
+    "idInst": 199868,
+    "initiator": "alex@example.com",
+    "name": "SystemTest",
+    "owners": [
+      "admin",
+      "admin1@example.com",
+      "admin2@example.com",
+      "admin3@example.com",
+      "admin@fujitsu.com",
+      "alex@example.com"
+    ],
+    "parentProcess": false,
+    "priority": 8.1,
+    "sequence": 2,
+    "state": 7,
+    "title": "Yoda",
+    "type": 0,
+    "uda": {
+      "Customer Type": "",
+      "Product": "",
+      "Region": "",
+      "TimeToStart": 0,
+      "jsonArray": [
+        "New York",
+        "Boston"
+      ],
+      "jsonRecord": {
+        "a": 1,
+        "b": 2
+      }
+    }
+  }
+]}

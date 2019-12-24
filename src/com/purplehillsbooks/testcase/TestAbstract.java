@@ -18,6 +18,10 @@ package com.purplehillsbooks.testcase;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
 
 import com.purplehillsbooks.streams.MemFile;
 import com.purplehillsbooks.testframe.TestRecorder;
@@ -48,8 +52,13 @@ public abstract class TestAbstract implements TestSet {
     }
 
 
-
-    public void compareGeneratedFile(String testId, String fileName) throws Exception {
+    /*
+     * Specify a testId for reporting the problems
+     * The fileName is just the fileName end of the path, and the two files
+     * being compared are on in the test output folder, and the other
+     * in the source tree test output (comparison) folder.   
+     */
+    public void compareGeneratedTextFile(String testId, String fileName) throws Exception {
 
         File sourceFile = new File(testOutputFolder, fileName);
         if (!sourceFile.exists()) {
@@ -70,8 +79,18 @@ public abstract class TestAbstract implements TestSet {
         int charCount = 1;
         int lineCount = 1;
         while (b1 >= 0 && b2 >= 0) {
+            if (b1 == '\r') {
+                //ignore line feeds
+                b1 = fis1.read();
+                continue;
+            }
+            if (b2 == '\r') {
+                //ignore line feeds
+                b2 = fis2.read();
+                continue;
+            }
             if (b1 != b2) {
-                tr.markFailed(testId, "file are different at number " + lineCount + " and character "+charCount);
+                tr.markFailed(testId, "files differ at line " + lineCount + " and character "+charCount);
                 fis1.close();
                 fis2.close();
                 return;
@@ -275,6 +294,18 @@ public abstract class TestAbstract implements TestSet {
         else {
             sb.append('?');
         }
+    }
+    
+    public void writeListToFile(List<String> list, File outputFile) throws Exception {
+        Writer fw = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
+        int count = 0;
+        for (String line : list) {
+            fw.write(Integer.toString(count++));
+            fw.write(": ");
+            fw.write(line);
+            fw.write("\n");
+        }
+        fw.close();        
     }
 
 

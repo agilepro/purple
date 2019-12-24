@@ -43,15 +43,14 @@ import com.purplehillsbooks.xml.Mel;
  * Copyright: Keith Swenson, all rights reserved
  * License: This code is made available under the GNU Lesser GPL license.
  */
-public class Test1 implements TestSet {
-
-    TestRecorder tr;
+public class Test1 extends TestAbstract implements TestSet {
 
     public Test1() {
+        super();
     }
 
     public void runTests(TestRecorder newTr) throws Exception {
-        tr = newTr;
+        super.initForTests(newTr);
 
         TestUserProfileFile();
         TestEmpty();
@@ -360,229 +359,11 @@ public class Test1 implements TestSet {
 
 
     public void compareFiles(File outputFile, String fileName) throws Exception {
-
-        String note = "Compare output to " + fileName;
-        File compareFolder = new File(tr.getProperty("source", null), "testoutput");
-        File compareFile = new File(compareFolder, fileName);
-        if (!compareFile.exists()) {
-            tr.markFailed(note, "file to compare to is missing from: " + compareFile.toString());
-            return;
-        }
-
-        FileInputStream fis1 = new FileInputStream(outputFile);
-        FileInputStream fis2 = new FileInputStream(compareFile);
-
-        int b1 = fis1.read();
-        int b2 = fis2.read();
-        int charCount = 1;
-        int lineCount = 1;
-        while (b1 >= 0 && b2 >= 0) {
-            if (b1 != b2) {
-                tr.markFailed(note, "file are different at number " + lineCount + " and character "+charCount);
-                fis1.close();
-                fis2.close();
-                return;
-            }
-            if (b1=='\n') {
-                lineCount++;
-                charCount = 1;
-            }
-            else {
-                charCount++;
-            }
-            b1 = fis1.read();
-            b2 = fis2.read();
-        }
-
-        fis1.close();
-        fis2.close();
-
-        if (b1 >= 0) {
-            tr.markFailed(note, "new file has more characters in it than the old file");
-            return;
-        }
-        if (b2 >= 0) {
-            tr.markFailed(note, "old file has more characters in it than the new file");
-            return;
-        }
-
-        tr.markPassed(note);
+        String testId = "Compare output to " + fileName;
+        compareGeneratedTextFile(testId, fileName);
     }
 
 
-    public boolean compareStringIgnoringCR(String s1, String s2) {
-        int i1 = 0;
-        int i2 = 0;
-        while (i1 < s1.length() && i2 < s2.length()) {
-            char c1 = s1.charAt(i1++);
-            while (c1 == 13 && i1 < s1.length()) {
-                c1 = s1.charAt(i1++);
-            }
-            char c2 = s2.charAt(i2++);
-            while (c2 == 13 && i2 < s2.length()) {
-                c2 = s2.charAt(i2++);
-            }
-            if (c1 != c2) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void testOutput(Mel me, String note, String expectedVal) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        me.writeToOutputStream(baos);
-        String actualVal = baos.toString("UTF-8");
-
-        if (expectedVal.equals(actualVal)) {
-            tr.markPassed(note);
-        }
-        else {
-            tr.markFailed(note, "values do not match");
-            writeLiteralValue("expected", expectedVal);
-            writeLiteralValue("actual", actualVal);
-        }
-    }
-
-    public void testRawXML(Mel me, String note, String expectedVal) throws Exception {
-        String actualVal = me.getRawDOM();
-
-        if (expectedVal.equals(actualVal)) {
-            tr.markPassed(note);
-        }
-        else {
-            tr.markFailed(note, "values do not match");
-            writeLiteralValue("expected", expectedVal);
-            writeLiteralValue("actual", actualVal);
-        }
-    }
-
-    public void testNotNull(Object value, String description) throws Exception {
-        if (value != null) {
-            tr.markPassed("Not Null: " + description);
-        }
-        else {
-            tr.markFailed("Not Null: " + description,
-                    "Test failure, got an unexpected null for the situation: " + description);
-        }
-    }
-
-    public void testNull(Object value, String description) throws Exception {
-        if (value == null) {
-            tr.markPassed("Is Null: " + description);
-        }
-        else {
-            tr.markFailed("Is Null: " + description,
-                    "Test failure, expected a null but did not get one for the situation: "
-                            + description);
-        }
-    }
-
-    public void testVal(String value, String expectedValue, String description) throws Exception {
-        if (value != null && value.equals(expectedValue)) {
-            tr.markPassed("Value: " + description);
-        }
-        else {
-            tr.markFailed("Value: " + description, "Test failure, expected the value '"
-                    + expectedValue + "' but instead got the value '" + value
-                    + "' for the situation: " + description);
-            writeLiteralValue("expected", expectedValue);
-            writeLiteralValue("actual", value);
-        }
-    }
-
-    public void testScalar(Mel me, String eName, String expectedValue, String description)
-            throws Exception {
-        String value = me.getScalar(eName);
-        if (value != null && value.equals(expectedValue)) {
-            tr.markPassed("testScalar (" + eName + "): " + description);
-        }
-        else {
-            tr.markFailed("testScalar (" + eName + "): " + description,
-                    "Test failure, expected the value '" + expectedValue
-                            + "' but instead got the value '" + value + "' for the scaler value '"
-                            + eName + "' for  " + description);
-            writeLiteralValue("expected", expectedValue);
-            writeLiteralValue("actual", value);
-        }
-    }
-
-    public void writeShortLiteralValue(StringBuffer sb, String value) {
-        sb.append("\"");
-        for (int i = 0; i < value.length() && i < 20; i++) {
-            char ch = value.charAt(i);
-            if (ch == '"') {
-                sb.append("\\\"");
-            }
-            else if (ch == '\\') {
-                sb.append("\\\\");
-            }
-            else if (ch == '\n') {
-                sb.append("\\n");
-            }
-            else if (ch == (char) 13) {
-                // do output anything ... ignore these
-            }
-            else if (ch < 32 || ch > 128) {
-                sb.append("\\u");
-                addHex(sb, (ch / 16 / 16 / 16) % 16);
-                addHex(sb, (ch / 16 / 16) % 16);
-                addHex(sb, (ch / 16) % 16);
-                addHex(sb, ch % 16);
-            }
-            else {
-                sb.append(ch);
-            }
-        }
-        sb.append("\"");
-    }
-
-    public void writeLiteralValue(String varname, String value) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("\n");
-        sb.append(varname);
-        sb.append(" = \"");
-        for (int i = 0; i < value.length(); i++) {
-            char ch = value.charAt(i);
-            if (ch == '"') {
-                sb.append("\\\"");
-            }
-            else if (ch == '\\') {
-                sb.append("\\\\");
-            }
-            else if (ch == '\n') {
-                sb.append("\"\n     +\"\\n");
-            }
-            else if (ch == (char) 13) {
-                // strange workaround for literal problem
-                sb.append("\"+(char)13+\"");
-            }
-            else if (ch < 32 || ch > 128) {
-                sb.append("\\u");
-                addHex(sb, (ch / 16 / 16 / 16) % 16);
-                addHex(sb, (ch / 16 / 16) % 16);
-                addHex(sb, (ch / 16) % 16);
-                addHex(sb, ch % 16);
-            }
-            else {
-                sb.append(ch);
-            }
-        }
-        sb.append("\";\n");
-        tr.log(sb.toString());
-    }
-
-    private void addHex(StringBuffer sb, int val) {
-        if (val >= 0 && val < 10) {
-            sb.append((char) (val + '0'));
-        }
-        else if (val >= 0 && val < 16) {
-            sb.append((char) (val + 'A' - 10));
-        }
-        else {
-            sb.append('?');
-        }
-    }
 
     public static InputStream getData1Stream() throws Exception {
         StringBuffer sb = new StringBuffer();

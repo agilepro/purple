@@ -1,0 +1,43 @@
+0: @results.[0].idDefx - No entry in schema corresponding to this.
+1: @results.[0].creationTimex - No entry in schema corresponding to this.
+2: @results.[0].dueDatex - No entry in schema corresponding to this.
+3: @results.[0].descriptionx - No entry in schema corresponding to this.
+4: @results.[0].initiatorx - No entry in schema corresponding to this.
+5: @results.[0].sequencex - No entry in schema corresponding to this.
+6: @results.[0].statex - No entry in schema corresponding to this.
+7: @results.[0].priorityx - No entry in schema corresponding to this.
+8: @results.[0].closedTimex - No entry in schema corresponding to this.
+9: @results.[0].namex - No entry in schema corresponding to this.
+10: @results.[0].parentProcessx - No entry in schema corresponding to this.
+11: @results.[0].ownersx - No entry in schema corresponding to this.
+12: @results.[0].idInstx - No entry in schema corresponding to this.
+13: @results.[0].creationTime required property not found
+14: @results.[0].dueDate required property not found
+15: @results.[0].initiator required property not found
+16: @results.[0].description required property not found
+17: @results.[0].owners required property not found
+18: @results.[0].parentProcess required property not found
+19: @results.[0].priority required property not found
+20: @results.[0].title required property not found
+21: @results.[0].type required property not found
+22: @results.[0].closedTime required property not found
+23: @results.[0].idInst required property not found
+24: @results.[0].sequence required property not found
+25: @results.[0].uda required property not found
+26: @results.[0].name required property not found
+27: @results.[0].state required property not found
+28: @results.[0].idDef required property not found
+29: @results.[1].owners.[0]. - found an object but schema is expecting a string
+30: @results.[1].owners.[1]. - found an object but schema is expecting a string
+31: @results.[1].dueDate required property not found
+32: @results.[1].initiator required property not found
+33: @results.[1].parentProcess required property not found
+34: @results.[1].priority required property not found
+35: @results.[1].title required property not found
+36: @results.[1].type required property not found
+37: @results.[1].idInst required property not found
+38: @results.[1].sequence required property not found
+39: @results.[1].uda required property not found
+40: @results.[1].name required property not found
+41: @results.[1].state required property not found
+42: @results.[1].idDef required property not found

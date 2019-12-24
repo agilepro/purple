@@ -1,0 +1,80 @@
+{
+  "properties": {"results": {
+    "items": {
+      "properties": {
+        "closedTime": {"type": "boolean"},
+        "creationTime": {"type": "integer"},
+        "description": {"type": "string"},
+        "dueDate": {"type": "integer"},
+        "idDef": {"type": "integer"},
+        "idInst": {"type": "integer"},
+        "initiator": {"type": "string"},
+        "name": {"type": "string"},
+        "owners": {
+          "items": {"type": "string"},
+          "type": "array"
+        },
+        "parentProcess": {"type": "boolean"},
+        "priority": {"type": "number"},
+        "sequence": {"type": "integer"},
+        "state": {"type": "integer"},
+        "title": {"type": "string"},
+        "type": {"type": "integer"},
+        "uda": {
+          "properties": {
+            "Customer Type": {"type": "string"},
+            "Product": {"type": "string"},
+            "Region": {"type": "string"},
+            "TimeToStart": {"type": "integer"},
+            "jsonArray": {
+              "items": {"type": "string"},
+              "type": "array"
+            },
+            "jsonRecord": {
+              "properties": {
+                "a": {"type": "integer"},
+                "b": {"type": "integer"}
+              },
+              "required": [
+                "a",
+                "b"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "jsonRecord",
+            "Product",
+            "Region",
+            "TimeToStart",
+            "jsonArray",
+            "Customer Type"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "creationTime",
+        "dueDate",
+        "initiator",
+        "description",
+        "owners",
+        "parentProcess",
+        "priority",
+        "title",
+        "type",
+        "closedTime",
+        "idInst",
+        "sequence",
+        "uda",
+        "name",
+        "state",
+        "idDef"
+      ],
+      "type": "object"
+    },
+    "type": "array"
+  }},
+  "required": ["results"],
+  "type": "object"
+}

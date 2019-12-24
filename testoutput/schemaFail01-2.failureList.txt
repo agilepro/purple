@@ -1,0 +1,33 @@
+0: @results.[0].idInst. - found a boolean but expecting a integer
+1: @results.[0].uda.Product. - found a integer but expecting a string
+2: @results.[0].uda.Region required property not found
+3: @results.[0].creationTime. - found a string but expecting a integer
+4: @results.[0].dueDate. - found a string but expecting a integer
+5: @results.[0].initiator. - found a number but expecting a string
+6: @results.[0].description. - found a integer but expecting a string
+7: @results.[0].owners. - found a integer but expecting a array
+8: @results.[0].idDef. - found a boolean but expecting a integer
+9: @results.[0].ownersBogus - No entry in schema corresponding to this.
+10: @results.[0].closedTime. - found a string but expecting a boolean
+11: @results.[0].parentProcess required property not found
+12: @results.[0].priority required property not found
+13: @results.[0].title required property not found
+14: @results.[0].type required property not found
+15: @results.[0].sequence required property not found
+16: @results.[0].state required property not found
+17: @results.[1].uda.jsonRecord. - found an array, but schema expects it to be: object
+18: @results.[1].uda.Region. - found a boolean but expecting a string
+19: @results.[1].uda.TimeToStart. - found a boolean but expecting a integer
+20: @results.[1].uda.jsonArray. - found an object but schema is expecting a array
+21: @results.[1].owners. - found an object but schema is expecting a array
+22: @results.[1].state. - found a string but expecting a integer
+23: @results.[1].parentProcess. - found a string but expecting a boolean
+24: @results.[1].priority. - found a string but expecting a number
+25: @results.[1].title. - found a integer but expecting a string
+26: @results.[1].type. - found a string but expecting a integer
+27: @results.[1].creationTime required property not found
+28: @results.[1].dueDate required property not found
+29: @results.[1].description required property not found
+30: @results.[1].closedTime required property not found
+31: @results.[1].idInst required property not found
+32: @results.[1].idDef required property not found
