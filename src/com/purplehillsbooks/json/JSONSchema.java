@@ -21,7 +21,7 @@ public class JSONSchema {
      * if this is set false, then success (correct) validation is silent
      * if set to true, then every comparison is announced
      */
-    boolean recordSuccess = false;
+    public boolean recordSuccess = false;
 
     private List<String> errors = new ArrayList<String>();
 

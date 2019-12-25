@@ -1,0 +1,4 @@
+0:   - Found Object
+1:  asd - Found number
+2:  newProp - Found number
+3:  title - Found number

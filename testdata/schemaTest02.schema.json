@@ -1,0 +1,13 @@
+{
+  "additionalProperties": {"type": "string"},
+  "properties": {
+    "author": {"type": "string"},
+    "available": {"type": "boolean"},
+    "title": {"type": "string"},
+    "year": {"type": "integer"}
+  },
+  "required": [
+    "title"
+  ],
+  "type": "object"
+}

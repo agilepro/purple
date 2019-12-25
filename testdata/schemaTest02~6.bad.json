@@ -1,0 +1,7 @@
+{
+    "title": "Title is required",
+    "newProp": "This is allowed",
+    "nonstring": 234234,
+    "nonstring2": true,
+    "nonstring3": 25.25
+}
