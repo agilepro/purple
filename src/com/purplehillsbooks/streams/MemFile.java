@@ -188,6 +188,7 @@ public class MemFile {
             out.write(buf);
         }
         out.write(incomingBytes, 0, incomingPos);
+        out.flush();
     }
 
     /**
@@ -202,6 +203,7 @@ public class MemFile {
             w.write(buf, 0, amt);
             amt = r.read(buf);
         }
+        w.flush();
     }
 
 
