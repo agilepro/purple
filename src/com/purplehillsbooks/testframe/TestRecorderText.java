@@ -409,6 +409,9 @@ public class TestRecorderText implements TestRecorder {
             logWriter.write("\n");
             printArgs();
             logWriter.flush();
+            
+            JSONException.traceException(logWriter, e, "markFatalError");
+            logWriter.flush();
 
             TestResultRecord trr = new TestResultRecord("Fatal Error", "", false, commandLineArgs);
             trr.failureMessage = e.toString();
