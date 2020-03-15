@@ -17,7 +17,6 @@
 package com.purplehillsbooks.testcase;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,6 +51,7 @@ public class Test1 extends TestAbstract implements TestSet {
     public void runTests(TestRecorder newTr) throws Exception {
         super.initForTests(newTr);
 
+        testInvalidCharacters();
         TestUserProfileFile();
         TestEmpty();
         TestReadWrite();
@@ -419,6 +419,46 @@ public class Test1 extends TestAbstract implements TestSet {
         byte[] buf = sbx.getBytes("UTF-8");
         return new ByteArrayInputStream(buf);
     }
+    
+    
+    private void testInvalidCharacters() throws Exception {
+        Mel me = Mel.createEmpty("testroot", Mel.class);
+        Mel firstContainer = me.addChild("charTesting", Mel.class);
+        for (int i=0; i<32; i++) {
+            firstContainer.setScalar("baddata"+i, "ABC"+((char)i)+"DEF");
+            firstContainer.setAttribute("badatt"+i, "ABC"+((char)i)+"DEF");
+            firstContainer.setScalar("badFirstChar"+i, ""+((char)i)+"DEF");
+            firstContainer.setScalar("badLastChar"+i, "ABC"+((char)i));
+            firstContainer.setScalar("badOnlyChar", ""+((char)i));
+        }
+        safeSerialization(me);
+    }
+    
+    /**
+     * Found out that the XML parser bombs out if you put $#2; into the 
+     * source XML file.   However, it writes this out just fine.   This means
+     * data in memory can be written and no able to be read.  We need to assure
+     * that everything written can be read without failure, so it means stripping
+     * out the illegal characters while writing.   Those characters are lost, but
+     * since they are not allowed, we can't allow them to be written.
+     */
+    private void safeSerialization(Mel me) throws Exception {
+        //MemFile mf = new MemFile();
+        //me.writeToOutputStream(mf.getOutputStream());
+        //
+        //Mel.readInputStream(mf.getInputStream(), Mel.class);
+        File randomFile = new File(tr.getProperty("testoutput", null), "badData"+System.currentTimeMillis()+".xml");
+        System.out.println("Writing to "+randomFile);
+        me.writeToFile(randomFile);
+        
+        //all we have to know is whether it fails to read it
+        Mel.readFile(randomFile, Mel.class);
+        
+    }
+
+
+
+    
 
     public static void main(String args[]) {
         Test1 thisTest = new Test1();

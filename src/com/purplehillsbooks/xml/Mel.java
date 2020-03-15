@@ -41,9 +41,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -416,6 +416,7 @@ public class Mel {
             throw new RuntimeException("Program logic error: a null attribute name"
                     + " was passed to setAttribute.");
         }
+        value = Mel.assureValidXMLChars(value);
         if (value == null) {
             fEle.removeAttribute(attrName);
         }
@@ -945,10 +946,48 @@ public class Mel {
         if (textValue == null) {
             return null;
         }
+        
+        //XML serialization will succeed with invalid characters, but produce a file that is then
+        //unreadible.  It is important then to strip all invalid characters out of value.
+        //Invalid characters include anything less than 32 which is not 9, 10, or 13
+        textValue = assureValidXMLChars(textValue);
+
         Element newElem = doc.createElement(name);
         newElem.appendChild(doc.createTextNode(textValue));
         parent.appendChild(newElem);
         return newElem;
+    }
+    
+    public static String assureValidXMLChars(String input) {
+        
+        //first, do a fast scan to see if anything needing to be worried about.
+        boolean foundBad = false;
+        for (int i=0; i<input.length(); i++) {
+            char ch = input.charAt(i);
+            if (ch < 32) {
+                if (ch!=9 && ch!=10 && ch!=13) {
+                    foundBad = true;
+                }
+            }
+        }
+        if (!foundBad) {
+            return input;
+        }
+        
+        //Now we need to make a copy of the string
+        StringBuilder sb = new StringBuilder(input.length());
+        for (int i=0; i<input.length(); i++) {
+            char ch = input.charAt(i);
+            if (ch < 32) {
+                if (ch==9 || ch==10 || ch==13) {
+                    sb.append(ch);
+                }
+            }
+            else {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
     }
 
     private static void removeAllNamedChild(Element parent, String name) {

@@ -247,9 +247,9 @@ public class Test2 implements TestSet {
             sb.append('?');
         }
     }
-
-
-
+    
+    
+    
     public static void main(String args[]) {
         Test2 thisTest = new Test2();
         TestRecorderText.parseArgsRunTests(args, thisTest);
