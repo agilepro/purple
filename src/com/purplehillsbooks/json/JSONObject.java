@@ -694,12 +694,12 @@ public class JSONObject {
      * @throws      JSONException if the key exists but is not a JSONObject.
      */
     public JSONObject requireJSONObject(String key) throws JSONException {
-        Object object = this.get(key);
-        if (null == object) {
+        if (!this.has(key)) {
             JSONObject newVal = new JSONObject();
             this.put(key, newVal);
             return newVal;
         }
+        Object object = this.get(key);
         if (object instanceof JSONObject) {
             return (JSONObject)object;
         }

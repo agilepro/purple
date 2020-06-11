@@ -350,13 +350,14 @@ public class JSONException extends Exception {
      * A standardized way to trace a given exception to the system out.
      */
     public static JSONObject traceException(Writer w, Throwable e, String context) {
-        if (w==null) {
-            System.out.println("$$$$$$$$ traceException requires an w parameter");
+        if (e==null) {
+            System.out.println("$$$$$$$$ traceException requires an e parameter to specify exception");
+            e = new JSONException("Request to trace a null exception - stack trace to show where this happened");
             e.printStackTrace();
             return null;
         }
-        if (e==null) {
-            System.out.println("$$$$$$$$ traceException requires an e parameter");
+        if (w==null) {
+            System.out.println("$$$$$$$$ traceException requires an w parameter");
             e.printStackTrace();
             return null;
         }
