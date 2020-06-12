@@ -66,6 +66,30 @@ public class CSVHelper {
         w.write("\n");
     }
 
+    /**
+     * Write a single row of a CSV table, all values are quoted
+     * using variable parameter syntax so you are not required 
+     * to construct a List<String> object
+     */
+    public static void writeLine(Writer w, String ... values) throws Exception {
+        boolean firstVal = true;
+        for (String val : values) {
+            if (!firstVal) {
+                w.write(",");
+            }
+            w.write("\"");
+            for (int i = 0; i < val.length(); i++) {
+                char ch = val.charAt(i);
+                if (ch == '\"') {
+                    w.write("\""); // extra quote
+                }
+                w.write(ch);
+            }
+            w.write("\"");
+            firstVal = false;
+        }
+        w.write("\n");
+    }
 
     /**
     * returns a row of values as a list
