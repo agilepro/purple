@@ -581,9 +581,20 @@ public class Mel {
 
     /*************** CHILDREN *************************/
 
+    /**
+     * Creates a child element of your own class that extends the Mel class
+     */
     public <T extends Mel> T addChild(String elementName, Class<T> childClass) throws Exception {
         Element ele = createChildElement(fDoc, fEle, elementName);
         return construct(childClass, fDoc, ele);
+    }
+    /**
+     * Creates a child element of the Mel class.
+     * Use this when you don't have a custom Mel class to handle that part of the document.
+     */
+    public Mel addChild(String elementName) throws Exception {
+        Element ele = createChildElement(fDoc, fEle, elementName);
+        return new Mel(fDoc, ele);
     }
 
     public void removeChild(Mel mele) throws Exception {
