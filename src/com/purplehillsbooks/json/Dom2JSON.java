@@ -132,14 +132,16 @@ import org.w3c.dom.NodeList;
  *
  * <p>So Hints is a map from element name to an integer</p>
  *
- *   0 means it is a simple value, just get the string value out
- *   1 means array of simple values, that is, this element defines
- *     a simple value and it should be one of multiple such values
- *   2 means it is an object -- even if no attributes or sub-elements appear
- *     still always treat this as an object
- *   3 means multiple objects -- this should be put in an array and
- *     treated as an object regardless of whether it looks like one
- *
+ * <ul>
+ * <li>  0 (HINT_SIMPLE) means it is a simple value, just get the string value out</li>
+ * <li>  1 (HINT_SIMPLE_ARRAY) means array of simple values, that is, this element defines
+ *         a simple value and it should be one of multiple such values</li>
+ * <li>  2 (HINT_OBJECT) means it is an object -- even if no attributes or sub-elements appear
+ *         still always treat this as an object</li>
+ * <li>  3 (HINT_OBJECT_ARRAY) means multiple objects -- this should be put in an array and
+ *         treated as an object regardless of whether it looks like one</li>
+ * </ul>
+ * 
  * <p>In this example:</p>
  *
  * <pre>
@@ -188,6 +190,11 @@ import org.w3c.dom.NodeList;
  */
 
 public class Dom2JSON {
+    
+    public static final Integer HINT_SIMPLE       = 0;
+    public static final Integer HINT_SIMPLE_ARRAY = 1;
+    public static final Integer HINT_OBJECT       = 2;
+    public static final Integer HINT_OBJECT_ARRAY = 3;
 
     /**
      * Pass in a DOM Document, and you get a JSON object that represents
