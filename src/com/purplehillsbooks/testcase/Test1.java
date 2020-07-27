@@ -64,12 +64,12 @@ public class Test1 extends TestAbstract implements TestSet {
         Enumeration<Mel> userprofile_enum = me.getChildren("userprofile").elements();
 
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
-        hints.put("userprofile", new Integer(3));
-        hints.put("data", new Integer(3));
-        hints.put("idrec", new Integer(3));
-        hints.put("container", new Integer(3));
-        hints.put("attr", new Integer(3));
-        hints.put("contains", new Integer(3));
+        hints.put("userprofile", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("data",        Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("idrec",       Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("container",   Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("attr",        Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("contains",    Dom2JSON.HINT_OBJECT_ARRAY);
 
 
         Mel userprofile = userprofile_enum.nextElement();
@@ -111,7 +111,7 @@ public class Test1 extends TestAbstract implements TestSet {
 
     public void TestEmpty() throws Exception {
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
-        hints.put("book", new Integer(3));
+        hints.put("book",    Dom2JSON.HINT_OBJECT_ARRAY);
         hints.put("library", new Integer(3));
         hints.put("stores", new Integer(1));
         hints.put("reading", new Integer(3));

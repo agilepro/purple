@@ -1,7 +1,9 @@
 package com.purplehillsbooks.json;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -191,11 +193,35 @@ import org.w3c.dom.NodeList;
 
 public class Dom2JSON {
     
-    public static final Integer HINT_SIMPLE       = 0;
-    public static final Integer HINT_SIMPLE_ARRAY = 1;
-    public static final Integer HINT_OBJECT       = 2;
-    public static final Integer HINT_OBJECT_ARRAY = 3;
+/**
+ * HINT_SIMPLE (0) means it is a simple value, just take whatever string is found in the XML, and associate it with the attribute name as a string.
+ * Used in the hint hashtable parameter of convertDomToJSON and convertElementToJSON.
+ */
+    public static final int HINT_SIMPLE       = 0;
 
+    /**
+ * HINT_SIMPLE_ARRAY (1) means this element will appear multiple times in the current context and make an array of simple values, 
+ * that is, and associate this name with an array that is then filled with simple string values
+ * Used in the hint hashtable parameter of convertDomToJSON and convertElementToJSON.
+ */    
+    public static final int HINT_SIMPLE_ARRAY = 1;
+
+/**
+ * HINT_OBJECT (2) means it is an object even if no attributes or sub-elements appear,
+ * still always treat this as an object and return an object whether empty or not.
+ * Used in the hint hashtable parameter of convertDomToJSON and convertElementToJSON.
+ */    
+    public static final int HINT_OBJECT       = 2;
+
+/**
+ * HINT_OBJECT_ARRAY (3) means that this can can appear multiple times in the context, and that each time it is expected to have something complicated in it,
+ * so assocait the name with an array, and put the contents into object in that array.
+ * Used in the hint hashtable parameter of convertDomToJSON and convertElementToJSON.
+ */    
+    public static final int HINT_OBJECT_ARRAY = 3;
+
+    
+    
     /**
      * Pass in a DOM Document, and you get a JSON object that represents
      * the entire contents.
@@ -256,8 +282,14 @@ public class Dom2JSON {
     public static boolean elementIsSimple(Element ele, Integer hintValue) {
         if (hintValue!=null) {
             int val = hintValue.intValue();
-            return (val==0 || val==1);
+            return (val==HINT_SIMPLE || val==HINT_SIMPLE_ARRAY);
         }
+        return inspectWhetherSimple(ele);
+    }
+    
+    private static boolean inspectWhetherSimple(Element ele) {
+        //try to figure it out by inspecting the data.  It is simple
+        //if there are no attributes and no child nodes
         NodeList nl = ele.getChildNodes();
         int last = nl.getLength();
         NamedNodeMap nnm = ele.getAttributes();
@@ -287,6 +319,54 @@ public class Dom2JSON {
         JSONObject jo = new JSONObject();
         NodeList nl = ele.getChildNodes();
         int last = nl.getLength();
+        
+        Set<String> isObject = new HashSet<String>();
+        Set<String> isArray = new HashSet<String>();
+        Set<String> wasSeen = new HashSet<String>();
+        for (int i=0; i<last; i++) {
+            Node node = nl.item(i);
+            short type = node.getNodeType();
+            if (Node.ATTRIBUTE_NODE==type) {
+                String attName = node.getNodeName();
+                if (wasSeen.contains(attName)) {
+                    isArray.add(attName);
+                }
+                wasSeen.add(attName);
+                Integer hintType = hints.get(attName);
+                if (hintType!=null) {
+                    if (hintType >= HINT_OBJECT) {
+                        isObject.add(attName);
+                    }
+                    if (hintType == HINT_SIMPLE_ARRAY || hintType == HINT_OBJECT_ARRAY) {
+                        isArray.add(attName);
+                    }
+                }
+            }
+            else if (Node.ELEMENT_NODE==type) {
+                Element ele2 = (Element)node;
+                String tagName = ele2.getTagName();
+                if (wasSeen.contains(tagName)) {
+                    isArray.add(tagName);
+                }
+                wasSeen.add(tagName);
+                Integer hintType = hints.get(tagName); 
+                if (hintType!=null) {
+                    if (hintType >= HINT_OBJECT) {
+                        isObject.add(tagName);
+                    }
+                    if (hintType == HINT_SIMPLE_ARRAY || hintType == HINT_OBJECT_ARRAY) {
+                        isArray.add(tagName);
+                    }
+                }
+                if (!isObject.contains(tagName)) {
+                    //if nothing above tells us it is an object, look now to see if it has any children
+                    if (!inspectWhetherSimple(ele2)) {
+                        isObject.add(tagName);
+                    }
+                }
+            }
+        }
+        
         Hashtable<String,ArrayList<String>> stringMap = new Hashtable<String,ArrayList<String>>();
         Hashtable<String,ArrayList<JSONObject>> objectMap = new Hashtable<String,ArrayList<JSONObject>>();
         for (int i=0; i<last; i++) {
@@ -295,13 +375,17 @@ public class Dom2JSON {
             if (Node.ATTRIBUTE_NODE==type) {
                 String attName = node.getNodeName();
                 String attValue = node.getNodeValue();
-                jo.put(attName, attValue);
+                ArrayList<String> stringList = stringMap.get(attName);
+                if (stringList==null) {
+                    stringList = new ArrayList<String>();
+                    stringMap.put(attName, stringList);
+                }
+                stringList.add(attValue);
             }
             else if (Node.ELEMENT_NODE==type) {
                 Element ele2 = (Element)node;
                 String tagName = ele2.getTagName();
-                boolean isSimple = elementIsSimple(ele2, hints.get(tagName));
-                if (isSimple) {
+                if (!isObject.contains(tagName)) {
                     ArrayList<String> stringList = stringMap.get(tagName);
                     if (stringList==null) {
                         stringList = new ArrayList<String>();
@@ -319,19 +403,13 @@ public class Dom2JSON {
                 }
             }
             else if (Node.TEXT_NODE!=type && Node.CDATA_SECTION_NODE!=type) {
-                //System.out.println("Found unknown element: "+type+"   Name: "+node.getNodeName());
+                //ignore these
             }
         }
+        
         for (String key : stringMap.keySet()) {
             ArrayList<String> stringList = stringMap.get(key);
-            boolean isArray = stringList.size()>1;
-            Integer hintVal = hints.get(key);
-            if (hintVal!=null) {
-                if (hintVal==1 || hintVal==3) {
-                    isArray=true;
-                }
-            }
-            if (!isArray) {
+            if (stringList.size()==1 && !isArray.contains(key)) {
                 jo.put(key, stringList.get(0));
             }
             else {
@@ -344,14 +422,7 @@ public class Dom2JSON {
         }
         for (String key : objectMap.keySet()) {
             ArrayList<JSONObject> objList = objectMap.get(key);
-            boolean isArray = objList.size()>1;
-            Integer hintVal = hints.get(key);
-            if (hintVal!=null) {
-                if (hintVal==1 || hintVal==3) {
-                    isArray=true;
-                }
-            }
-            if (!isArray) {
+            if (objList.size()==1 && !isArray.contains(key)) {
                 jo.put(key, objList.get(0));
             }
             else {
@@ -362,6 +433,8 @@ public class Dom2JSON {
                 jo.put(key, ja);
             }
         }
+
+        //are attributes separate?  Don't understand why they did not appear in the children above
         NamedNodeMap nnm = ele.getAttributes();
         last = nnm.getLength();
         for (int i=0; i<last; i++) {
@@ -371,11 +444,8 @@ public class Dom2JSON {
                 String attValue = node.getNodeValue();
                 jo.put(attName, attValue);
             }
-            else {
-                //System.out.println("Attribute list contains a non attribute: "+node.getNodeType()+" = "+node.getNodeName());
-            }
         }
-
+        
         return jo;
     }
 
