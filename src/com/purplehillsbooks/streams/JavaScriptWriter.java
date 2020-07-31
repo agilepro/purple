@@ -18,6 +18,7 @@ package com.purplehillsbooks.streams;
 
 import java.io.Writer;
 import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * This class is for encoding values in order to make Java or JavaScript literal
@@ -315,6 +316,26 @@ public class JavaScriptWriter extends Writer {
 				res.append(ch);
 			}
 		}
+	}
+	
+	/**
+	 * THIS IS NOT EFFICIENT.
+	 * If you need the value encoded into a single JavaScript expression with quote on
+	 * either end, then this convenience function will do it without needing to construct
+	 * your own StringWriter.  
+	 * 
+	 * Remember, if possible, always use the stream version and convert while streaming, 
+	 * and don't convert to a string just in order to write it out again a moment later, 
+	 * however sometimes other constraints require you to have a string and pass that 
+	 * to something else, and so this will give you the string.
+	 */
+	public static String encodeToString(String val) throws Exception {
+		StringWriter sw = new StringWriter();
+		sw.write("\"");
+		encode(sw, val);
+		sw.write("\"");
+		sw.flush();
+		return sw.toString();
 	}
 
 }

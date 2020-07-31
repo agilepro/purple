@@ -748,6 +748,15 @@ public class Mel {
         }
         return res;
     }
+    /**
+     * designed primarily for returning date long values works only for positive
+     * integer (long) values considers all numeral, ignores all letter and
+     * punctuation never throws an exception if you give this something that is
+     * not a number, you get surprising result. Zero if no numerals at all.
+     */
+    public static int safeConvertInt(String val) {
+        return (int) safeConvertLong(val);
+    }
 
     public void reformatXML() throws Exception {
         Element root = fDoc.getDocumentElement();
