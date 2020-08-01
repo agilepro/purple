@@ -1,0 +1,7 @@
+{
+  "extra": "This is only in the second object",
+  "weather": {
+    "humidity": "@deleteMe@",
+    "wind": "@deleteMe@"
+  }
+}

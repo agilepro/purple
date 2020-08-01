@@ -1,0 +1,16 @@
+{
+  "overlap": "This is object 2",
+  "people": [
+    {
+      "@delete": "@delete",
+      "id": "6257"
+    },
+    {
+      "age": 66,
+      "id": "5577",
+      "name": "Bjorn Borg"
+    }
+  ],
+  "single1": "@deleteMe@",
+  "single2": "This is object 2"
+}
