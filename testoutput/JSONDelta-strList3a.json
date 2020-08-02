@@ -1,0 +1,12 @@
+{
+  "food": [
+    "butter",
+    "milk",
+    "tea",
+    "muffin",
+    "marmalade"
+  ],
+  "overlap": "This is object 2",
+  "single1": "@deleteMe@",
+  "single2": "This is object 2"
+}

@@ -202,6 +202,67 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         doDelta("JSONDelta-testList4a", ob1, ob2);
         doDelta("JSONDelta-testList4b", ob2, ob1);
         
+        JSONArray stringList1 = new JSONArray();
+        JSONArray stringList2 = new JSONArray();
+        stringList1.put("bread");
+        stringList1.put("milk");
+        stringList1.put("butter");
+        stringList1.put("coffee");
+        stringList2.put("butter");
+        stringList2.put("milk");
+        stringList2.put("tea");
+        stringList2.put("muffin");
+        
+        //set the people objects the same, and the string lists as well
+        ob1.put("people", ar1);
+        ob2.put("people", ar1);
+        ob1.put("food", stringList1);
+        ob2.put("food", stringList1);
+        
+        doDelta("JSONDelta-strList1", ob1, ob2);
+        
+        ob1.put("food", stringList1);
+        ob2.put("food", stringList2);
+        
+        doDelta("JSONDelta-strList2a", ob1, ob2);
+        doDelta("JSONDelta-strList2b", ob2, ob1);
+        
+
+        stringList2.put("marmalade");
+
+        doDelta("JSONDelta-strList3a", ob1, ob2);
+        doDelta("JSONDelta-strList3b", ob2, ob1);
+
+        JSONArray pointList1 = new JSONArray();
+        JSONArray pointList2 = new JSONArray();
+        pointList1.put(pointObject(10,15));
+        pointList1.put(pointObject(20,25));
+        pointList1.put(pointObject(30,35));
+        pointList2.put(pointObject(10,15));
+        pointList2.put(pointObject(120,25));
+        pointList2.put(pointObject(30,35));
+        ob1 = new JSONObject();
+        ob2 = new JSONObject();
+        ob1.put("overlap", "This is object 1");
+        ob2.put("overlap", "This is object 2");
+        ob1.put("points", pointList1);
+        ob2.put("points", pointList1);
+
+        doDelta("JSONDelta-strList4", ob1, ob2);
+
+        ob1.put("points", pointList1);
+        ob2.put("points", pointList2);
+        
+        doDelta("JSONDelta-strList4a", ob1, ob2);
+        doDelta("JSONDelta-strList4b", ob2, ob1);
+        
+    }
+    
+    private JSONObject pointObject(int x, int y) throws Exception {
+        JSONObject point = new JSONObject();
+        point.put("x", x);
+        point.put("y", y);
+        return point;
     }
 
     private void doDiff(String rootFile, JSONObject ob1, JSONObject ob2) throws Exception {
@@ -290,6 +351,7 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         tr.markPassed("JSONDelta test"+compFile);
         inputReader.close();
         outputReader.close();
+        doDeltaLog(compFile, oldObj, newObj, delta);
     }
 
     

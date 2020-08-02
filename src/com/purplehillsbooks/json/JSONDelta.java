@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.purplehillsbooks.json.JSONArray;
-import com.purplehillsbooks.json.JSONObject;
 
 
 /**
@@ -85,8 +83,9 @@ import com.purplehillsbooks.json.JSONObject;
 public class JSONDelta {
 
 	private HashMap<String, String> listObjectKey = new HashMap<String, String>();
-	private String deleteKey = "@delete";
-	private String deleteValue = "";
+	private String objDelKey = "@delete";
+    private String objDelValue = "@delete";
+	private String attDelValue = "";
 	
 
  /**
@@ -97,10 +96,11 @@ public class JSONDelta {
     }
     
     public void setDeletedValueIndicator(String newValue) {
-    	deleteValue = newValue;
+    	attDelValue = newValue;
     }
-    public void setListItemDeleteIndicator(String newValue) {
-    	deleteKey = newValue;
+    public void setObjectDeleteIndicator(String newKey, String newValue) {
+    	objDelKey = newKey;
+    	objDelValue = newValue;
     }
     public void setListKeyMap(HashMap<String, String> newValue) {
     	listObjectKey = newValue;
@@ -118,7 +118,7 @@ public class JSONDelta {
         //first, lets find the items that are deleted, and missing in the new object
         for (String key : oldObj.keySet()) {
         	if (!newObj.has(key)) {
-        		result.put(key, deleteValue);
+        		result.put(key, attDelValue);
         	}
         }
         
@@ -233,7 +233,7 @@ public class JSONDelta {
     	JSONArray newList = (JSONArray)newValue;
     	String keyMember = listObjectKey.get(key);
     	if (keyMember==null) {
-    		keyMember = "id";
+    		keyMember = "id";   //default id key
     	}
     	boolean allAreJSONObjects = true;
     	List<String> allIdValues = new ArrayList<String>();
@@ -256,19 +256,23 @@ public class JSONDelta {
     		Object member = newList.get(i);
     		if (!(member instanceof JSONObject)) {
     			allAreJSONObjects = false;
+    			break;
     		}
-    		else if (!((JSONObject)member).has(keyMember)) {
+    		JSONObject objMem = (JSONObject)member;
+    		if (!objMem.has(keyMember)) {
     			allAreJSONObjects = false;
+    			break;
     		}
-	 		else {
-				String idValue = ((JSONObject)member).getString(keyMember);
-				if (!allIdValues.contains(idValue)) {
-					allIdValues.add(idValue);
-				}
+			String idValue = objMem.getString(keyMember);
+			if (!allIdValues.contains(idValue)) {
+				allIdValues.add(idValue);
 			}
      	}
     	if (!allAreJSONObjects) {
-    		result.put(key, newList);
+    	    //here we have determined that either there are non-objects in the list
+    	    //or those objects don't have an id value, so we can't compare them
+    	    //by id for insertions and deletions.   
+    	    compareExactJSONArray(result, key, oldList, newList);
     		return;
     	}
     	
@@ -280,18 +284,15 @@ public class JSONDelta {
     		JSONObject oldListMember = findKeyedObject(oldList, keyMember, testId);
     		if (oldListMember==null) {
     			//only the new one exists, so add it completely
-            	System.out.println("     only the new one exists, so add it completely");
     			deltaList.put(newListMember);
     		}
     		else if (newListMember==null) {
-            	System.out.println("     only the OLD one exists, so create a deleter");
     			JSONObject destroyerObject = new JSONObject();
     			destroyerObject.put(keyMember, testId);
-    			destroyerObject.put(deleteKey, deleteKey);
+    			destroyerObject.put(objDelKey, objDelValue);
     			deltaList.put(destroyerObject);
     		}
     		else {
-            	System.out.println("     both exists, so create a delta");
     			JSONObject delta = createDelta(oldListMember, newListMember);
     			if (delta.keySet().size()>0) {
 	    			delta.put(keyMember, testId);
@@ -302,10 +303,6 @@ public class JSONDelta {
     	if (deltaList.length()>0) {
     		//only store the list if it is non-empty
     		result.put(key, deltaList);
-    	}
-    	else {
-
-        	System.out.println("     LIST was empty, so eliminated");
     	}
     }
     
@@ -327,6 +324,96 @@ public class JSONDelta {
     	//it was not found so return null
     	return null;
     }
+    
+    /**
+     * Hhere we have determined that either there are non-objects in the list
+     * or those objects don't have an id value, so we can't compare them
+     * by id for insertions and deletions. 
+     * 
+     * So this compares for EXACT equal lists.   If nothing has changed in a 
+     * list then it can be omitted completely.   If there is any difference
+     * then the entire list must be set.
+     * 
+     * As soon as any single difference is found in the list of items, just
+     * set the new as a value and be done with it
+     */
+    private void compareExactJSONArray(JSONObject result, String key, JSONArray oldList, JSONArray newList) throws Exception {
+        if (oldList.length() != newList.length()) {
+            result.put(key, newList);
+            return;
+        }
+        for (int i=0; i<oldList.length(); i++) {
+            Object oldItem = oldList.get(i);
+            Object newItem = newList.get(i);
+            if (oldItem instanceof String) {
+                //most non-object lists will be lists of strings, and we just need to make sure
+                //that every string matches in the same order.  If so, it can be omitted from 
+                //the delta
+                if (!(newItem instanceof String)) {
+                    result.put(key, newList);
+                    return;
+                }
+                if (!((String)oldItem).equals((String)newItem)) {
+                    result.put(key, newList);
+                    return;
+                }
+            }
+            else if (oldItem instanceof JSONObject) {
+                //next most common will be arrays of simple non-id objects
+                //and if they all equal, they can be omitted from delta
+                //making a pretty substantial savings
+                if (!(newItem instanceof JSONObject)) {
+                    result.put(key, newList);
+                    return;
+                }
+                JSONObject delta = createDelta((JSONObject)oldItem,(JSONObject)newItem);
+                //if they are exactly equal, the delta will come back as an empty JSONObject
+                if (delta.keySet().size()>0) {
+                    result.put(key, newList);
+                    return;
+                }
+            }
+            else if (oldItem instanceof Integer) {
+                if (!(newItem instanceof Integer)) {
+                    result.put(key, newList);
+                    return;
+                }
+                if (((Integer)oldItem) != ((Integer)newItem)) {
+                    result.put(key, newList);
+                    return;
+                }
+            }
+            else if (oldItem instanceof Long) {
+                if (!(newItem instanceof Long)) {
+                    result.put(key, newList);
+                    return;
+                }
+                if (((Long)oldItem) != ((Long)newItem)) {
+                    result.put(key, newList);
+                    return;
+                }
+            }
+            else if (oldItem instanceof Double) {
+                if (!(newItem instanceof Double)) {
+                    result.put(key, newList);
+                    return;
+                }
+                if (((Double)oldItem) != ((Double)newItem)) {
+                    result.put(key, newList);
+                    return;
+                }
+            }
+            else {
+                //any more exotic types?   Arrays of arrays just get included,
+                //other more exotic types as well.
+                result.put(key, newList);
+                return;
+            }
+        }
+        //if you make it here, then every element of the array matched (or the array is empty)
+        //no need to include it in the delta if everything matched.
+    }
+    
         
  /**
  *
