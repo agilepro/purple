@@ -741,6 +741,7 @@ public class Mel {
         if (val == null) {
             return 0;
         }
+        boolean isNegative = false;
         long res = 0;
         int last = val.length();
         for (int i = 0; i < last; i++) {
@@ -748,6 +749,12 @@ public class Mel {
             if (ch >= '0' && ch <= '9') {
                 res = res * 10 + ch - '0';
             }
+            else if (ch=='-') {
+            	isNegative = true;
+            }
+        }
+        if (isNegative) {
+        	return 0 - res;
         }
         return res;
     }

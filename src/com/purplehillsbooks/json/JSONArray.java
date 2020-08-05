@@ -322,7 +322,26 @@ public class JSONArray {
             "] is not a JSONObject.");
     }
 
+    /**
+     * Returns the entire JSONArray as a list of JSONObjects.
+     * This makes it much easier to iterate a JSONArray, that is if all
+     * the elements are expected to be JSONObjects.
+     * 
+     * Elements of the array that are not JSONObjects are ignored, so 
+     * if there are no JSONObjects in the array, you will get an empty set back
+     */
+    public List<JSONObject> getJSONObjectSet() throws Exception {
+    	List<JSONObject> ret = new ArrayList<JSONObject>();
+    	for (int i=0; i<this.length(); i++) {
+    		Object object = this.get(i);
+            if (object instanceof JSONObject) {
+                ret.add((JSONObject)object);
+            }
+    	}
+    	return ret;
+    }
 
+    	 
     /**
      * Get the long value associated with an index.
      *

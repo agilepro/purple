@@ -1,0 +1,168 @@
+{"pd": {
+  "nodes": [
+    {
+      "arrowsOut": [{
+        "id": "4501",
+        "simProbability": "$deleteme$"
+      }],
+      "futureWorkItems": "$deleteme$",
+      "id": "4476",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "arrowsOut": [{
+        "id": "4502",
+        "isDefault": "$deleteme$",
+        "simProbability": "$deleteme$"
+      }],
+      "id": "4477",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "arrowsOut": [{
+        "id": "4503",
+        "simProbability": "$deleteme$"
+      }],
+      "customNode": "$deleteme$",
+      "futureWorkItems": "$deleteme$",
+      "id": "4478",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4479"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4480",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4481"
+    },
+    {
+      "@delete": "@delete",
+      "id": "4482"
+    },
+    {
+      "childPlan": "$deleteme$",
+      "dataMapping": "$deleteme$",
+      "id": "4484"
+    },
+    {
+      "childPlan": "$deleteme$",
+      "dataMapping": "$deleteme$",
+      "id": "4485"
+    },
+    {
+      "arrowsOut": [{
+        "id": "4511",
+        "points": [
+          {
+            "x": 703,
+            "y": 479
+          },
+          {
+            "x": 786,
+            "y": 155
+          }
+        ]
+      }],
+      "childURI": "$deleteme$",
+      "id": "4486",
+      "name": "Remote Sub-Process8 - CHANGED ARROW POINTS"
+    },
+    {
+      "arrowsOut": [{
+        "condition": "$deleteme$",
+        "id": "4512",
+        "isDefault": "$deleteme$",
+        "simProbability": "$deleteme$"
+      }],
+      "id": "4487"
+    },
+    {
+      "arrowsOut": [{
+        "condition": "$deleteme$",
+        "id": "4513",
+        "isDefault": "$deleteme$",
+        "simProbability": "$deleteme$"
+      }],
+      "customNode": "$deleteme$",
+      "id": "4488"
+    },
+    {
+      "arrowsOut": [{
+        "condition": "$deleteme$",
+        "id": "4514",
+        "isDefault": "$deleteme$",
+        "simProbability": "$deleteme$"
+      }],
+      "customNode": "$deleteme$",
+      "id": "4489"
+    },
+    {
+      "id": "4492",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "id": "4493",
+      "recallDisabled": "$deleteme$"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4494"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4495"
+    },
+    {
+      "customNode": "$deleteme$",
+      "id": "4496"
+    },
+    {
+      "arrowsIn": ["4482"],
+      "arrowsOut": [{
+        "id": "4507",
+        "name": "Arrow4",
+        "points": [
+          {
+            "x": 435,
+            "y": 287
+          },
+          {
+            "x": 435,
+            "y": 244
+          },
+          {
+            "x": 467,
+            "y": 244
+          },
+          {
+            "x": 467,
+            "y": 201
+          }
+        ],
+        "sourceNode": "4482",
+        "targetNode": "4483"
+      }],
+      "desc": "ddddd Script Task23",
+      "expandGroups": true,
+      "id": "6666",
+      "name": "Script Task23 - NEW OBJECT replaces 4482",
+      "priority": 0,
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 384,
+        "y": 287
+      }
+    }
+  ],
+  "sameSubPlanVersion": "$deleteme$"
+}}

@@ -1,0 +1,1103 @@
+{"pd": {
+  "dataItemRefs": [
+    {
+      "identifier": "__condition",
+      "name": "__condition",
+      "type": "STRING"
+    },
+    {
+      "identifier": "Variable1",
+      "name": "Variable1",
+      "type": "STRING",
+      "workListUDA": true
+    },
+    {
+      "identifier": "Variable2",
+      "name": "Variable2",
+      "type": "STRING",
+      "workListUDA": true
+    },
+    {
+      "identifier": "Variable3",
+      "initValue": "0",
+      "name": "Variable3",
+      "type": "INTEGER"
+    },
+    {
+      "identifier": "Variable4",
+      "initValue": "0",
+      "name": "Variable4",
+      "type": "INTEGER"
+    },
+    {
+      "identifier": "Variable5",
+      "name": "Variable5",
+      "type": "STRING"
+    },
+    {
+      "identifier": "Variable6",
+      "name": "Variable6",
+      "type": "STRING"
+    },
+    {
+      "identifier": "__usedWithLists",
+      "initValue": "Variable1,Variable2",
+      "name": "__usedWithLists",
+      "type": "STRING"
+    }
+  ],
+  "id": "4411",
+  "name": "AllNodeTypes",
+  "nodes": [
+    {
+      "arrowsOut": [{
+        "id": "4500",
+        "name": "Arrow1",
+        "points": [
+          {
+            "x": 116,
+            "y": 83
+          },
+          {
+            "x": 168,
+            "y": 83
+          },
+          {
+            "x": 168,
+            "y": 118
+          },
+          {
+            "x": 222,
+            "y": 118
+          },
+          {
+            "x": 222,
+            "y": 109
+          }
+        ],
+        "sourceNode": "4475",
+        "targetNode": "4476"
+      }],
+      "expandGroups": true,
+      "id": "4475",
+      "name": "Start",
+      "priority": 0,
+      "size": {
+        "height": 60,
+        "width": 60
+      },
+      "type": 0,
+      "upperLeft": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "arrowsIn": ["4476"],
+      "arrowsOut": [{
+        "id": "4501",
+        "name": "Arrow2",
+        "points": [
+          {
+            "x": 273,
+            "y": 143
+          },
+          {
+            "x": 273,
+            "y": 170
+          },
+          {
+            "x": 298,
+            "y": 170
+          },
+          {
+            "x": 298,
+            "y": 197
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4476",
+        "targetNode": "4477"
+      }],
+      "expandGroups": true,
+      "futureWorkItems": false,
+      "id": "4476",
+      "name": "User Task1",
+      "priority": 1,
+      "recallDisabled": false,
+      "role": "Role",
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 222,
+        "y": 75
+      }
+    },
+    {
+      "arrowsIn": ["4477"],
+      "arrowsOut": [{
+        "id": "4502",
+        "isDefault": true,
+        "name": "Arrow3",
+        "points": [
+          {
+            "x": 298,
+            "y": 265
+          },
+          {
+            "x": 298,
+            "y": 282
+          },
+          {
+            "x": 96,
+            "y": 282
+          },
+          {
+            "x": 96,
+            "y": 302
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4477",
+        "targetNode": "4478",
+        "voteThreshold": 0,
+        "voteType": "Majority"
+      }],
+      "expandGroups": true,
+      "id": "4477",
+      "name": "Voting User Task2",
+      "priority": 1,
+      "recallDisabled": false,
+      "role": "Role",
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 10,
+      "upperLeft": {
+        "x": 247,
+        "y": 197
+      }
+    },
+    {
+      "arrowsIn": ["4478"],
+      "arrowsOut": [{
+        "id": "4503",
+        "name": "Arrow20",
+        "points": [
+          {
+            "x": 96.1,
+            "y": 370.1
+          },
+          {
+            "x": 96,
+            "y": 380
+          },
+          {
+            "x": 86,
+            "y": 380
+          },
+          {
+            "x": 86,
+            "y": 404
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4478",
+        "targetNode": "4479"
+      }],
+      "customNode": "UIServiceTask",
+      "desc": "ddddd Service Task3",
+      "expandGroups": true,
+      "futureWorkItems": false,
+      "id": "4478",
+      "name": "Service Task3",
+      "priority": 1,
+      "recallDisabled": false,
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 68.1,
+        "width": 102.1
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 45.1,
+        "y": 302.1
+      }
+    },
+    {
+      "arrowsIn": ["4479"],
+      "arrowsOut": [{
+        "id": "4504",
+        "name": "Arrow21",
+        "points": [
+          {
+            "x": 137,
+            "y": 438
+          },
+          {
+            "x": 176,
+            "y": 438
+          },
+          {
+            "x": 176,
+            "y": 440
+          },
+          {
+            "x": 217,
+            "y": 440
+          }
+        ],
+        "sourceNode": "4479",
+        "targetNode": "4480"
+      }],
+      "customNode": "UISendTask",
+      "expandGroups": true,
+      "id": "4479",
+      "name": "Send Task20",
+      "priority": 0,
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 35,
+        "y": 404
+      }
+    },
+    {
+      "arrowsIn": ["4480"],
+      "arrowsOut": [{
+        "id": "4505",
+        "name": "Arrow22",
+        "points": [
+          {
+            "x": 319,
+            "y": 440
+          },
+          {
+            "x": 364,
+            "y": 440
+          },
+          {
+            "x": 364,
+            "y": 460
+          },
+          {
+            "x": 409,
+            "y": 460
+          }
+        ],
+        "sourceNode": "4480",
+        "targetNode": "4481"
+      }],
+      "customNode": "UIReceiveTask",
+      "expandGroups": true,
+      "id": "4480",
+      "name": "Receive Task21",
+      "priority": 0,
+      "recallDisabled": false,
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 12,
+      "upperLeft": {
+        "x": 217,
+        "y": 406
+      }
+    },
+    {
+      "arrowsIn": ["4481"],
+      "arrowsOut": [{
+        "id": "4506",
+        "name": "Arrow23",
+        "points": [
+          {
+            "x": 460,
+            "y": 426
+          },
+          {
+            "x": 460,
+            "y": 390
+          },
+          {
+            "x": 418,
+            "y": 390
+          },
+          {
+            "x": 418,
+            "y": 355
+          }
+        ],
+        "sourceNode": "4481",
+        "targetNode": "4482"
+      }],
+      "customNode": "UIBusinessRuleTask",
+      "desc": "ddddd Business Rule Task22",
+      "expandGroups": true,
+      "id": "4481",
+      "name": "Business Rule Task22",
+      "priority": 0,
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 409,
+        "y": 426
+      }
+    },
+    {
+      "arrowsIn": ["4482"],
+      "arrowsOut": [{
+        "id": "4507",
+        "name": "Arrow4",
+        "points": [
+          {
+            "x": 435,
+            "y": 287
+          },
+          {
+            "x": 435,
+            "y": 244
+          },
+          {
+            "x": 467,
+            "y": 244
+          },
+          {
+            "x": 467,
+            "y": 201
+          }
+        ],
+        "sourceNode": "4482",
+        "targetNode": "4483"
+      }],
+      "customNode": "UIScriptTask",
+      "desc": "ddddd Script Task23",
+      "expandGroups": true,
+      "id": "4482",
+      "name": "Script Task23",
+      "priority": 0,
+      "size": {
+        "height": 68,
+        "width": 102
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 384,
+        "y": 287
+      }
+    },
+    {
+      "arrowsIn": ["4483"],
+      "arrowsOut": [{
+        "id": "4508",
+        "name": "Arrow6",
+        "points": [
+          {
+            "x": 567,
+            "y": 201
+          },
+          {
+            "x": 567,
+            "y": 226
+          },
+          {
+            "x": 577,
+            "y": 226
+          },
+          {
+            "x": 577,
+            "y": 253
+          }
+        ],
+        "sourceNode": "4483",
+        "targetNode": "4484"
+      }],
+      "expandGroups": true,
+      "id": "4483",
+      "name": "Embedded Sub-Process4",
+      "priority": 1,
+      "role": "Role",
+      "size": {
+        "height": 180,
+        "width": 300
+      },
+      "type": 13,
+      "upperLeft": {
+        "x": 417,
+        "y": 21
+      }
+    },
+    {
+      "arrowsIn": ["4484"],
+      "arrowsOut": [{
+        "id": "4509",
+        "name": "Arrow7",
+        "points": [
+          {
+            "x": 577,
+            "y": 303
+          },
+          {
+            "x": 577,
+            "y": 330
+          },
+          {
+            "x": 614,
+            "y": 330
+          },
+          {
+            "x": 614,
+            "y": 358
+          }
+        ],
+        "sourceNode": "4484",
+        "targetNode": "4485"
+      }],
+      "childPlan": "Faire le suivi des dossiers mis en interruption",
+      "dataMapping": [
+        {
+          "childUDA": "NbJrsAvantSuivi",
+          "direction": "INOUT",
+          "parentUDA": "Variable4"
+        },
+        {
+          "childUDA": "NoDossierSPIC",
+          "direction": "INOUT",
+          "parentUDA": "Variable2"
+        },
+        {
+          "childUDA": "ProcessusType",
+          "direction": "INOUT",
+          "parentUDA": "Variable6"
+        },
+        {
+          "childUDA": "GroupeTravail",
+          "direction": "INOUT",
+          "parentUDA": "Variable1"
+        }
+      ],
+      "desc": "ddddd Call Activity6",
+      "expandGroups": true,
+      "id": "4484",
+      "name": "Call Activity6",
+      "priority": 0,
+      "size": {
+        "height": 50,
+        "width": 80
+      },
+      "type": 7,
+      "upperLeft": {
+        "x": 537,
+        "y": 253
+      }
+    },
+    {
+      "arrowsIn": ["4485"],
+      "arrowsOut": [{
+        "id": "4510",
+        "name": "Arrow8",
+        "points": [
+          {
+            "x": 627,
+            "y": 408
+          },
+          {
+            "x": 627,
+            "y": 430
+          },
+          {
+            "x": 649,
+            "y": 430
+          },
+          {
+            "x": 649,
+            "y": 454
+          }
+        ],
+        "sourceNode": "4485",
+        "targetNode": "4486"
+      }],
+      "childPlan": "Faire le suivi des dossiers mis en interruption",
+      "dataMapping": [
+        {
+          "childUDA": "NbJrsAvantSuivi",
+          "direction": "IN",
+          "parentUDA": "Variable3"
+        },
+        {
+          "childUDA": "NoUsagerSPIC",
+          "direction": "IN",
+          "parentUDA": "Variable2"
+        },
+        {
+          "childUDA": "NoUsager",
+          "direction": "IN",
+          "parentUDA": "Variable5"
+        }
+      ],
+      "desc": "ddddd Chained-Process7",
+      "expandGroups": true,
+      "id": "4485",
+      "name": "Chained-Process7",
+      "priority": 0,
+      "size": {
+        "height": 50,
+        "width": 80
+      },
+      "type": 9,
+      "upperLeft": {
+        "x": 574,
+        "y": 358
+      }
+    },
+    {
+      "arrowsIn": ["4486"],
+      "arrowsOut": [{
+        "id": "4511",
+        "name": "Arrow9",
+        "points": [
+          {
+            "x": 703,
+            "y": 479
+          },
+          {
+            "x": 786,
+            "y": 479
+          },
+          {
+            "x": 786,
+            "y": 155
+          }
+        ],
+        "sourceNode": "4486",
+        "targetNode": "4487"
+      }],
+      "childURI": "swap:http://adfasdf/",
+      "desc": "ddddd Remote Sub-Process8",
+      "expandGroups": true,
+      "id": "4486",
+      "name": "Remote Sub-Process8",
+      "priority": 0,
+      "size": {
+        "height": 50,
+        "width": 80
+      },
+      "type": 11,
+      "upperLeft": {
+        "x": 623,
+        "y": 454
+      }
+    },
+    {
+      "arrowsIn": ["4487"],
+      "arrowsOut": [{
+        "condition": "== 0",
+        "id": "4512",
+        "isDefault": true,
+        "name": "Arrow10",
+        "points": [
+          {
+            "x": 804,
+            "y": 137
+          },
+          {
+            "x": 875,
+            "y": 137
+          },
+          {
+            "x": 875,
+            "y": 191
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4487",
+        "targetNode": "4488"
+      }],
+      "expandGroups": true,
+      "id": "4487",
+      "name": "Simple Exclusive9",
+      "priority": 0,
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 5,
+      "upperLeft": {
+        "x": 768,
+        "y": 119
+      }
+    },
+    {
+      "arrowsIn": ["4488"],
+      "arrowsOut": [{
+        "condition": "__condition == 0",
+        "id": "4513",
+        "isDefault": true,
+        "name": "Arrow11",
+        "points": [
+          {
+            "x": 875,
+            "y": 227
+          },
+          {
+            "x": 875,
+            "y": 262
+          },
+          {
+            "x": 881,
+            "y": 262
+          },
+          {
+            "x": 881,
+            "y": 299
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4488",
+        "targetNode": "4489"
+      }],
+      "customNode": "UIComplexCondition",
+      "expandGroups": true,
+      "id": "4488",
+      "name": "Flexible Exclusive10",
+      "priority": 0,
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 5,
+      "upperLeft": {
+        "x": 857,
+        "y": 191
+      }
+    },
+    {
+      "arrowsIn": ["4489"],
+      "arrowsOut": [{
+        "condition": "__condition == 12",
+        "id": "4514",
+        "isDefault": true,
+        "name": "Arrow12",
+        "points": [
+          {
+            "x": 881,
+            "y": 335
+          },
+          {
+            "x": 881,
+            "y": 362
+          },
+          {
+            "x": 896,
+            "y": 362
+          },
+          {
+            "x": 896,
+            "y": 389
+          }
+        ],
+        "simProbability": "100.0",
+        "sourceNode": "4489",
+        "targetNode": "4490"
+      }],
+      "customNode": "UIInclusiveORCondition",
+      "expandGroups": true,
+      "id": "4489",
+      "name": "Inclusive OR11",
+      "priority": 0,
+      "simulation": {"duration": 3600000},
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 15,
+      "upperLeft": {
+        "x": 863,
+        "y": 299
+      }
+    },
+    {
+      "arrowsIn": ["4490"],
+      "arrowsOut": [{
+        "id": "4515",
+        "name": "Arrow13",
+        "points": [
+          {
+            "x": 896,
+            "y": 425
+          },
+          {
+            "x": 896,
+            "y": 450
+          },
+          {
+            "x": 902,
+            "y": 450
+          },
+          {
+            "x": 902,
+            "y": 476
+          }
+        ],
+        "sourceNode": "4490",
+        "targetNode": "4491"
+      }],
+      "desc": "ddddd Parallel Split12",
+      "expandGroups": true,
+      "id": "4490",
+      "name": "Parallel Split12",
+      "priority": 0,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 878,
+        "y": 389
+      }
+    },
+    {
+      "arrowsIn": ["4491"],
+      "arrowsOut": [{
+        "id": "4516",
+        "name": "Arrow14",
+        "points": [
+          {
+            "x": 920,
+            "y": 494
+          },
+          {
+            "x": 968,
+            "y": 494
+          },
+          {
+            "x": 968,
+            "y": 145
+          },
+          {
+            "x": 1019,
+            "y": 145
+          }
+        ],
+        "sourceNode": "4491",
+        "targetNode": "4492"
+      }],
+      "desc": "ddddd Parallel Join13",
+      "expandGroups": true,
+      "id": "4491",
+      "name": "Parallel Join13",
+      "priority": 0,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 4,
+      "upperLeft": {
+        "x": 884,
+        "y": 476
+      }
+    },
+    {
+      "arrowsIn": ["4492"],
+      "arrowsOut": [{
+        "id": "4517",
+        "name": "Arrow15",
+        "points": [
+          {
+            "x": 1045,
+            "y": 145
+          },
+          {
+            "x": 1094,
+            "y": 145
+          },
+          {
+            "x": 1094,
+            "y": 212
+          }
+        ],
+        "sourceNode": "4492",
+        "targetNode": "4493"
+      }],
+      "desc": "ddddd Timer14",
+      "expandGroups": true,
+      "id": "4492",
+      "name": "Timer14",
+      "priority": 0,
+      "recallDisabled": false,
+      "size": {
+        "height": 26,
+        "width": 26
+      },
+      "type": 8,
+      "upperLeft": {
+        "x": 1019,
+        "y": 132
+      }
+    },
+    {
+      "arrowsIn": ["4493"],
+      "arrowsOut": [{
+        "id": "4518",
+        "name": "Arrow16",
+        "points": [
+          {
+            "x": 1112,
+            "y": 230
+          },
+          {
+            "x": 1166,
+            "y": 230
+          },
+          {
+            "x": 1166,
+            "y": 176
+          },
+          {
+            "x": 1222,
+            "y": 176
+          }
+        ],
+        "sourceNode": "4493",
+        "targetNode": "4494"
+      }],
+      "desc": "ddddd Message Receive15",
+      "expandGroups": true,
+      "id": "4493",
+      "name": "Message Receive15",
+      "priority": 0,
+      "recallDisabled": false,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 12,
+      "upperLeft": {
+        "x": 1076,
+        "y": 212
+      }
+    },
+    {
+      "arrowsIn": ["4494"],
+      "arrowsOut": [{
+        "id": "4519",
+        "name": "Arrow17",
+        "points": [
+          {
+            "x": 1240,
+            "y": 194
+          },
+          {
+            "x": 1240,
+            "y": 282
+          }
+        ],
+        "sourceNode": "4494",
+        "targetNode": "4495"
+      }],
+      "customNode": "UICustomEmail",
+      "desc": "ddddd Email17",
+      "expandGroups": true,
+      "id": "4494",
+      "name": "Email17",
+      "priority": 0,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 1222,
+        "y": 158
+      }
+    },
+    {
+      "arrowsIn": ["4495"],
+      "arrowsOut": [{
+        "id": "4520",
+        "name": "Arrow18",
+        "points": [
+          {
+            "x": 1240,
+            "y": 318
+          },
+          {
+            "x": 1240,
+            "y": 328
+          },
+          {
+            "x": 1268,
+            "y": 328
+          },
+          {
+            "x": 1268,
+            "y": 384
+          }
+        ],
+        "sourceNode": "4495",
+        "targetNode": "4496"
+      }],
+      "customNode": "UICustomDB",
+      "desc": "ddddd DB18",
+      "expandGroups": true,
+      "id": "4495",
+      "name": "DB18",
+      "priority": 0,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 1222,
+        "y": 282
+      }
+    },
+    {
+      "arrowsIn": ["4496"],
+      "arrowsOut": [{
+        "id": "4521",
+        "name": "Arrow19",
+        "points": [
+          {
+            "x": 1268,
+            "y": 420
+          },
+          {
+            "x": 1268,
+            "y": 471
+          },
+          {
+            "x": 1127,
+            "y": 471
+          }
+        ],
+        "sourceNode": "4496",
+        "targetNode": "4497"
+      }],
+      "customNode": "UICustomWebService",
+      "desc": "ddddd Web Service19",
+      "expandGroups": true,
+      "id": "4496",
+      "name": "Web Service19",
+      "priority": 0,
+      "size": {
+        "height": 36,
+        "width": 36
+      },
+      "type": 6,
+      "upperLeft": {
+        "x": 1250,
+        "y": 384
+      }
+    },
+    {
+      "arrowsIn": ["4497"],
+      "desc": "ddddd End16",
+      "expandGroups": true,
+      "id": "4497",
+      "name": "End16",
+      "priority": 0,
+      "size": {
+        "height": 66,
+        "width": 66
+      },
+      "type": 1,
+      "upperLeft": {
+        "x": 1061,
+        "y": 438
+      }
+    },
+    {
+      "expandGroups": true,
+      "id": "IntermediateEvent1",
+      "name": "User Task1_Arrow2",
+      "priority": 0,
+      "size": {
+        "height": 18,
+        "width": 18
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 264,
+        "y": 134
+      }
+    },
+    {
+      "expandGroups": true,
+      "id": "IntermediateEvent2",
+      "name": "Voting User Task2_Arrow3",
+      "priority": 0,
+      "size": {
+        "height": 18,
+        "width": 18
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 289,
+        "y": 256
+      }
+    },
+    {
+      "expandGroups": true,
+      "id": "IntermediateEvent3",
+      "name": "Service Task3_Arrow20",
+      "priority": 0,
+      "size": {
+        "height": 18,
+        "width": 18
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 87,
+        "y": 361
+      }
+    },
+    {
+      "expandGroups": true,
+      "id": "IntermediateEvent4",
+      "name": "Embedded Sub-Process4_Arrow6",
+      "priority": 0,
+      "size": {
+        "height": 18,
+        "width": 18
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 558,
+        "y": 192
+      }
+    },
+    {
+      "expandGroups": true,
+      "id": "IntermediateEvent5",
+      "name": "Remote Sub-Process8_Arrow9",
+      "priority": 0,
+      "size": {
+        "height": 18,
+        "width": 18
+      },
+      "type": 2,
+      "upperLeft": {
+        "x": 694,
+        "y": 470
+      }
+    }
+  ],
+  "priority": 8,
+  "sameSubPlanVersion": false
+}}

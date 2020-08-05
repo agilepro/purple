@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 
 import com.purplehillsbooks.json.JSONArray;
@@ -41,6 +42,7 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         jdLtd  = new JSONDiff(false);
         diffCases();
         deltaCases();
+        deltaFileCases();
     }
 
 
@@ -84,6 +86,13 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
 
     }
 
+    private void deltaFileCases() throws Exception {
+    	
+        deltaJSONFiles("AllNodeTypes");
+        
+    }
+
+        
     private void deltaCases() throws Exception {
         JSONObject ob1 = new JSONObject();
         JSONObject ob2 = new JSONObject();
@@ -255,7 +264,45 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         
         doDelta("JSONDelta-strList4a", ob1, ob2);
         doDelta("JSONDelta-strList4b", ob2, ob1);
+    }
+    
+    
+    private void deltaJSONFiles(String baseName) throws Exception {
+        File inputFileA = new File(sourceDataFolder, baseName + "A.json");
+        File inputFileB = new File(sourceDataFolder, baseName + "B.json");
+        File inputFileHints = new File(sourceDataFolder, baseName + "HINTS.csv");
+        File inputFileDelta = new File(sourceDataFolder, baseName + "DELTA.json");
         
+        File outputDelta = new File(testOutputFolder, baseName + "DELTA.json");
+        
+        JSONObject objA = JSONObject.readFromFile(inputFileA);
+        JSONObject objB = JSONObject.readFromFile(inputFileB);
+        HashMap<String, String> hints = readHints(inputFileHints);
+
+        JSONDelta fileDelta = new JSONDelta();
+        fileDelta.setListKeyMap(hints);
+        fileDelta.setDeletedValueIndicator("$deleteme$");
+        JSONObject objDelta = fileDelta.createDelta(objA, objB);
+        objDelta.writeToFile(outputDelta);
+        
+        compareFiles(inputFileDelta, outputDelta, "JSONDelta file test "+baseName);
+        
+    }
+    
+    private HashMap<String, String> readHints(File hintFile) throws Exception {
+        FileInputStream fis = new FileInputStream(hintFile);
+        InputStreamReader r = new InputStreamReader(fis, "UTF-8");
+        HashMap<String, String> res = new HashMap<String, String>();
+        
+        List<String> line = CSVHelper.parseLine(r);
+        while (line!=null) {
+	        if (line.size()==2) {
+	        	res.put(line.get(0), line.get(1));
+	        }
+	        line = CSVHelper.parseLine(r);
+        }
+        r.close();
+        return res;
     }
     
     private JSONObject pointObject(int x, int y) throws Exception {
@@ -329,10 +376,24 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
             doDeltaLog(compFile, oldObj, newObj, delta);
             return;
         }
+        
+        compareFiles(inputFile, outputFile, "JSONDelta test"+compFile);
+        doDeltaLog(compFile, oldObj, newObj, delta);
     	
-        FileInputStream fis1 = new FileInputStream(inputFile);
+    }
+    
+    private boolean compareFiles(File file1, File file2, String testDesc) throws Exception  {
+    	if (!file1.exists()) {
+    		tr.markFailed(testDesc, "first file does not exist: "+file1);
+            return false;
+    	}
+    	if (!file2.exists()) {
+    		tr.markFailed(testDesc, "Second file does not exist: "+file2);
+            return false;
+    	}
+        FileInputStream fis1 = new FileInputStream(file1);
         InputStreamReader inputReader = new InputStreamReader(fis1, "UTF-8");
-        FileInputStream fis2 = new FileInputStream(outputFile);
+        FileInputStream fis2 = new FileInputStream(file2);
         InputStreamReader outputReader = new InputStreamReader(fis2, "UTF-8");
         int ch = inputReader.read();
         int charPos = 0;
@@ -342,16 +403,15 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
             if (ch!=ch2) {
             	inputReader.close();
             	outputReader.close();
-                tr.markFailed("JSONDelta test"+compFile, "comparison failed on character "+charPos);
-                doDeltaLog(compFile, oldObj, newObj, delta);
-                return;
+                tr.markFailed(testDesc, "comparison failed on character "+charPos);
+                return false;
             }
             ch = inputReader.read();
         }
-        tr.markPassed("JSONDelta test"+compFile);
+        tr.markPassed(testDesc);
         inputReader.close();
         outputReader.close();
-        doDeltaLog(compFile, oldObj, newObj, delta);
+        return true;
     }
 
     

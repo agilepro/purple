@@ -161,8 +161,11 @@ public class JSONDelta {
     private void compareInteger(JSONObject result, String key, Object oldValue, Object newValue) throws Exception {
     	if (!(oldValue instanceof Integer)) {
     		result.put(key, newValue);
+    		return;
     	}
-    	else if ((Integer)oldValue != (Integer)newValue) {
+    	int oldInt = (Integer)oldValue;
+    	int newInt = (Integer)newValue;
+    	if (oldInt != newInt) {
     		//they are different, so include the value in result
     		result.put(key, newValue);
     	}
@@ -181,8 +184,11 @@ public class JSONDelta {
     private void compareDouble(JSONObject result, String key, Object oldValue, Object newValue) throws Exception {
     	if (!(oldValue instanceof Double)) {
     		result.put(key, newValue);
+    		return;
     	}
-    	else if ((Double)oldValue != (Double)newValue) {
+    	double oldNum = (Double)oldValue;
+    	double newNum = (Double)newValue;
+    	if (oldNum != newNum) {
     		//they are different, so include the value in result
     		result.put(key, newValue);
     	}
@@ -191,8 +197,11 @@ public class JSONDelta {
     private void compareLong(JSONObject result, String key, Object oldValue, Object newValue) throws Exception {
     	if (!(oldValue instanceof Long)) {
     		result.put(key, newValue);
+    		return;
     	}
-    	else if ((Long)oldValue != (Long)newValue) {
+    	long oldNum = (Long)oldValue;
+    	long newNum = (Long)newValue;
+    	if (oldNum != newNum) {
     		//they are different, so include the value in result
     		result.put(key, newValue);
     	}
@@ -200,8 +209,11 @@ public class JSONDelta {
     private void compareBoolean(JSONObject result, String key, Object oldValue, Object newValue) throws Exception {
     	if (!(oldValue instanceof Boolean)) {
     		result.put(key, newValue);
+    		return;
     	}
-    	else if ((Boolean)oldValue != (Boolean)newValue) {
+    	boolean oldNum = (Boolean)oldValue;
+    	boolean newNum = (Boolean)newValue;
+    	if (oldNum != newNum) {
     		//they are different, so include the value in result
     		result.put(key, newValue);
     	}
@@ -225,7 +237,6 @@ public class JSONDelta {
     
     private void compareJSONArray(JSONObject result, String key, Object oldValue, Object newValue) throws Exception {
     	if (!(oldValue instanceof JSONArray)) {
-        	System.out.println("     LIST did not appear on the old object");
     		result.put(key, newValue);
     		return;
     	}
@@ -279,7 +290,6 @@ public class JSONDelta {
     	//at this point we have verified that both lists contain ONLY JSONObjects
     	JSONArray deltaList = new JSONArray();
     	for (String testId : allIdValues) {
-        	System.out.println("TESTING id value: "+key);
     		JSONObject newListMember = findKeyedObject(newList, keyMember, testId);
     		JSONObject oldListMember = findKeyedObject(oldList, keyMember, testId);
     		if (oldListMember==null) {
@@ -366,7 +376,9 @@ public class JSONDelta {
                     result.put(key, newList);
                     return;
                 }
-                JSONObject delta = createDelta((JSONObject)oldItem,(JSONObject)newItem);
+                JSONObject oldObj = (JSONObject)oldItem;
+                JSONObject newObj = (JSONObject)newItem;
+                JSONObject delta = createDelta(oldObj,newObj);
                 //if they are exactly equal, the delta will come back as an empty JSONObject
                 if (delta.keySet().size()>0) {
                     result.put(key, newList);
