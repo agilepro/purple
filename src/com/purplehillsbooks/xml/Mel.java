@@ -435,6 +435,9 @@ public class Mel {
     public void setAttributeLong(String attrName, long value) {
         setAttribute(attrName, Long.toString(value));
     }
+    public void setAttributeInt(String attrName, int value) {
+        setAttribute(attrName, Integer.toString(value));
+    }
 
     /**
      * Retrieves an attribute value from a tag, and compares it to a given
