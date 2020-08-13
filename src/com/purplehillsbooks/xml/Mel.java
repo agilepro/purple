@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,6 +49,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.purplehillsbooks.streams.MemFile;
 
 /**
  * Mel = Mendocino Element
@@ -164,6 +167,25 @@ public class Mel {
         return construct(rootClass, doc, docElement);
     }
 
+    /**
+     * You really should never use this.   XML should only be handled as a stream of bytes
+     * and NEVER as a string, however, sometimes particular poorly designed API will pass around
+     * XML as a string, and this convenient method will parse it for you.
+     */
+    public static <T extends Mel> T parseString(String input, Class<T> rootClass)
+            throws Exception {
+        MemFile mf = new MemFile();
+        Writer w =  mf.getWriter();
+        w.write(input);
+        w.close();
+        InputStream is = mf.getInputStream();
+        Document doc = convertInputStreamToDocument(is);
+        is.close();
+        Element docElement = doc.getDocumentElement();
+        return construct(rootClass, doc, docElement);
+    }
+    
+    
     /**
      * Use this to create a brand new base of the tree of the file.
      */
@@ -609,15 +631,17 @@ public class Mel {
         removeAllNamedChild(fEle, elementName);
     }
 
+    /**
+     * Returns a child Mel object with a specified name. 
+     * If you pass an index of 0, it will return the first element found.
+     */
     public Mel getChild(String elementName, int index) throws Exception {
         return getChild(elementName, index, Mel.class);
     }
 
     /**
-     * Returns a child object with a specified name. If you pass an index of 0,
-     * it will return the This is designed to be used when you know that you
-     * have only a single instance of a child with a name, but it can be used in
-     * situations where you want only the first occurrance.
+     * Returns a child object of the specified class with a specified name. 
+     * If you pass an index of 0, it will return the first element found.
      */
     public <T extends Mel> T getChild(String elementName, int index, Class<T> childClass)
             throws Exception {
@@ -644,10 +668,7 @@ public class Mel {
     }
 
     /**
-     * Returns a child object with a specified name. If you pass an index of 0,
-     * it will return the This is designed to be used when you know that you
-     * have only a single instance of a child with a name, but it can be used in
-     * situations where you want only the first occurrance.
+     * Returns a child object of specific class with a specified name, attribute, and value
      */
     public <T extends Mel> T findChild(String elementName, String attributeName, String keyValue,
             Class<T> childClass) throws Exception {
