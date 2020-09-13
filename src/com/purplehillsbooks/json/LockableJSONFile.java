@@ -166,9 +166,9 @@ public class LockableJSONFile {
     private File lockFile;
     private long lastUseTime = 0;
     private RandomAccessFile lockAccessFile = null;
-    private RandomAccessFile lockAccessFile2 = null;
+    //private RandomAccessFile lockAccessFile2 = null;
     private FileLock lock = null;
-    private FileLock lock2 = null;
+    //private FileLock lock2 = null;
 
     private static Hashtable<String, LockableJSONFile> surrogates = new Hashtable<String, LockableJSONFile>();
 
@@ -253,9 +253,11 @@ public class LockableJSONFile {
 
         waitUntilItExists();
 
-        getSecondLock();
+        //getSecondLock();
     }
 
+    
+    /*
     private void getSecondLock() throws Exception {
         try {
             if (lockAccessFile2!=null) {
@@ -286,6 +288,7 @@ public class LockableJSONFile {
             throw new Exception("Failed to release second lock, the one on : "+target, e);
         }
     }
+    */
 
 
     private void waitUntilItExists() throws Exception {
@@ -314,7 +317,7 @@ public class LockableJSONFile {
      * released, while leaving the file unchanged.
      */
     public void unlock() throws Exception {
-        releaseSecondLock();
+        //releaseSecondLock();
 
         if (lock != null) {
             lock.release();
@@ -366,7 +369,7 @@ public class LockableJSONFile {
         if (!isLocked()) {
             throw new Exception("File was not locked before calling writeTarget: "+target);
         }
-        releaseSecondLock();
+        //releaseSecondLock();
 
         int retryCount = 0;
         while (retryCount++ < 5) {
@@ -385,7 +388,7 @@ public class LockableJSONFile {
         if (!exists()) {
             throw new Exception("LockableJSONFile.initializeFile tried to create file, but it did not get created: "+target);
         }
-        getSecondLock();
+        //getSecondLock();
     }
 
     /**
@@ -397,7 +400,7 @@ public class LockableJSONFile {
         if (!isLocked()) {
             throw new Exception("File was not locked before calling readTarget: "+target);
         }
-        releaseSecondLock();
+        //releaseSecondLock();
 
         int retryCount = 0;
         Exception lastException = null;
@@ -405,7 +408,7 @@ public class LockableJSONFile {
             try {
                 waitUntilItExists();
                 JSONObject result = JSONObject.readFromFile(target);
-                getSecondLock();
+                //getSecondLock();
                 return result;
             }
             catch (Exception e) {
@@ -415,7 +418,7 @@ public class LockableJSONFile {
                 Thread.sleep(50);
             }
         }
-        getSecondLock();
+        //getSecondLock();
         throw new Exception("LockableJSONFile.writeTarget:  Failed "+retryCount+" times to write file "+target, lastException);
     }
 
@@ -436,7 +439,7 @@ public class LockableJSONFile {
         if (!isLocked()) {
             throw new Exception("File was not locked before calling readTargetIfExists: "+target);
         }
-        releaseSecondLock();
+        //releaseSecondLock();
         try {
             waitUntilItExists();
             if (!exists()) {
@@ -453,7 +456,7 @@ public class LockableJSONFile {
             throw new Exception("readTargetIfExists failed for "+target, e);
         }
         finally {
-            getSecondLock();
+            //getSecondLock();
         }
     }
 
