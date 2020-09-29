@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
@@ -218,6 +219,21 @@ public class Mel {
         //the XML without a header.
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes("UTF-8"));
         transformer.transform(docSource, new StreamResult(out));
+    }
+    
+    
+    /**
+     * You really don't want to ever have XML in a string.  XML should always be a byte stream
+     * and only the values turned into Strings when needed, but there are times that you need the 
+     * XML as a string to pass to some other processing unit.   This allows getting the XML formatted
+     * as a string.   Try not to ever use this.
+     */
+    public String getFormattedString() throws Exception {
+        MemFile mf = new MemFile();
+        OutputStream out = mf.getOutputStream();
+        writeToOutputStream(out);
+        out.flush();
+        return mf.toString();
     }
 
     /**
@@ -437,6 +453,10 @@ public class Mel {
         if (attrName == null) {
             throw new RuntimeException("Program logic error: a null attribute name"
                     + " was passed to setAttribute.");
+        }
+        if (value==null) {
+            //if null vaule passed in then ignore it
+            return;
         }
         value = Mel.assureValidXMLChars(value);
         if (value == null) {
@@ -1010,6 +1030,9 @@ public class Mel {
     }
     
     public static String assureValidXMLChars(String input) {
+        if (input==null) {
+            return null;
+        }
         
         //first, do a fast scan to see if anything needing to be worried about.
         boolean foundBad = false;
