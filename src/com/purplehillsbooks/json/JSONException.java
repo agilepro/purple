@@ -78,6 +78,12 @@ public class JSONException extends Exception {
 
 
     public static String formatString(String template, Object[] params) {
+        if (template==null) {
+            return "Undefined Exception";
+        }
+        if (params==null || params.length==0) {
+            return template;
+        }
         StringBuilder sb = new StringBuilder();
 
         int start = 0;
