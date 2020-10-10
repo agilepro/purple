@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "asTimer":{"$ref":"Test03ActionSet"},
+    "description": {"type": "string"},
+    "id": {"type": "string"},
+    "javaUDA": {"type": "string"},
+    "label": {"type": "string"},
+    "ordinal": {"type": "integer"},
+    "timeExpression": {"type": "string"},
+    "timeUDA": {"type": "string"},
+    "type": {"type": "integer"}
+  },
+  "required": [
+    "id",
+    "label",
+    "timeUDA",
+    "type",
+    "ordinal"
+  ],
+  "type": "object"
+}

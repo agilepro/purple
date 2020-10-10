@@ -1,0 +1,108 @@
+{"pd": {
+  "asCommit": [
+    {
+      "args": [
+        "\"ZZZZ\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "This action sets the Process description from a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.SetProcessDescriptionEditor",
+      "method": "setProcessDescription(String,ServerEnactmentContext)",
+      "name": "SetProcessDescription Description:ZZZZ",
+      "ordinal": 1
+    },
+    {
+      "args": [
+        "\"long01\"",
+        "\"zzz\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "This action sets a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.UdaAssignmentEditor",
+      "method": "setUDAValue(String,String,ServerEnactmentContext)",
+      "name": "UDA Assignment TargetUDA:long01 Value:zzz",
+      "ordinal": 2
+    }
+  ],
+  "asInit": [
+    {
+      "args": [
+        "\"st01\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "This action sets the Process name from a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.SetUdaEditor",
+      "method": "getProcessInitiator(String,ServerEnactmentContext)",
+      "name": "1",
+      "ordinal": 1
+    },
+    {
+      "args": [
+        "uda.st01",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "This action sets the Process name from a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.SetProcessNameEditor",
+      "method": "setProcessName(String,ServerEnactmentContext)",
+      "name": "SetProcessName Name:st01",
+      "ordinal": 2
+    },
+    {
+      "args": [
+        "\"aaa\"==\"bbb\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "This action sets the Process priority from a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.SetProcessPriorityEditor",
+      "method": "setProcessPriority(int,ServerEnactmentContext)",
+      "name": "SetProcessPriority Priority:\"aaa\"==\"bbb\"",
+      "ordinal": 3
+    }
+  ],
+  "asOwner": [
+    {
+      "args": [
+        "\"big01\"",
+        "\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\\n<UDANames>\\n   <UDAName name=\\\"boolean01\\\" type=\\\"BOOLEAN\\\" value=\\\"AAA/BBB\\\"/>\\n   <UDAName name=\\\"st01\\\" type=\\\"STRING\\\" value=\\\"AAA/CCC\\\"/>\\n<\/UDANames>\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.XMLAction",
+      "description": "EvaluateXPathToUDA",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.EvaluateXPathToUDA",
+      "method": "setUDAFromXpathExpr(String,String,ServerEnactmentContext)",
+      "name": "AssignUDAfromXPATH UDA:big01 map:boolean01=AAA/BBB,st01=AAA/CCC",
+      "ordinal": 1
+    },
+    {
+      "args": [
+        "\"st01\"",
+        "\"<Doc><\/Doc>\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.XMLAction",
+      "description": "This action sets the XML to a UDA.",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.AssignXMLToUDA",
+      "method": "constructXML(String,String,ServerEnactmentContext)",
+      "name": "AssignXMLToUDA TargetUDA:st01=<Doc><\/Doc>",
+      "ordinal": 2
+    },
+    {
+      "args": [
+        "\"value=Script value\"",
+        "\"name64Chars00000000000000000000000000000000000000000000000000000\"",
+        "sec"
+      ],
+      "class": "com.fujitsu.iflow.actions.IflowActions",
+      "description": "Desc256Chars\n000000000000000000000000000000000000000000000000\n000000000000000000000000000000000000000000000000\n000000000000000000000000000000000000000000000000\n000000000000000000000000000000000000000000000000\n00000000000000000000000000000000000000000000000",
+      "editorClass": "com.fujitsu.iflow.gui.actioneditor.ScriptActionEditor",
+      "method": "evaluateScript(String,String,ServerEnactmentContext)",
+      "name": "name64Chars00000000000000000000000000000000000000000000000000000",
+      "ordinal": 3
+    }
+  ]
+}}

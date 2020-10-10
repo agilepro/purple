@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "pd": {
+      "properties": {
+        "asCommit": {"$ref":"Test08Sub"},
+        "asInit": {"$ref":"Test08Sub"},
+        "asOwner": {"$ref":"Test08Sub"}
+      },
+      "required": [
+        "asCommit",
+        "asOwner",
+        "asInit"
+      ],
+      "type": "object"
+    }
+  },
+  "required": ["pd"],
+  "type": "object"
+}

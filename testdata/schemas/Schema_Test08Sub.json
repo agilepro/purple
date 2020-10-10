@@ -1,0 +1,4 @@
+{
+  "items": {"$ref":"Test08SubSub"},
+  "type": "array"
+}

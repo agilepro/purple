@@ -1,4 +1,4 @@
 0:   - Found Object
 1:  year - Found number
 2:  available - Found boolean
-3:  title - Found number
+3:  title - Found string

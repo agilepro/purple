@@ -1,0 +1,18 @@
+{
+  "properties": {"ExtendedAttribute": {
+    "items": {
+      "properties": {
+        "Name": {"type": "string"},
+        "Value": {"type": "string"}
+      },
+      "required": [
+        "Value",
+        "Name"
+      ],
+      "type": "object"
+    },
+    "type": "array"
+  }},
+  "required": ["ExtendedAttribute"],
+  "type": "object"
+}

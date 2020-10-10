@@ -9,6 +9,8 @@ import java.util.List;
  * can be instantiated to perform schema validations.
  */
 public class JSONSchema {
+    
+    SchemaLibrary schemaLib;
 
     /**
      * during validation, errors will be collected up to this limit,
@@ -27,6 +29,18 @@ public class JSONSchema {
 
     public JSONSchema() {
         //
+    }
+    
+    /**
+     * If the schema has a #ref token, you will need to supply a 
+     * SchemaLibrary that will retrieve the reference for the schema
+     * that is named.
+     * 
+     * Any attempt to validate a schema which inludes a #ref will fail if there
+     * is no schema library to supply the references schema.
+     */
+    public void setSchemaLibrary(SchemaLibrary sLib) {
+        schemaLib = sLib;
     }
 
     /**
@@ -192,9 +206,14 @@ public class JSONSchema {
         if (errors.size()>this.errorLimit) {
             return false;
         }
+        if (schema.has("$ref")) {
+            String schemaName = schema.getString("$ref");
+            addLog("   ~Retrieving schema named '"+schemaName);
+            schema = schemaLib.getSchema(schemaName);
+        }
         if (!schema.has("type")) {
             //we don't know the type, so don't check any further.
-            addLog("Found Object at '"+path+"' but schema does not specify type");
+            addLog("Found Object at '"+path+"' but skipping check becaue schema does not specify type");
             return true;
         }
         String mainType = schema.getString("type");
@@ -230,9 +249,15 @@ public class JSONSchema {
                 resultCode = false;
                 continue;
             }
+            if (p.has("$ref")) {
+                String schemaName = p.getString("$ref");
+                addLog("   ~Retrieving property '"+key+"' schema named '"+schemaName);
+                p = schemaLib.getSchema(schemaName);
+            }
             if (!p.has("type")) {
                 //the schema does not specify the type, so don't check this property at all
                 //just go on to the next property
+                addLog("Found property at '"+path+key+"' but skipping check becaue schema does not specify type");                
                 continue;
             }
             String dataType = p.getString("type");
@@ -252,7 +277,7 @@ public class JSONSchema {
                     resultCode = false;
                 }
                 else {
-                    addLog(" "+path+key+" - Found number");
+                    addLog(" "+path+key+" - Found string");
                 }
             }
             else if (d instanceof Integer) {
@@ -326,6 +351,11 @@ public class JSONSchema {
         }
         boolean resultCode = true;
         addLog(" "+path+" - Found Array");
+        if (schema.has("$ref")) {
+            String schemaName = schema.getString("$ref");
+            addLog("   ~Retrieving schema named '"+schemaName);
+            schema = schemaLib.getSchema(schemaName);
+        }
         if (!"array".equals(schema.getString("type"))) {
             addErrorLog("@"+path+" - found an array, but schema expects it to be: "+schema.getString("type"));
             return false;
@@ -335,10 +365,15 @@ public class JSONSchema {
             return true;
         }
         if (!schema.has("items")) {
-            addErrorLog("Schema array declaration does not have an 'items' member at path: "+path);
+            addErrorLog("Schema array declaration missing an 'items' member at path: "+path);
             return false;
         }
         JSONObject s = schema.getJSONObject("items");
+        if (s.has("$ref")) {
+            String schemaName = s.getString("$ref");
+            addLog("   ~Retrieving item schema named '"+schemaName);
+            s = schemaLib.getSchema(schemaName);
+        }
         if (!s.has("type")) {
             //the schema does not specify the type, so don't check this array items
             return true;

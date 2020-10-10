@@ -1,5 +1,5 @@
 0:   - Found Object
 1:  year - Found number
-2:  author - Found number
+2:  author - Found string
 3:  available - Found boolean
-4:  title - Found number
+4:  title - Found string

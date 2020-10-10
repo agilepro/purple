@@ -3,8 +3,8 @@
 2:  results.[0]. - Found Object
 3:  results.[0].creationTime - Found number
 4:  results.[0].dueDate - Found number
-5:  results.[0].initiator - Found number
-6:  results.[0].description - Found number
+5:  results.[0].initiator - Found string
+6:  results.[0].description - Found string
 7:  results.[0].owners. - Found Array
 8:  results.[0].owners.[0]. - Found string
 9:  results.[0].owners.[1]. - Found string
@@ -14,7 +14,7 @@
 13:  results.[0].owners.[5]. - Found string
 14:  results.[0].parentProcess - Found boolean
 15:  results.[0].priority - Found number
-16:  results.[0].title - Found number
+16:  results.[0].title - Found string
 17:  results.[0].type - Found number
 18:  results.[0].closedTime - Found boolean
 19:  results.[0].idInst - Found number
@@ -23,21 +23,21 @@
 22:  results.[0].uda.jsonRecord. - Found Object
 23:  results.[0].uda.jsonRecord.a - Found number
 24:  results.[0].uda.jsonRecord.b - Found number
-25:  results.[0].uda.Product - Found number
-26:  results.[0].uda.Region - Found number
+25:  results.[0].uda.Product - Found string
+26:  results.[0].uda.Region - Found string
 27:  results.[0].uda.TimeToStart - Found number
 28:  results.[0].uda.jsonArray. - Found Array
 29:  results.[0].uda.jsonArray.[0]. - Found string
 30:  results.[0].uda.jsonArray.[1]. - Found string
-31:  results.[0].uda.Customer Type - Found number
-32:  results.[0].name - Found number
+31:  results.[0].uda.Customer Type - Found string
+32:  results.[0].name - Found string
 33:  results.[0].state - Found number
 34:  results.[0].idDef - Found number
 35:  results.[1]. - Found Object
 36:  results.[1].creationTime - Found number
 37:  results.[1].dueDate - Found number
-38:  results.[1].initiator - Found number
-39:  results.[1].description - Found number
+38:  results.[1].initiator - Found string
+39:  results.[1].description - Found string
 40:  results.[1].owners. - Found Array
 41:  results.[1].owners.[0]. - Found string
 42:  results.[1].owners.[1]. - Found string
@@ -47,7 +47,7 @@
 46:  results.[1].owners.[5]. - Found string
 47:  results.[1].parentProcess - Found boolean
 48:  results.[1].priority - Found number
-49:  results.[1].title - Found number
+49:  results.[1].title - Found string
 50:  results.[1].type - Found number
 51:  results.[1].closedTime - Found boolean
 52:  results.[1].idInst - Found number
@@ -56,13 +56,13 @@
 55:  results.[1].uda.jsonRecord. - Found Object
 56:  results.[1].uda.jsonRecord.a - Found number
 57:  results.[1].uda.jsonRecord.b - Found number
-58:  results.[1].uda.Product - Found number
-59:  results.[1].uda.Region - Found number
+58:  results.[1].uda.Product - Found string
+59:  results.[1].uda.Region - Found string
 60:  results.[1].uda.TimeToStart - Found number
 61:  results.[1].uda.jsonArray. - Found Array
 62:  results.[1].uda.jsonArray.[0]. - Found string
 63:  results.[1].uda.jsonArray.[1]. - Found string
-64:  results.[1].uda.Customer Type - Found number
-65:  results.[1].name - Found number
+64:  results.[1].uda.Customer Type - Found string
+65:  results.[1].name - Found string
 66:  results.[1].state - Found number
 67:  results.[1].idDef - Found number

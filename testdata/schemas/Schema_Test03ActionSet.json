@@ -1,0 +1,27 @@
+{
+  "items": {
+    "properties": {
+      "args": {
+        "items": {"type": "string"},
+        "type": "array"
+      },
+      "asCompensate": {"$ref":"Test03ActionSet"},
+      "asError": {"$ref":"Test03ActionSet"},
+      "class": {"type": "string"},
+      "description": {"type": "string"},
+      "editorClass": {"type": "string"},
+      "method": {"type": "string"},
+      "name": {"type": "string"},
+      "ordinal": {"type": "integer"},
+      "setUda": {"type": "string"}
+    },
+    "required": [
+      "args",
+      "method",
+      "name",
+      "class"
+    ],
+    "type": "object"
+  },
+  "type": "array"
+}

@@ -2,8 +2,10 @@ package com.purplehillsbooks.testcase;
 
 import java.io.File;
 
+import com.purplehillsbooks.json.FileSchemaLibrary;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONSchema;
+import com.purplehillsbooks.json.SchemaLibrary;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
@@ -15,6 +17,8 @@ import com.purplehillsbooks.testframe.TestSet;
  * License: This code is made available under the GNU Lesser GPL license.
  */
 public class TestJSONSchema extends TestAbstract implements TestSet {
+    
+    SchemaLibrary schemaLib;
 
     public TestJSONSchema() {
         super();
@@ -22,6 +26,12 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
 
     public void runTests(TestRecorder newTr) throws Exception {
         super.initForTests(newTr);
+        
+        File schemaFolder = new File(this.sourceDataFolder, "schemas");
+        if (!schemaFolder.exists()) {
+            throw new Exception("The sourceDataFolder/schemas for tests does not exist: "+schemaFolder.getAbsolutePath());
+        }
+        schemaLib = new FileSchemaLibrary(schemaFolder);
 
         for (File child : this.sourceDataFolder.listFiles()) {
             String childName = child.getName();
@@ -32,12 +42,13 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
             }
         }
         
-        for (File child : this.sourceDataFolder.listFiles()) {
+        for (File child : schemaFolder.listFiles()) {
             String childName = child.getName();
             
-            if (childName.startsWith("schemaTest") && childName.endsWith(".schema.json")) {
+            if (childName.startsWith("Schema_") && childName.endsWith(".json")) {
                 //strip the ".sample.json" from the end
-                schemaTests("Schema validation "+childName, childName.substring(0, childName.length()-12));
+                String testName = childName.substring(7, childName.length()-5);
+                schemaTests("Schema validation "+testName, testName);
             }
         }
     }
@@ -55,6 +66,10 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
 
         //we just generated it, so it had better validate correctly
         JSONSchema validator = new JSONSchema();
+        validator.setSchemaLibrary(schemaLib);
+        validator.errorLimit = 4000;
+        
+        //the generated schema should ALWAYS validate the source of the generation
         if (!validator.checkSchema(sample, generatedSchema)) {
             File failureListFile = new File(testOutputFolder, coreName+".failureList.txt");
             writeListToFile(validator.getErrorList(), failureListFile);
@@ -68,13 +83,16 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
 
     
     public void schemaTests(String testId, String coreName) throws Exception {
-        File schemaFile = new File(sourceDataFolder, coreName+".schema.json");
-        JSONObject schema = JSONObject.readFromFile(schemaFile);
+        JSONObject schema = schemaLib.getSchema(coreName);
+
+        System.out.println("Schema test for: "+coreName);
+        
+        String testFileStart = "schema"+coreName;
         
         for (File child : this.sourceDataFolder.listFiles()) {
             String childName = child.getName();
             
-            if (childName.startsWith(coreName) && childName.endsWith(".bad.json")) {
+            if (childName.startsWith(testFileStart) && childName.endsWith(".bad.json")) {
                 //strip the ".sample.json" from the end
                 schemaFailOne(testId+" & "+childName, schema, child);
             }
@@ -82,7 +100,7 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
         for (File child : this.sourceDataFolder.listFiles()) {
             String childName = child.getName();
             
-            if (childName.startsWith(coreName) && childName.endsWith(".ok.json")) {
+            if (childName.startsWith(testFileStart) && childName.endsWith(".ok.json")) {
                 //strip the ".sample.json" from the end
                 schemaSuccess(testId+" & "+childName, schema, child);
             }
@@ -91,8 +109,12 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
     
     private void schemaFailOne(String testId, JSONObject schema, File testFile) throws Exception {
         JSONObject testObject = JSONObject.readFromFile(testFile);
+        System.out.println("     FAIL test for: "+testId);
         
         JSONSchema validator = new JSONSchema();
+        validator.setSchemaLibrary(schemaLib);
+        validator.errorLimit = 4000;
+        
         if (validator.checkSchema(testObject, schema)) {
             tr.markFailed(testId, "Supposed to be testing validator errors, but did not find any errors");
             return;
@@ -107,9 +129,13 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
     }
     private void schemaSuccess(String testId, JSONObject schema, File testFile) throws Exception {
         JSONObject testObject = JSONObject.readFromFile(testFile);
+        System.out.println("     SUCCESS test for: "+testId);
         
         JSONSchema validator = new JSONSchema();
+        validator.setSchemaLibrary(schemaLib);
+        validator.errorLimit = 4000;
         validator.recordSuccess = true;
+        
         if (!validator.checkSchema(testObject, schema)) {
             tr.markFailed(testId, "Supposed to be passing validation, but found errors");
         }

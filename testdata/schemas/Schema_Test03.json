@@ -1,0 +1,221 @@
+{
+  "properties": {"pd": {
+      "properties": {
+        "ExtendedAttributes": {"$ref":"Test03EA"},
+        "application": {"type": "string"},
+        "asAbort": {"$ref":"Test03ActionSet"},
+        "asCommit": {"$ref":"Test03ActionSet"},
+        "asError": {"$ref":"Test03ActionSet"},
+        "asInit": {"$ref":"Test03ActionSet"},
+        "asOwner": {"$ref":"Test03ActionSet"},
+        "asResume": {"$ref":"Test03ActionSet"},
+        "asSuspend": {"$ref":"Test03ActionSet"},
+        "dataItemRefs": {
+          "items": {
+            "properties": {
+              "identifier": {"type": "string"},
+              "initValue": {},
+              "name": {"type": "string"},
+              "tracked": {"type": "string"},
+              "type": {"type": "string"},
+              "workListUDA": {"type": "string"}       
+            },
+            "required": [
+              "identifier",
+              "name",
+              "type"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "desc": {"type": "string"},
+        "dueDates": {
+          "items": {
+            "properties": {
+              "description": {"type": "string"},
+              "id": {"type": "string"},
+              "javaUDA": {"type": "string"},
+              "label": {"type": "string"},
+              "ordinal": {"type": "integer"},
+              "timeExpression": {"type": "string"},
+              "timeUDA": {"type": "string"},
+              "type": {"type": "integer"}
+            },
+            "required": [
+              "id",
+              "label",
+              "timeUDA",
+              "type",
+              "ordinal"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "nodes": {
+          "items": {
+            "properties": {
+              "ExtendedAttributes": {"$ref":"Test03EA"},
+              "arrowsIn": {
+                "items": {"type": "string"},
+                "type": "array"
+              },
+              "arrowsOut": {
+                "items": {
+                  "properties": {
+                    "desc": {"type": "string"},
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {"type": "integer"},
+                          "y": {"type": "integer"}
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "simProbability": {"type": "integer"},
+                    "sourceNode": {"type": "string"},
+                    "targetNode": {"type": "string"}
+                  },
+                  "required": [
+                    "sourceNode",
+                    "name",
+                    "id",
+                    "targetNode",
+                    "points"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "asAbort":    {"$ref":"Test03ActionSet"},
+              "asEpilogue": {"$ref":"Test03ActionSet"},
+              "asError":    {"$ref":"Test03ActionSet"},
+              "asPrologue": {"$ref":"Test03ActionSet"},
+              "asResume":   {"$ref":"Test03ActionSet"},
+              "asRole":     {"$ref":"Test03ActionSet"},
+              "asSuspend":  {"$ref":"Test03ActionSet"},
+              "desc": {"type": "string"},
+              "expandGroups": {"type": "boolean"},
+              "dueDates": {
+                "items": {
+                  "properties": {
+                    "asDueDate":{"$ref":"Test03ActionSet"},
+                    "description": {"type": "string"},
+                    "id": {"type": "string"},
+                    "javaUDA": {"type": "string"},
+                    "label": {"type": "string"},
+                    "ordinal": {"type": "integer"},
+                    "timeExpression": {"type": "string"},
+                    "timeUDA": {"type": "string"},
+                    "type": {"type": "integer"}
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "timeUDA",
+                    "type",
+                    "ordinal"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "forms": {
+                "items": {
+                 "properties": {
+                   "name": {"type": "string"},
+                   "path": {"type": "string"}
+                 },
+                 "required": [
+                   "path",
+                   "name"
+                 ],
+                 "type": "object"
+               },
+               "type": "array"
+              },
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "role": {"type": "string"},
+              "simDuration": {"type": "integer"},
+              "simResources": {"type": "string"},
+              "size": {
+                "properties": {
+                  "height": {"type": "integer"},
+                  "width": {"type": "integer"}
+                },
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "type": "object"
+              },
+              "timers": {
+                "items": {"$ref":"Test03Timer"},
+                "type": "array"
+              },
+              "triggers": {"type": "array", "items":{}},
+              "transactionBridge": {"type": "boolean"},
+              "type": {"type": "integer"},
+              "upperLeft": {
+                "properties": {
+                  "x": {"type": "integer"},
+                  "y": {"type": "integer"}
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "type": "object"
+              },
+              "userExtensions": {
+                "additionalProperties": {"type": "string"},
+                "properties": {},
+                "required": [],
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "size",
+              "type",
+              "upperLeft"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "owner": {"type": "string"},
+        "priority": {"type": "integer"},
+        "procOwnerRole": {"type": "string"},
+        "state": {"type": "integer"},
+        "timers": {
+          "items": {"$ref":"Test03Timer"},
+          "type": "array"
+        },
+        "triggers": {"type": "array", "items":{}},
+        "version": {"type": "integer"}
+      },
+      "required": [
+        "dataItemRefs",
+        "id",
+        "name",
+        "nodes"
+      ],
+      "type": "object"
+  }},
+  "required": ["pd"],
+  "type": "object"
+}

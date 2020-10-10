@@ -1,0 +1,24 @@
+{
+  "properties": {
+    "args": {
+      "items": {"type": "string"},
+      "type": "array"
+    },
+    "class": {"type": "string"},
+    "description": {"type": "string"},
+    "editorClass": {"type": "string"},
+    "method": {"type": "string"},
+    "name": {"type": "string"},
+    "ordinal": {"type": "integer"}
+  },
+  "required": [
+    "args",
+    "method",
+    "editorClass",
+    "name",
+    "description",
+    "class",
+    "ordinal"
+  ],
+  "type": "object"
+}
