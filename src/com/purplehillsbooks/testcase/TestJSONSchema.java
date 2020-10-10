@@ -45,7 +45,7 @@ public class TestJSONSchema extends TestAbstract implements TestSet {
         for (File child : schemaFolder.listFiles()) {
             String childName = child.getName();
             
-            if (childName.startsWith("Schema_") && childName.endsWith(".json")) {
+            if (childName.startsWith("Schema-") && childName.endsWith(".json")) {
                 //strip the ".sample.json" from the end
                 String testName = childName.substring(7, childName.length()-5);
                 schemaTests("Schema validation "+testName, testName);
