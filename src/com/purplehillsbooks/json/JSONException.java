@@ -18,7 +18,7 @@ import java.util.List;
 public class JSONException extends Exception {
     private static final long serialVersionUID = 0;
     public  String   template;
-    public  Object[] params;
+    public  String[] params;
 
     //very long string parameters will be truncated to this length
     public static int MAXIMUM_PARAM_LENGTH = 999;
@@ -29,7 +29,7 @@ public class JSONException extends Exception {
      */
     public JSONException(String message) {
         super(message);
-        params = new Object[0];
+        params = new String[0];
     }
 
     /**
@@ -39,7 +39,7 @@ public class JSONException extends Exception {
      */
    public JSONException(String message, Throwable cause) {
         super(message, cause);
-        params = new Object[0];
+        params = new String[0];
     }
 
     /**
@@ -53,7 +53,7 @@ public class JSONException extends Exception {
      * substituted, however this gives the option to translate the template before
      * substitution and get a translated message.
      */
-    public JSONException(String template, Object ... params) {
+    public JSONException(String template, String ... params) {
         super(formatString(template, params));
         this.template = template;
         this.params = params;
@@ -66,7 +66,7 @@ public class JSONException extends Exception {
      *
      * See JSONException constructor without Throwable for more details.
      */
-    public JSONException(String template, Throwable cause, Object ... params) {
+    public JSONException(String template, Throwable cause, String ... params) {
         super(formatString(template, params), cause);
         this.template = template;
         this.params = params;
@@ -80,7 +80,7 @@ public class JSONException extends Exception {
     }
 
 
-    public static String formatString(String template, Object[] params) {
+    public static String formatString(String template, String[] params) {
         if (template==null) {
             return "Undefined Exception";
         }
@@ -105,14 +105,7 @@ public class JSONException extends Exception {
                 sb.append("unknown_param_"+param);
             }
             else {
-                Object p = params[param];
-                String pstr;
-                if (p instanceof String) {
-                    pstr = (String) p;
-                }
-                else {
-                    pstr = p.toString();
-                }
+                String pstr = params[param];
 
                 //make sure that the string is not too long
                 if (MAXIMUM_PARAM_LENGTH>0 && pstr.length()>MAXIMUM_PARAM_LENGTH) {
@@ -181,7 +174,7 @@ public class JSONException extends Exception {
         if (params.length==0) {
             return msg;
         }
-        String result = String.format(msg, params);
+        String result = String.format(msg, (Object[]) params);
         return result;
     }
 
@@ -475,7 +468,7 @@ public class JSONException extends Exception {
                 while (oneDetail.has("param"+paramCount)) {
                     paramCount++;
                 }
-                Object[] params = new Object[paramCount];
+                String[] params = new String[paramCount];
                 for (int ii=0; ii<paramCount; ii++) {
                     params[ii] = oneDetail.getString("param"+ii);
                 }
