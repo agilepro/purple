@@ -20,7 +20,8 @@ public class JSONException extends Exception {
     public  String   template;
     public  String[] params;
 
-    //very long string parameters will be truncated to this length
+    //Very long string parameters will be truncated to this length
+    //Update this static value if you want longer or shorter parameters
     public static int MAXIMUM_PARAM_LENGTH = 999;
 
     /**
@@ -52,11 +53,16 @@ public class JSONException extends Exception {
      * The message will ultimately include the main string template with the values
      * substituted, however this gives the option to translate the template before
      * substitution and get a translated message.
+     *
+     * Parameters can be any object, but they are immediately conferted to a string
+     * using toString so if you want different formatting convert to a string before
+     * passing the value in.  Parameters are truncated to MAXIMUM_PARAM_LENGTH.
+     * The static value MAXIMUM_PARAM_LENGTH can be modified by containing program.
      */
-    public JSONException(String template, String ... params) {
-        super(formatString(template, params));
+    public JSONException(String template, Object ... params) {
+        super(formatString(template, stringifyParams(params)));
         this.template = template;
-        this.params = params;
+        this.params = stringifyParams(params);
     }
     /**
      * Construct the exception with a template by using variable parameters
@@ -66,19 +72,23 @@ public class JSONException extends Exception {
      *
      * See JSONException constructor without Throwable for more details.
      */
-    public JSONException(String template, Throwable cause, String ... params) {
-        super(formatString(template, params), cause);
+    public JSONException(String template, Throwable cause, Object ... params) {
+        super(formatString(template, stringifyParams(params)), cause);
         this.template = template;
-        this.params = params;
+        this.params = stringifyParams(params);
     }
 
-    /**
-     * @deprecated always specify a message value, never just do the wrap
-     */
-    public JSONException(Throwable cause) {
-        super("Error while processing JSON", cause);
-    }
 
+    public static String[] stringifyParams(Object[] input) {
+        String[] output = new String[input.length];
+        for (int i=0; i<input.length; i++) {
+            output[i] = input[i].toString();
+            if (output[i].length()>MAXIMUM_PARAM_LENGTH) {
+                output[i] = output[i].substring(0, MAXIMUM_PARAM_LENGTH);
+            }
+        }
+        return output;
+    }
 
     public static String formatString(String template, String[] params) {
         if (template==null) {
