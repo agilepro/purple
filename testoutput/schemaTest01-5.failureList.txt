@@ -1,2 +1,2 @@
 0: @resultsx - No entry in schema corresponding to this.
-1: @results required property not found
+1: @results property required by schema not found

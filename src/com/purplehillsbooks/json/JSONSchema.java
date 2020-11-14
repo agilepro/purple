@@ -9,7 +9,7 @@ import java.util.List;
  * can be instantiated to perform schema validations.
  */
 public class JSONSchema {
-    
+
     SchemaLibrary schemaLib;
 
     /**
@@ -30,12 +30,12 @@ public class JSONSchema {
     public JSONSchema() {
         //
     }
-    
+
     /**
-     * If the schema has a #ref token, you will need to supply a 
+     * If the schema has a #ref token, you will need to supply a
      * SchemaLibrary that will retrieve the reference for the schema
      * that is named.
-     * 
+     *
      * Any attempt to validate a schema which inludes a #ref will fail if there
      * is no schema library to supply the references schema.
      */
@@ -180,7 +180,7 @@ public class JSONSchema {
                 for (int j=0; j<merged.length(); j++) {
                     Object mo = merged.get(j);
                     if (mo instanceof String) {
-                        if (((String)mo).equals((String)os)) {
+                        if (((String)mo).equals(os)) {
                             found = true;
                         }
                     }
@@ -257,7 +257,7 @@ public class JSONSchema {
             if (!p.has("type")) {
                 //the schema does not specify the type, so don't check this property at all
                 //just go on to the next property
-                addLog("Found property at '"+path+key+"' but skipping check becaue schema does not specify type");                
+                addLog("Found property at '"+path+key+"' but skipping check becaue schema does not specify type");
                 continue;
             }
             String dataType = p.getString("type");
@@ -336,7 +336,7 @@ public class JSONSchema {
             for (int i=0; i<required.length(); i++) {
                 String requiredPropertyName = required.getString(i);
                 if (!data.has(requiredPropertyName)) {
-                    addErrorLog("@"+path+requiredPropertyName+" required property not found");
+                    addErrorLog("@"+path+requiredPropertyName+" property required by schema not found");
                     resultCode = false;
                 }
             }
@@ -365,8 +365,8 @@ public class JSONSchema {
             return true;
         }
         if (!schema.has("items")) {
-            addErrorLog("Schema array declaration missing an 'items' member at path: "+path);
-            return false;
+            //missing items is treated like a missing type:  no validation of the elements will be done.
+            return true;
         }
         JSONObject s = schema.getJSONObject("items");
         if (s.has("$ref")) {
@@ -444,17 +444,17 @@ public class JSONSchema {
     }
 
     /**
-     * if the schema validation returns false, then you can ask for a 
+     * if the schema validation returns false, then you can ask for a
      * detailed list of what went wrong with this method.
-     * 
+     *
      * Each string in the list is a separate validation error.
-     * 
+     *
      * You will only get up to the number of errors specified in
      * the errorLimit variable.
      */
     public List<String> getErrorList() {
         return errors;
     }
-        
+
 
 }

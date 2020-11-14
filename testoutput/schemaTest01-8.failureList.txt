@@ -12,10 +12,10 @@
 11: @results.[0].Region - No entry in schema corresponding to this.
 12: @results.[0].TimeToStart - No entry in schema corresponding to this.
 13: @results.[0].jsonArray - No entry in schema corresponding to this.
-14: @results.[0].creationTime required property not found
-15: @results.[0].dueDate required property not found
-16: @results.[0].description required property not found
-17: @results.[0].priority required property not found
-18: @results.[0].sequence required property not found
-19: @results.[0].uda required property not found
-20: @results.[0].state required property not found
+14: @results.[0].creationTime property required by schema not found
+15: @results.[0].dueDate property required by schema not found
+16: @results.[0].description property required by schema not found
+17: @results.[0].priority property required by schema not found
+18: @results.[0].sequence property required by schema not found
+19: @results.[0].uda property required by schema not found
+20: @results.[0].state property required by schema not found

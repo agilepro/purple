@@ -1,32 +1,32 @@
-0: @results.[0].creationTime required property not found
-1: @results.[0].dueDate required property not found
-2: @results.[0].initiator required property not found
-3: @results.[0].description required property not found
-4: @results.[0].owners required property not found
-5: @results.[0].parentProcess required property not found
-6: @results.[0].priority required property not found
-7: @results.[0].title required property not found
-8: @results.[0].type required property not found
-9: @results.[0].closedTime required property not found
-10: @results.[0].idInst required property not found
-11: @results.[0].sequence required property not found
-12: @results.[0].uda required property not found
-13: @results.[0].name required property not found
-14: @results.[0].state required property not found
-15: @results.[0].idDef required property not found
-16: @results.[1].creationTime required property not found
-17: @results.[1].dueDate required property not found
-18: @results.[1].initiator required property not found
-19: @results.[1].description required property not found
-20: @results.[1].owners required property not found
-21: @results.[1].parentProcess required property not found
-22: @results.[1].priority required property not found
-23: @results.[1].title required property not found
-24: @results.[1].type required property not found
-25: @results.[1].closedTime required property not found
-26: @results.[1].idInst required property not found
-27: @results.[1].sequence required property not found
-28: @results.[1].uda required property not found
-29: @results.[1].name required property not found
-30: @results.[1].state required property not found
-31: @results.[1].idDef required property not found
+0: @results.[0].creationTime property required by schema not found
+1: @results.[0].dueDate property required by schema not found
+2: @results.[0].initiator property required by schema not found
+3: @results.[0].description property required by schema not found
+4: @results.[0].owners property required by schema not found
+5: @results.[0].parentProcess property required by schema not found
+6: @results.[0].priority property required by schema not found
+7: @results.[0].title property required by schema not found
+8: @results.[0].type property required by schema not found
+9: @results.[0].closedTime property required by schema not found
+10: @results.[0].idInst property required by schema not found
+11: @results.[0].sequence property required by schema not found
+12: @results.[0].uda property required by schema not found
+13: @results.[0].name property required by schema not found
+14: @results.[0].state property required by schema not found
+15: @results.[0].idDef property required by schema not found
+16: @results.[1].creationTime property required by schema not found
+17: @results.[1].dueDate property required by schema not found
+18: @results.[1].initiator property required by schema not found
+19: @results.[1].description property required by schema not found
+20: @results.[1].owners property required by schema not found
+21: @results.[1].parentProcess property required by schema not found
+22: @results.[1].priority property required by schema not found
+23: @results.[1].title property required by schema not found
+24: @results.[1].type property required by schema not found
+25: @results.[1].closedTime property required by schema not found
+26: @results.[1].idInst property required by schema not found
+27: @results.[1].sequence property required by schema not found
+28: @results.[1].uda property required by schema not found
+29: @results.[1].name property required by schema not found
+30: @results.[1].state property required by schema not found
+31: @results.[1].idDef property required by schema not found

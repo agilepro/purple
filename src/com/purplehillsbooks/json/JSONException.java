@@ -20,6 +20,9 @@ public class JSONException extends Exception {
     public  String   template;
     public  Object[] params;
 
+    //very long string parameters will be truncated to this length
+    public static int MAXIMUM_PARAM_LENGTH = 999;
+
     /**
      * Constructs a JSONException with an explanatory message.
      * @param message Detail about the reason for the exception.
@@ -103,12 +106,19 @@ public class JSONException extends Exception {
             }
             else {
                 Object p = params[param];
+                String pstr;
                 if (p instanceof String) {
-                    sb.append(p);
+                    pstr = (String) p;
                 }
                 else {
-                    sb.append(p.toString());
+                    pstr = p.toString();
                 }
+
+                //make sure that the string is not too long
+                if (MAXIMUM_PARAM_LENGTH>0 && pstr.length()>MAXIMUM_PARAM_LENGTH) {
+                    pstr = pstr.substring(0,MAXIMUM_PARAM_LENGTH);
+                }
+                sb.append(pstr);
             }
             start = endPos+1;
             pos = template.indexOf("{", start);
@@ -171,7 +181,7 @@ public class JSONException extends Exception {
         if (params.length==0) {
             return msg;
         }
-        String result = String.format(msg, (Object[]) params);
+        String result = String.format(msg, params);
         return result;
     }
 

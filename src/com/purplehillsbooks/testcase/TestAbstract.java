@@ -56,18 +56,18 @@ public abstract class TestAbstract implements TestSet {
      * Specify a testId for reporting the problems
      * The fileName is just the fileName end of the path, and the two files
      * being compared are on in the test output folder, and the other
-     * in the source tree test output (comparison) folder.   
+     * in the source tree test output (comparison) folder.
      */
     public void compareGeneratedTextFile(String testId, String fileName) throws Exception {
 
         File sourceFile = new File(testOutputFolder, fileName);
         if (!sourceFile.exists()) {
-            throw new Exception("Program Logic Error: the source file to compare does not exist.  Was the right name passed? "+sourceFile);
+            throw new Exception("Source file to compare does not exist: "+sourceFile.getAbsolutePath());
         }
         File compareFile = new File(testCompareFolder, fileName);
         if (!compareFile.exists()) {
             //remember, when new tests are created there won't yet be comparison files checked in
-            tr.markFailed(testId, "file to compare to is missing from: " + compareFile.toString());
+            tr.markFailed(testId, "file to compare to is missing from: " + compareFile.getAbsolutePath());
             return;
         }
 
@@ -90,7 +90,7 @@ public abstract class TestAbstract implements TestSet {
                 continue;
             }
             if (b1 != b2) {
-                tr.markFailed(testId, "files differ at line " + lineCount + " and character "+charCount);
+                tr.markFailed(testId, "Difference at line " + lineCount + " and character "+charCount+" of file "+sourceFile.getAbsolutePath());
                 fis1.close();
                 fis2.close();
                 return;
@@ -110,11 +110,11 @@ public abstract class TestAbstract implements TestSet {
         fis2.close();
 
         if (b1 >= 0) {
-            tr.markFailed(testId, "new file has more characters in it than the old file");
+            tr.markFailed(testId, "new file has more characters in it than the old file: "+sourceFile.getAbsolutePath());
             return;
         }
         if (b2 >= 0) {
-            tr.markFailed(testId, "old file has more characters in it than the new file");
+            tr.markFailed(testId, "old file has more characters in it than the new file: "+sourceFile.getAbsolutePath());
             return;
         }
 
@@ -295,7 +295,7 @@ public abstract class TestAbstract implements TestSet {
             sb.append('?');
         }
     }
-    
+
     public void writeListToFile(List<String> list, File outputFile) throws Exception {
         Writer fw = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
         int count = 0;
@@ -305,7 +305,7 @@ public abstract class TestAbstract implements TestSet {
             fw.write(line);
             fw.write("\n");
         }
-        fw.close();        
+        fw.close();
     }
 
 

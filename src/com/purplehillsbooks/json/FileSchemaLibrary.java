@@ -34,7 +34,7 @@ public class FileSchemaLibrary implements SchemaLibrary {
             }
             File expectedFile = new File(folder, "Schema-"+name+".json");
             if (!expectedFile.exists()) {
-                throw new JSONException("Schema file does not exist: {1}", expectedFile.getAbsoluteFile());
+                throw new JSONException("Schema file does not exist: {0}", expectedFile.getAbsoluteFile());
             }
             JSONObject schema = JSONObject.readFromFile(expectedFile);
             library.put(name, schema);

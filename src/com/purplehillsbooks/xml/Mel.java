@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
@@ -185,8 +184,8 @@ public class Mel {
         Element docElement = doc.getDocumentElement();
         return construct(rootClass, doc, docElement);
     }
-    
-    
+
+
     /**
      * Use this to create a brand new base of the tree of the file.
      */
@@ -220,11 +219,11 @@ public class Mel {
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes("UTF-8"));
         transformer.transform(docSource, new StreamResult(out));
     }
-    
-    
+
+
     /**
      * You really don't want to ever have XML in a string.  XML should always be a byte stream
-     * and only the values turned into Strings when needed, but there are times that you need the 
+     * and only the values turned into Strings when needed, but there are times that you need the
      * XML as a string to pass to some other processing unit.   This allows getting the XML formatted
      * as a string.   Try not to ever use this.
      */
@@ -652,7 +651,7 @@ public class Mel {
     }
 
     /**
-     * Returns a child Mel object with a specified name. 
+     * Returns a child Mel object with a specified name.
      * If you pass an index of 0, it will return the first element found.
      */
     public Mel getChild(String elementName, int index) throws Exception {
@@ -660,7 +659,7 @@ public class Mel {
     }
 
     /**
-     * Returns a child object of the specified class with a specified name. 
+     * Returns a child object of the specified class with a specified name.
      * If you pass an index of 0, it will return the first element found.
      */
     public <T extends Mel> T getChild(String elementName, int index, Class<T> childClass)
@@ -1017,7 +1016,7 @@ public class Mel {
         if (textValue == null) {
             return null;
         }
-        
+
         //XML serialization will succeed with invalid characters, but produce a file that is then
         //unreadible.  It is important then to strip all invalid characters out of value.
         //Invalid characters include anything less than 32 which is not 9, 10, or 13
@@ -1028,12 +1027,12 @@ public class Mel {
         parent.appendChild(newElem);
         return newElem;
     }
-    
+
     public static String assureValidXMLChars(String input) {
         if (input==null) {
             return null;
         }
-        
+
         //first, do a fast scan to see if anything needing to be worried about.
         boolean foundBad = false;
         for (int i=0; i<input.length(); i++) {
@@ -1047,7 +1046,7 @@ public class Mel {
         if (!foundBad) {
             return input;
         }
-        
+
         //Now we need to make a copy of the string
         StringBuilder sb = new StringBuilder(input.length());
         for (int i=0; i<input.length(); i++) {
