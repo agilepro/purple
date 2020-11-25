@@ -21,7 +21,7 @@ import com.purplehillsbooks.json.JSONObject;
  *
  */
 
-public class JSONHandler {
+public abstract class JSONHandler {
 
     protected WebRequest wr;
     protected SessionManager smgr;
@@ -51,21 +51,34 @@ public class JSONHandler {
      *
      * Is there are no more path tokens to consume then pathFinished() will return true
      * so you can know you are at the end without consuming the token.
+     *
+     * routine will look something like this:
+     *
+     * <pre>
+     * JSONObject handleOnePathElement() {
+     *   if (wr.pathFinished()) {
+     *      return constructObjectForThisElement();
+     *   }
+     *   String thisToken = wr.consumePathToken();
+     *   try {
+     *     if ("foo".equals(thisToken)) {
+     *       return handleFoo();
+     *     }
+     *     else if ("bar".equals(thisToken)) {
+     *       return handleBar();
+     *     }
+     *     else {
+     *       throw new Exception("No idea what "+thisToken+" means at this point in the path");
+     *     }
+     *   }
+     *   catch (Exception e) {
+     *     throw new Exception("error while handling "+thisToken, e);
+     *   }
+     * }
+     * </pre>
+     *
      */
-    public JSONObject handleRequest() throws Exception {
-        if (wr.pathFinished()) {
-            //must have at least one token so path finished here is an error
-            throw new Exception("Program Logic Error: unexpected internal path is missing the 'api' entry from path");
-        }
-        String firstToken = wr.consumePathToken();
-        if (!"api".equals(firstToken)) {
-            //this should not be possible ... there should always be 'api'
-            //this is just a consistency check
-            throw new Exception("Program Logic Error: the first path element is expected to be 'api' but was instead '"+firstToken+"'");
-        }
-
-        throw new Exception("BPM API is unable to understand the first path element: "+firstToken);
-    }
+    public abstract JSONObject handleRequest() throws Exception;
 
 
 }

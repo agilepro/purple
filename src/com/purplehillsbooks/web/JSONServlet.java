@@ -3,6 +3,7 @@ package com.purplehillsbooks.web;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -51,11 +52,21 @@ public abstract class JSONServlet extends javax.servlet.http.HttpServlet {
 
 
     /**
-     * This is the one method you must override to return your own private
+     * This is the first method you must override to return your own private
      * handler class that actually figures out what to do with the passed
      * in JSON objects, and what JSON Objects to return.
      */
     public abstract JSONHandler constructHandler(WebRequest wr) throws Exception;
+
+
+    /**
+     * This is the second method you must override to return your own private
+     * handler class that actually figures out what to do with the passed
+     * in JSON objects, and what JSON Objects to return.
+     *
+     * something like return SessionManager.getSessionManagerSingleton(sc);
+     */
+    public abstract SessionManager constructSessionManager(ServletContext sc) throws Exception;
 
 
     @Override
@@ -69,7 +80,7 @@ public abstract class JSONServlet extends javax.servlet.http.HttpServlet {
                 System.out.println("At 'init' the ServletContext reported invalid WEB-INF location:  "+webInfFolder);
             }
 
-            smgr = SessionManager.getSessionManagerSingleton(sc);
+            smgr = constructSessionManager(sc);
         }
         catch (Exception e) {
             initError = new ServletException("Unable to initialize RestServlet", e);

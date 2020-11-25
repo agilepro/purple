@@ -26,7 +26,7 @@ set HTMLUNIT_CP=%HTMLUNIT_LIB%\commons-codec-1.3.jar;%HTMLUNIT_LIB%\commons-coll
 set MENDO_CP=%SOURCE_DIR%
 
 :### compile java classes
-"%JAVA_HOME%\bin\javadoc" -Xdoclint:none -d %TARGET_DIR%\purpleDoc %SOURCE_DIR%\src\com\purplehillsbooks\xml\*.java %SOURCE_DIR%\src\com\purplehillsbooks\testcase\*.java %SOURCE_DIR%\src\com\purplehillsbooks\testframe\*.java %SOURCE_DIR%\src\com\purplehillsbooks\streams\*.java %SOURCE_DIR%\src\com\purplehillsbooks\json\*.java %SOURCE_DIR%\src\com\purplehillsbooks\temps\*.java
+"%JAVA_HOME%\bin\javadoc" -Xdoclint:none -d %TARGET_DIR%\purpleDoc %SOURCE_DIR%\src\com\purplehillsbooks\xml\*.java %SOURCE_DIR%\src\com\purplehillsbooks\testcase\*.java %SOURCE_DIR%\src\com\purplehillsbooks\testframe\*.java %SOURCE_DIR%\src\com\purplehillsbooks\streams\*.java %SOURCE_DIR%\src\com\purplehillsbooks\json\*.java %SOURCE_DIR%\src\com\purplehillsbooks\temps\*.java %SOURCE_DIR%\src\com\purplehillsbooks\web\*.java
 
 if errorlevel 1 goto EXIT
 
