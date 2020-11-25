@@ -484,7 +484,7 @@ public class JSONException extends Exception {
                 }
                 if (trailer!=null) {
                     if (template!=null && paramCount>0) {
-                        trailer = new JSONException(template, trailer, params);
+                        trailer = new JSONException(template, trailer, (Object[]) params);
                     }
                     else {
                         trailer = new Exception(message, trailer);
@@ -492,7 +492,7 @@ public class JSONException extends Exception {
                 }
                 else {
                     if (template!=null && paramCount>0) {
-                        trailer = new JSONException(template, params);
+                        trailer = new JSONException(template, (Object[]) params);
                     }
                     else {
                         trailer = new Exception(message);
