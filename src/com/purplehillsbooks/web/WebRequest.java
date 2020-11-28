@@ -49,6 +49,11 @@ public class WebRequest {
     private JSONObject postedObject = null;
 
     public WebRequest (HttpServletRequest _req, HttpServletResponse _resp) throws Exception {
+        this(_req, _resp, _resp.getWriter());
+    }
+
+
+    public WebRequest (HttpServletRequest _req, HttpServletResponse _resp, Writer aw) throws Exception {
         request = _req;
         response = _resp;
         session = request.getSession();
@@ -56,6 +61,15 @@ public class WebRequest {
         parsePath();
         outStream = response.getOutputStream();
         w = new OutputStreamWriter(outStream, "UTF-8");
+        request.setAttribute("wrappedRequest", this);
+    }
+
+    public static WebRequest findOrCreate(HttpServletRequest _req, HttpServletResponse _resp, Writer aw) throws Exception {
+        WebRequest wr = (WebRequest) _req.getAttribute("wrappedRequest");
+        if (wr == null) {
+            wr = new WebRequest(_req, _resp);
+        }
+        return wr;
     }
 
     private void setUpForCrossBrowser() {
@@ -261,6 +275,40 @@ public class WebRequest {
             response.setContentType("application/octet-stream");
         }
         StreamHelper.copyInputToOutput(content, outStream);
+    }
+
+
+    /**
+     * During the course of this session, if setAuthUserId has been called, then this
+     * will return the value that was given at that time.  You can implement your own login methods
+     * and this simply records the result in the current session.
+     * Returns null if not authenticated.
+     */
+    public String getAuthUserId() {
+        return (String) session.getAttribute("userId");
+    }
+    /**
+     * You can implement your own login methods
+     * and this simply records the result in the current session.
+     * During the course of this session, if this has been called, then getAuthUserId
+     * will return the value that was given at that time.
+     * Log a person OUT by setting this to null.
+     */
+    public void setAuthUserId(String newId) {
+        session.setAttribute("userId", newId);
+    }
+
+
+    public String getSessionProperty(String propName) {
+        return (String) session.getAttribute(propName);
+    }
+    public void setSessionProperty(String propName, String newVal) {
+        session.setAttribute(propName, newVal);
+    }
+
+    public String getConfigSetting(String name) throws Exception {
+        SessionManager smgr = (SessionManager) request.getSession().getServletContext().getAttribute("GlobalSessionManager");
+        return smgr.getConfigSetting(name);
     }
 
 }

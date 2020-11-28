@@ -17,6 +17,7 @@
 package com.purplehillsbooks.streams;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -136,52 +137,75 @@ public class MemFile {
 
 
 
+    /**
+     * Reads all bytes from File and stored the entire
+     * contents in memory.  The file is expected to be
+     * UTF-8 encoded.
+     */
+    public void fillWithFile(File file) throws Exception {
+        FileInputStream fis = new FileInputStream(file);
+        try {
+            fillWithInputStream(fis);
+        }
+        finally {
+            fis.close();
+        }
+    }
+
 
     /**
      * Reads all bytes from the passed in InputStream and stored the entire
-     * contents in memory.
+     * contents in memory.  Closes the input stream.
      */
     public void fillWithInputStream(InputStream in) throws Exception {
         byte[] buf = new byte[5000];
         OutputStream out = getOutputStream();
-        int len = in.read(buf);
-        while (len > 0) {
-            if (len == 5000) {
-                out.write(buf);
+        try {
+            int len = in.read(buf);
+            while (len > 0) {
+                if (len == 5000) {
+                    out.write(buf);
+                }
+                else {
+                    out.write(buf, 0, len);
+                }
+                len = in.read(buf);
             }
-            else {
-                out.write(buf, 0, len);
-            }
-            len = in.read(buf);
         }
-        out.flush();
-        out.close();
+        finally {
+            out.flush();
+            out.close();
+        }
     }
 
     /**
      * Reads all character from the passed in Reader and stores the entire
-     * contents in memory.
+     * contents in memory.  Closes the reader.
      */
     public void fillWithReader(Reader in) throws Exception {
         char[] buf = new char[5000];
         Writer w = getWriter();
-
-        int len = in.read(buf);
-        while (len > 0) {
-            if (len == 5000) {
-                w.write(buf);
+        try {
+            int len = in.read(buf);
+            while (len > 0) {
+                if (len == 5000) {
+                    w.write(buf);
+                }
+                else {
+                    w.write(buf, 0, len);
+                }
+                len = in.read(buf);
             }
-            else {
-                w.write(buf, 0, len);
-            }
-            len = in.read(buf);
         }
-        w.flush();
-        w.close();
+        finally {
+            w.flush();
+            w.close();
+        }
     }
 
     /**
      * Writes the entire contents of the memory file to the OutputStream passed.
+     * Does not close the output stream.
      */
     public void outToOutputStream(OutputStream out) throws Exception {
         for (byte[] buf : contents) {
@@ -193,7 +217,7 @@ public class MemFile {
 
     /**
      * Writes the entire contents of the memory file to the Writer that is
-     * passed.
+     * passed.   Does not close the writer.
      */
     public void outToWriter(Writer w) throws Exception {
         Reader r = getReader();
@@ -212,9 +236,13 @@ public class MemFile {
      */
     public void outToFile(File file) throws Exception {
         OutputStream os = new FileOutputStream(file);
-        this.outToOutputStream(os);
-        os.flush();
-        os.close();
+        try {
+            this.outToOutputStream(os);
+            os.flush();
+        }
+        finally {
+            os.close();
+        }
     }
 
     /**
