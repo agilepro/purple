@@ -41,29 +41,48 @@ public class WebRequest {
     public HttpServletRequest  request;
     public HttpServletResponse response;
     public HttpSession         session;
-    public OutputStream        outStream;
     public Writer              w;
+    public OutputStream        outStream;
     public String              requestURL;
     private ArrayList<String>  path;
     private int pathPos = 0;
     private JSONObject postedObject = null;
 
     public WebRequest (HttpServletRequest _req, HttpServletResponse _resp) throws Exception {
-        this(_req, _resp, _resp.getWriter());
+        this(_req, _resp, new OutputStreamWriter(_resp.getOutputStream()));
     }
 
 
+    /**
+     * This constructor is used within a JSP file where the Writer has already been grabbed from the
+     * Response object which only allows the writer to be gotten once.  Later attempts fail
+     * and so this constructor does not attempt to do this.
+     *
+     * By getting the writer, we do not have access to teh outputstream.
+     *
+     * There are a couple methods that require the output stream and will not work when constructed
+     * from this constructor.
+     */
     public WebRequest (HttpServletRequest _req, HttpServletResponse _resp, Writer aw) throws Exception {
         request = _req;
         response = _resp;
         session = request.getSession();
         setUpForCrossBrowser();
         parsePath();
-        outStream = response.getOutputStream();
-        w = new OutputStreamWriter(outStream, "UTF-8");
+        w = aw;
         request.setAttribute("wrappedRequest", this);
     }
 
+    /**
+     * This factory method is used within a JSP file where the Writer has already been grabbed from the
+     * Response object which only allows the writer to be gotten once.  Later attempts fail
+     * and so this factory method does not attempt to do this.
+     *
+     * By getting the writer, we do not have access to teh outputstream.
+     *
+     * There are a couple methods that require the output stream and will not work when constructed
+     * from this constructor.
+     */
     public static WebRequest findOrCreate(HttpServletRequest _req, HttpServletResponse _resp, Writer aw) throws Exception {
         WebRequest wr = (WebRequest) _req.getAttribute("wrappedRequest");
         if (wr == null) {
@@ -171,7 +190,7 @@ public class WebRequest {
 
     /**
      * Reads the uploaded PUT body, and stores it to the specified
-     * file (using a temp name, and deleting whatever file migth
+     * file (using a temp name, and deleting whatever file might
      * have been there before.)
      */
     public void storeContentsToFile(File destination) throws Exception {
