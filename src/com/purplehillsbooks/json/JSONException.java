@@ -15,7 +15,7 @@ import java.util.List;
  * to convert an exception to JSON in a standard way
  * to trace an exception to the output stream in a standard way.
  */
-public class JSONException extends Exception {
+public class JSONException extends Exception implements TemplatizedMessage {
     private static final long serialVersionUID = 0;
     public  String   template;
     public  String[] params;
@@ -245,12 +245,13 @@ public class JSONException extends Exception {
             traceHolder.add(et);
 
             JSONObject detailObj = new JSONObject();
-            if (runner instanceof JSONException) {
-                JSONException jrun = (JSONException)runner;
-                if (jrun.params.length>0) {
-                    detailObj.put("template", jrun.template);
-                    for (int i=0; i<jrun.params.length; i++) {
-                        detailObj.put("param"+i,jrun.params[i]);
+            if (runner instanceof TemplatizedMessage) {
+                TemplatizedMessage jrun = (TemplatizedMessage)runner;
+                String[] params = jrun.getParameters();
+                if (params.length>0) {
+                    detailObj.put("template", jrun.getStdTemplate());
+                    for (int i=0; i<params.length; i++) {
+                        detailObj.put("param"+i,params[i]);
                     }
                 }
             }
@@ -549,6 +550,21 @@ public class JSONException extends Exception {
         catch (Exception xxx) {
             return new Exception("Failure converting JSONToException: "+ex.toString(), xxx);
         }
+    }
+
+    @Override
+    public String getStdTemplate() {
+        return template;
+    }
+
+    @Override
+    public String[] getParameters() {
+        return params;
+    }
+
+    @Override
+    public String getFormattedMessage() {
+        return formatString(template, params);
     }
 
 }
