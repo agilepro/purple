@@ -49,7 +49,14 @@ public class WebRequest {
     private JSONObject postedObject = null;
 
     public WebRequest (HttpServletRequest _req, HttpServletResponse _resp) throws Exception {
-        this(_req, _resp, new OutputStreamWriter(_resp.getOutputStream()));
+        request = _req;
+        response = _resp;
+        session = request.getSession();
+        setUpForCrossBrowser();
+        parsePath();
+        outStream = _resp.getOutputStream();
+        w = new OutputStreamWriter(outStream);
+        request.setAttribute("wrappedRequest", this);
     }
 
 
