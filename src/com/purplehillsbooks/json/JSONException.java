@@ -1,6 +1,7 @@
 package com.purplehillsbooks.json;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -333,26 +334,24 @@ public class JSONException extends Exception implements TemplatizedMessage {
     }
 
     /**
-     * A standardized way to trace a given exception to the system out.
+     * A standardized way to trace a given exception.
      *
      * Because this is a method designed to be used during exception
      * handling, it is written to avoid throwing any exceptions.
-     * All errors in the running of this routine are written to standard out.
+     * All errors in the running of this routine are reported in a
+     * way to avoid causing more problems.
      */
     public static JSONObject traceException(PrintStream out, Throwable e, String context) {
         if (e==null) {
-            System.out.println("$$$$$$$$ traceException requires an e parameter");
-            return null;
+            e = new Exception("$$$$$$$$ traceException called without an exception");
         }
         if (out==null) {
-            System.out.println("$$$$$$$$ traceException requires an out parameter");
-            e.printStackTrace();
-            return null;
+            out = System.out;
+            out.println("$$$$$$$$ traceException requires an out parameter");
         }
         if (context==null || context.length()==0) {
-            System.out.println("$$$$$$$$ traceException requires a context parameter");
-            e.printStackTrace();
-            return null;
+            out.println("$$$$$$$$ traceException requires a context parameter");
+            context = "Missing value provided to define context of exception";
         }
         try {
             JSONObject errOb = convertToJSON(e, context);
@@ -360,8 +359,10 @@ public class JSONException extends Exception implements TemplatizedMessage {
             return errOb;
         }
         catch (Exception eee) {
-            System.out.println("$$$$$$$$ FAILURE TRACING AN EXCEPTION TO JSON");
-            eee.printStackTrace();
+            out.println("$$$$$$$$ FAILURE TRACING AN EXCEPTION TO JSON");
+            eee.printStackTrace(out);
+            out.println("$$$$$$$$ ORIGINAL EXCEPTION THAT FAILED TO CONVERT TO JSON");
+            e.printStackTrace(out);
             return null;
         }
     }
@@ -371,20 +372,15 @@ public class JSONException extends Exception implements TemplatizedMessage {
      */
     public static JSONObject traceException(Writer w, Throwable e, String context) {
         if (e==null) {
-            System.out.println("$$$$$$$$ traceException requires an e parameter to specify exception");
-            e = new JSONException("Request to trace a null exception - stack trace to show where this happened");
-            e.printStackTrace();
-            return null;
+            e = new Exception("$$$$$$$$ traceException called without an exception");
         }
         if (w==null) {
-            System.out.println("$$$$$$$$ traceException requires an w parameter");
-            e.printStackTrace();
-            return null;
+            System.out.println("$$$$$$$$ traceException requires an out parameter");
+            return traceException(System.out, e, context);
         }
         if (context==null || context.length()==0) {
             System.out.println("$$$$$$$$ traceException requires a context parameter");
-            e.printStackTrace();
-            return null;
+            context = "Missing value provided to define context of exception";
         }
         try {
             JSONObject errOb = convertToJSON(e, context);
@@ -392,8 +388,11 @@ public class JSONException extends Exception implements TemplatizedMessage {
             return errOb;
         }
         catch (Exception eee) {
-            System.out.println("$$$$$$$$ FAILURE TRACING AN EXCEPTION TO JSON");
-            eee.printStackTrace();
+            PrintWriter pw = new PrintWriter(w);
+            pw.println("$$$$$$$$ FAILURE TRACING AN EXCEPTION TO JSON\n");
+            eee.printStackTrace(pw);
+            pw.println("$$$$$$$$ ORIGINAL EXCEPTION THAT FAILED TO CONVERT TO JSON");
+            e.printStackTrace(pw);
             return null;
         }
     }
