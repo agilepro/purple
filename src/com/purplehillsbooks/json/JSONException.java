@@ -171,7 +171,8 @@ public class JSONException extends Exception implements TemplatizedMessage {
     */
     public static boolean containsMessage(Throwable t, String fragment) {
         while (t!=null) {
-            if (t.getMessage().contains(fragment)) {
+            String msg = t.getMessage();
+            if (msg!=null && msg.contains(fragment)) {
                 return true;
             }
             t = t.getCause();
