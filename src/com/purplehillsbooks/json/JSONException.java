@@ -250,7 +250,10 @@ public class JSONException extends Exception implements TemplatizedMessage {
             if (runner instanceof TemplatizedMessage) {
                 TemplatizedMessage jrun = (TemplatizedMessage)runner;
                 String[] params = jrun.getParameters();
-                if (params.length>0) {
+                //getParameters should never return a null, but this is an interface and might
+                //have been implemented by someone else not follinwg this rule, so always
+                //check for null just to be sure.
+                if (params!=null && params.length>0) {
                     detailObj.put("template", jrun.getStdTemplate());
                     for (int i=0; i<params.length; i++) {
                         detailObj.put("param"+i,params[i]);
