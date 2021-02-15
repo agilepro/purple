@@ -34,6 +34,8 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
@@ -326,8 +328,8 @@ public class JSONArray {
      * Returns the entire JSONArray as a list of JSONObjects.
      * This makes it much easier to iterate a JSONArray, that is if all
      * the elements are expected to be JSONObjects.
-     * 
-     * Elements of the array that are not JSONObjects are ignored, so 
+     *
+     * Elements of the array that are not JSONObjects are ignored, so
      * if there are no JSONObjects in the array, you will get an empty set back
      */
     public List<JSONObject> getJSONObjectSet() throws Exception {
@@ -341,7 +343,7 @@ public class JSONArray {
     	return ret;
     }
 
-    	 
+
     /**
      * Get the long value associated with an index.
      *
@@ -898,7 +900,7 @@ public class JSONArray {
      * Produce a JSONObject by combining a JSONArray of names with the values
      * of this JSONArray.
      * </p>
-     * 
+     *
      * @param names A JSONArray containing a list of key strings. These will be
      * paired with the values.
      * @return A JSONObject, or null if there are no names or if this JSONArray
@@ -1048,6 +1050,79 @@ public class JSONArray {
             return writer;
         } catch (IOException e) {
            throw new JSONException("Difficulty writing the JSON object at indent "+indent, e);
+        }
+    }
+
+
+    /**
+     * Sorts the JSONArray according to the Comparator provided.
+     * You can provide a comparator and sort the array.
+     * You must provide a Comparator<Object> because that is what the
+     * underlying array is, and your compare functions must handle
+     * either the raw Objects, or cast appropriately to the objects you
+     * expect to find in the array.
+     */
+    public void sortMembers(Comparator<Object> comp) {
+        Collections.sort(myArrayList, comp);
+    }
+
+    /**
+     * use this comparator to sort a JSONArray if all the elements are Strings
+     * and you want them in case-sensitive incrementing order.
+     * Anything in the JSONArray that is not a String will be essentially ignored
+     * and placed after all the strings.
+     *
+     * @param isDescending: false if you want ascending order, true if you want descending
+     * @param caseSensitive: false if you upper and lower case together, true if you want ASCII order
+     */
+    public static Comparator<Object> stringComparator(boolean isDescending, boolean caseSensitive) {
+        return new StringComparator(isDescending, caseSensitive);
+    }
+
+    private static class StringComparator implements Comparator<Object> {
+        boolean descending;
+        boolean caseSense;
+
+        StringComparator(boolean isDescending, boolean caseSensitive) {
+            descending = isDescending;
+            caseSense = caseSensitive;
+        }
+
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            if (!(o1 instanceof String)) {
+                if (o1 instanceof Integer) {
+                    o1 = Integer.toString((Integer)o1);
+                }
+                else {
+                    return 1;
+                }
+            }
+            if (!(o2 instanceof String)) {
+                if (o2 instanceof Integer) {
+                    o1 = Integer.toString((Integer)o2);
+                }
+                else {
+                    return -1;
+                }
+            }
+            if (caseSense) {
+                if (descending) {
+                    return ((String)o2).compareTo((String)o1);
+                }
+                else {
+                    return ((String)o1).compareTo((String)o2);
+                }
+            }
+            else {
+                if (descending) {
+                    return ((String)o2).compareToIgnoreCase((String)o1);
+                }
+                else {
+                    return ((String)o1).compareToIgnoreCase((String)o2);
+                }
+            }
         }
     }
 }

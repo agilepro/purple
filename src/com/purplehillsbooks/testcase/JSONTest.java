@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
 import com.purplehillsbooks.streams.MemFile;
@@ -49,6 +50,7 @@ public class JSONTest implements TestSet {
 
         testAllWriteAndReadOperations();
         testLongValues();
+        testSorting();
     }
 
 
@@ -348,6 +350,78 @@ public class JSONTest implements TestSet {
         }
         else {
             tr.markFailed(testId, "Expected '" + testVal + "' but got '" + finalVal + "' instead.");
+        }
+    }
+
+
+    private void testSorting() throws Exception {
+
+        JSONArray list = new JSONArray();
+
+        list.put("Grand Canyon");
+        list.put("Miami Beach");
+        list.put("New York");
+        list.put("New Mexico");
+        list.put("some other place");
+        list.put("Albuquerque");
+        list.put("Yellowstone");
+        list.put("anywhere else");
+
+
+        String testSet = "Sorting JavaArray ascending case sensitive";
+        list.sortMembers(JSONArray.stringComparator(false, true));
+        testArrayMember(list, 0, "Albuquerque", testSet);
+        testArrayMember(list, 1, "Grand Canyon", testSet);
+        testArrayMember(list, 2, "Miami Beach", testSet);
+        testArrayMember(list, 3, "New Mexico", testSet);
+        testArrayMember(list, 4, "New York", testSet);
+        testArrayMember(list, 5, "Yellowstone", testSet);
+        testArrayMember(list, 6, "anywhere else", testSet);
+        testArrayMember(list, 7, "some other place", testSet);
+
+        testSet = "Sorting JavaArray Descending case sensitive";
+        list.sortMembers(JSONArray.stringComparator(true, true));
+        testArrayMember(list, 7, "Albuquerque", testSet);
+        testArrayMember(list, 6, "Grand Canyon", testSet);
+        testArrayMember(list, 5, "Miami Beach", testSet);
+        testArrayMember(list, 4, "New Mexico", testSet);
+        testArrayMember(list, 3, "New York", testSet);
+        testArrayMember(list, 2, "Yellowstone", testSet);
+        testArrayMember(list, 1, "anywhere else", testSet);
+        testArrayMember(list, 0, "some other place", testSet);
+
+        testSet = "Sorting JavaArray ascending case INsensitive";
+        list.sortMembers(JSONArray.stringComparator(false, false));
+        testArrayMember(list, 0, "Albuquerque", testSet);
+        testArrayMember(list, 1, "anywhere else", testSet);
+        testArrayMember(list, 2, "Grand Canyon", testSet);
+        testArrayMember(list, 3, "Miami Beach", testSet);
+        testArrayMember(list, 4, "New Mexico", testSet);
+        testArrayMember(list, 5, "New York", testSet);
+        testArrayMember(list, 6, "some other place", testSet);
+        testArrayMember(list, 7, "Yellowstone", testSet);
+
+        testSet = "Sorting JavaArray Descending case INsensitive";
+        list.sortMembers(JSONArray.stringComparator(true, false));
+        testArrayMember(list, 7, "Albuquerque", testSet);
+        testArrayMember(list, 6, "anywhere else", testSet);
+        testArrayMember(list, 5, "Grand Canyon", testSet);
+        testArrayMember(list, 4, "Miami Beach", testSet);
+        testArrayMember(list, 3, "New Mexico", testSet);
+        testArrayMember(list, 2, "New York", testSet);
+        testArrayMember(list, 1, "some other place", testSet);
+        testArrayMember(list, 0, "Yellowstone", testSet);
+
+
+    }
+
+    private void testArrayMember(JSONArray list, int index, String value, String testSet) throws Exception {
+        String actual = list.getString(index);
+        if (actual.equals(value)) {
+            tr.markPassed(testSet+"["+index+"]");
+        }
+        else {
+            tr.markFailed(testSet+"["+index+"]", "Expected '"+value+"' but found '"+actual+"' instead");
         }
     }
 
