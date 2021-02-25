@@ -203,240 +203,259 @@ public class JSONSchema {
     }
 
     private boolean checkSchemaRunner(String path, JSONObject data, JSONObject schema) throws Exception {
-        if (errors.size()>this.errorLimit) {
-            return false;
-        }
-        if (schema.has("$ref")) {
-            String schemaName = schema.getString("$ref");
-            addLog("   ~Retrieving schema named '"+schemaName);
-            schema = schemaLib.getSchema(schemaName);
-        }
-        if (!schema.has("type")) {
-            //we don't know the type, so don't check any further.
-            addLog("Found Object at '"+path+"' but skipping check becaue schema does not specify type");
-            return true;
-        }
-        String mainType = schema.getString("type");
-        if (!"object".equals(mainType)) {
-            addErrorLog("@"+path+" - found an object but schema is expecting a "+mainType);
-            return false;
-        }
-        //it is a json object, so there have to be properties
-        if (!schema.has("properties") && !schema.has("additionalProperties")) {
-            addErrorLog("@"+path+" - schema does not have any properties for this object");
-            return false;
-        }
-        addLog(" "+path+" - Found Object");
-        JSONObject properties = schema.getJSONObject("properties");
-        boolean resultCode = true;
-        for (String key : data.keySet()) {
+        try {
             if (errors.size()>this.errorLimit) {
                 return false;
             }
-            Object d = data.get(key);
-            JSONObject p = null;
-            if (properties.has(key)) {
-                p = properties.getJSONObject(key);
+            if (schema.has("$ref")) {
+                String schemaName = schema.getString("$ref");
+                addLog("   ~Retrieving schema named '"+schemaName);
+                schema = schemaLib.getSchema(schemaName);
             }
-            else if (schema.has("additionalProperties")) {
-                //so, if you have a MAP (associative array) then all those can have
-                //any name, but they must be the same type, and they must be
-                //declared with this additionalProperties item in the schema
-                p = schema.getJSONObject("additionalProperties");
+            if (!schema.has("type")) {
+                //we don't know the type, so don't check any further.
+                addLog("Found Object at '"+path+"' but skipping check becaue schema does not specify type");
+                return true;
             }
-            else {
-                addErrorLog("@"+path+key+" - No entry in schema corresponding to this.");
-                resultCode = false;
-                continue;
+            String mainType = schema.getString("type");
+            if (!"object".equals(mainType)) {
+                addErrorLog("@"+path+" - found an object but schema is expecting a "+mainType);
+                return false;
             }
-            if (p.has("$ref")) {
-                String schemaName = p.getString("$ref");
-                addLog("   ~Retrieving property '"+key+"' schema named '"+schemaName);
-                p = schemaLib.getSchema(schemaName);
+            //it is a json object, so there have to be properties
+            if (!schema.has("properties") && !schema.has("additionalProperties")) {
+                addErrorLog("@"+path+" - schema does not have any properties for this object");
+                return false;
             }
-            if (!p.has("type")) {
-                //the schema does not specify the type, so don't check this property at all
-                //just go on to the next property
-                addLog("Found property at '"+path+key+"' but skipping check becaue schema does not specify type");
-                continue;
-            }
-            String dataType = p.getString("type");
-            if (d instanceof JSONArray) {
-                if (!checkSchemaArray(path+key+".", ((JSONArray)d), p)) {
-                    resultCode = false;
+            addLog(" "+path+" - Found Object");
+            JSONObject properties = schema.getJSONObject("properties");
+            boolean resultCode = true;
+            for (String key : data.keySet()) {
+                if (errors.size()>this.errorLimit) {
+                    return false;
                 }
-            }
-            else if (d instanceof JSONObject) {
-                if (!checkSchemaRunner(path+key+".", ((JSONObject)d), p)) {
-                    resultCode = false;
+                Object d = data.get(key);
+                JSONObject p = null;
+                if (properties.has(key)) {
+                    p = properties.getJSONObject(key);
                 }
-            }
-            else if (d instanceof String) {
-                if (!"string".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a string but expecting a "+dataType);
-                    resultCode = false;
+                else if (schema.has("additionalProperties")) {
+                    //so, if you have a MAP (associative array) then all those can have
+                    //any name, but they must be the same type, and they must be
+                    //declared with this additionalProperties item in the schema
+                    p = schema.getJSONObject("additionalProperties");
                 }
                 else {
-                    addLog(" "+path+key+" - Found string");
-                }
-            }
-            else if (d instanceof Integer) {
-                if (!"integer".equals(dataType) && !"long".equals(dataType) && !"number".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a integer but expecting a "+dataType);
+                    addErrorLog("@"+path+key+" - No entry in schema corresponding to this.");
                     resultCode = false;
+                    continue;
+                }
+                if (p.has("$ref")) {
+                    String schemaName = p.getString("$ref");
+                    addLog("   ~Retrieving property '"+key+"' schema named '"+schemaName);
+                    p = schemaLib.getSchema(schemaName);
+                }
+                if (!p.has("type")) {
+                    //the schema does not specify the type, so don't check this property at all
+                    //just go on to the next property
+                    addLog("Found property at '"+path+key+"' but skipping check becaue schema does not specify type");
+                    continue;
+                }
+                String dataType = p.getString("type");
+                if (d instanceof JSONArray) {
+                    if (!checkSchemaArray(path+key+".", ((JSONArray)d), p)) {
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof JSONObject) {
+                    if (!checkSchemaRunner(path+key+".", ((JSONObject)d), p)) {
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof String) {
+                    if (!"string".equals(dataType)) {
+                        addErrorLog("@"+path+key+". - found a string but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+key+" - Found string");
+                    }
+                }
+                else if (d instanceof Integer) {
+                    if ("integer".equals(dataType)) {
+                        addLog(" "+path+key+" - Found integer");
+                    }
+                    else if ("long".equals(dataType)) {
+                        addLog(" "+path+key+" - Found long (as integer)");
+                    }
+                    else if ("number".equals(dataType)) {
+                        addLog(" "+path+key+" - Found number (as integer)");
+                    }
+                    else {
+                        addErrorLog("@"+path+key+". - found an integer but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof Long) {
+                    if ("integer".equals(dataType)) {
+                        addLog(" "+path+key+" - Found integer (as long)");
+                    }
+                    else if ("long".equals(dataType)) {
+                        addLog(" "+path+key+" - Found long");
+                    }
+                    else if ("number".equals(dataType)) {
+                        addLog(" "+path+key+" - Found number (as long)");
+                    }
+                    else {
+                        addErrorLog("@"+path+key+". - found a long but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof Float || d instanceof Double) {
+                    if ("number".equals(dataType)) {
+                        addLog(" "+path+key+" - Found number");
+                    }
+                    else if ("integer".equals(dataType)) {
+                        addLog(" "+path+key+" - Found integer (as number)");
+                    }
+                    else if ("long".equals(dataType)) {
+                        addLog(" "+path+key+" - Found long (as number)");
+                    }
+                    else {
+                        addErrorLog("@"+path+key+". - found a number but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof Boolean) {
+                    if (!"boolean".equals(dataType)) {
+                        addErrorLog("@"+path+key+". - found a boolean but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+key+" - Found boolean");
+                    }
                 }
                 else {
-                    addLog(" "+path+key+" - Found number");
-                }
-            }
-            else if (d instanceof Long) {
-                if (!"integer".equals(dataType) && !"long".equals(dataType) && !"number".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a long but expecting a "+dataType);
+                    //something unexpected happened, marking as a problem now
+                    addErrorLog("@"+path+key+". unhandled property of type: "+(d.getClass().getName()));
                     resultCode = false;
                 }
-                else {
-                    addLog(" "+path+key+" - Found number");
+            }
+            if (schema.has("required")) {
+                JSONArray required = schema.getJSONArray("required");
+                for (int i=0; i<required.length(); i++) {
+                    String requiredPropertyName = required.getString(i);
+                    if (!data.has(requiredPropertyName)) {
+                        addErrorLog("@"+path+requiredPropertyName+" property required by schema not found");
+                        resultCode = false;
+                    }
                 }
             }
-            else if (d instanceof Float) {
-                if (!"number".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a number but expecting a "+dataType);
-                    resultCode = false;
-                }
-                else {
-                    addLog(" "+path+key+" - Found number");
-                }
-            }
-            else if (d instanceof Double) {
-                if (!"number".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a number but expecting a "+dataType);
-                    resultCode = false;
-                }
-                else {
-                    addLog(" "+path+key+" - Found number");
-                }
-            }
-            else if (d instanceof Boolean) {
-                if (!"boolean".equals(dataType)) {
-                    addErrorLog("@"+path+key+". - found a boolean but expecting a "+dataType);
-                    resultCode = false;
-                }
-                else {
-                    addLog(" "+path+key+" - Found boolean");
-                }
-            }
-            else {
-                //something unexpected happened, marking as a problem now
-                addErrorLog("@"+path+key+". unhandled property of type: "+(d.getClass().getName()));
-                resultCode = false;
-            }
+            return resultCode;
         }
-        if (schema.has("required")) {
-            JSONArray required = schema.getJSONArray("required");
-            for (int i=0; i<required.length(); i++) {
-                String requiredPropertyName = required.getString(i);
-                if (!data.has(requiredPropertyName)) {
-                    addErrorLog("@"+path+requiredPropertyName+" property required by schema not found");
-                    resultCode = false;
-                }
-            }
+        catch (Exception e) {
+            throw new Exception("Failure processes object at path="+path, e);
         }
-        return resultCode;
     }
 
 
     private boolean checkSchemaArray(String path, JSONArray data, JSONObject schema) throws Exception {
-        if (errors.size()>this.errorLimit) {
-            return false;
-        }
-        boolean resultCode = true;
-        addLog(" "+path+" - Found Array");
-        if (schema.has("$ref")) {
-            String schemaName = schema.getString("$ref");
-            addLog("   ~Retrieving schema named '"+schemaName);
-            schema = schemaLib.getSchema(schemaName);
-        }
-        if (!"array".equals(schema.getString("type"))) {
-            addErrorLog("@"+path+" - found an array, but schema expects it to be: "+schema.getString("type"));
-            return false;
-        }
-        if (data.length()==0) {
-            //nothing else to do if there are no elements
-            return true;
-        }
-        if (!schema.has("items")) {
-            //missing items is treated like a missing type:  no validation of the elements will be done.
-            return true;
-        }
-        JSONObject s = schema.getJSONObject("items");
-        if (s.has("$ref")) {
-            String schemaName = s.getString("$ref");
-            addLog("   ~Retrieving item schema named '"+schemaName);
-            s = schemaLib.getSchema(schemaName);
-        }
-        if (!s.has("type")) {
-            //the schema does not specify the type, so don't check this array items
-            return true;
-        }
-        String dataType = s.getString("type");
-        for (int i=0; i<data.length(); i++) {
+        try {
             if (errors.size()>this.errorLimit) {
                 return false;
             }
-            Object d = data.get(i);
-            if (d instanceof JSONArray) {
-                if (!checkSchemaArray(path+"["+i+"].", ((JSONArray)d), s)) {
-                    resultCode = false;
-                }
+            boolean resultCode = true;
+            addLog(" "+path+" - Found Array");
+            if (schema.has("$ref")) {
+                String schemaName = schema.getString("$ref");
+                addLog("   ~Retrieving schema named '"+schemaName);
+                schema = schemaLib.getSchema(schemaName);
             }
-            else if (d instanceof JSONObject) {
-                if (!checkSchemaRunner(path+"["+i+"].", ((JSONObject)d), s)) {
-                    resultCode = false;
-                }
+            if (!"array".equals(schema.getString("type"))) {
+                addErrorLog("@"+path+" - found an array, but schema expects it to be: "+schema.getString("type"));
+                return false;
             }
-            else if (d instanceof String) {
-                if (!"string".equals(dataType)) {
-                    addErrorLog("@"+path+"["+i+"]. - found a string but expecting a "+dataType);
-                    resultCode = false;
+            if (data.length()==0) {
+                //nothing else to do if there are no elements
+                return true;
+            }
+            if (!schema.has("items")) {
+                //missing items is treated like a missing type:  no validation of the elements will be done.
+                return true;
+            }
+            JSONObject s = schema.getJSONObject("items");
+            if (s.has("$ref")) {
+                String schemaName = s.getString("$ref");
+                addLog("   ~Retrieving item schema named '"+schemaName);
+                s = schemaLib.getSchema(schemaName);
+            }
+            if (!s.has("type")) {
+                //the schema does not specify the type, so don't check this array items
+                return true;
+            }
+            String dataType = s.getString("type");
+            for (int i=0; i<data.length(); i++) {
+                if (errors.size()>this.errorLimit) {
+                    return false;
+                }
+                Object d = data.get(i);
+                if (d instanceof JSONArray) {
+                    if (!checkSchemaArray(path+"["+i+"].", ((JSONArray)d), s)) {
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof JSONObject) {
+                    if (!checkSchemaRunner(path+"["+i+"].", ((JSONObject)d), s)) {
+                        resultCode = false;
+                    }
+                }
+                else if (d instanceof String) {
+                    if (!"string".equals(dataType)) {
+                        addErrorLog("@"+path+"["+i+"]. - found a string but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+"["+i+"]. - Found string");
+                    }
+                }
+                else if (d instanceof Integer) {
+                    if (!"integer".equals(dataType) && !"number".equals(dataType)) {
+                        addErrorLog("@"+path+"["+i+"]. - found a integer but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+"["+i+"]. - Found number");
+                    }
+                }
+                else if (d instanceof Float) {
+                    if (!"number".equals(dataType)) {
+                        addErrorLog("@"+path+"["+i+"]. - found a number but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+"["+i+"]. - Found number");
+                    }
+                }
+                else if (d instanceof Boolean) {
+                    if (!"boolean".equals(dataType)) {
+                        addErrorLog("@"+path+"["+i+"]. - found a boolean but expecting a "+dataType);
+                        resultCode = false;
+                    }
+                    else {
+                        addLog(" "+path+"["+i+"]. - Found boolean");
+                    }
                 }
                 else {
-                    addLog(" "+path+"["+i+"]. - Found string");
-                }
-            }
-            else if (d instanceof Integer) {
-                if (!"integer".equals(dataType) && !"number".equals(dataType)) {
-                    addErrorLog("@"+path+"["+i+"]. - found a integer but expecting a "+dataType);
+                    //something unexpected happened, marking as a problem now
+                    addErrorLog("@"+path+"["+i+"]. - Unidentified property of type: "+(d.getClass().getName()));
                     resultCode = false;
                 }
-                else {
-                    addLog(" "+path+"["+i+"]. - Found number");
-                }
             }
-            else if (d instanceof Float) {
-                if (!"number".equals(dataType)) {
-                    addErrorLog("@"+path+"["+i+"]. - found a number but expecting a "+dataType);
-                    resultCode = false;
-                }
-                else {
-                    addLog(" "+path+"["+i+"]. - Found number");
-                }
-            }
-            else if (d instanceof Boolean) {
-                if (!"boolean".equals(dataType)) {
-                    addErrorLog("@"+path+"["+i+"]. - found a boolean but expecting a "+dataType);
-                    resultCode = false;
-                }
-                else {
-                    addLog(" "+path+"["+i+"]. - Found boolean");
-                }
-            }
-            else {
-                //something unexpected happened, marking as a problem now
-                addErrorLog("@"+path+"["+i+"]. - Unidentified property of type: "+(d.getClass().getName()));
-                resultCode = false;
-            }
+            return resultCode;
         }
-        return resultCode;
+        catch (Exception e) {
+            throw new Exception("Failure processes at path="+path, e);
+        }
     }
 
     public boolean checkSchema(JSONObject data, JSONObject schema) throws Exception {
