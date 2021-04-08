@@ -37,8 +37,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -862,8 +862,13 @@ public class JSONArray {
      */
     public List<JSONObject> getJSONObjectList() throws Exception {
         ArrayList<JSONObject> res = new ArrayList<JSONObject>();
-        for (int i=0; i<this.length();i++) {
-            res.add(this.getJSONObject(i));
+        for (int i=0; i<this.length(); i++) {
+            try {
+                res.add(this.getJSONObject(i));
+            }
+            catch (Exception e) {
+                throw new JSONException("Failure processing element number {0} of the JSONArray", e, i);
+            }
         }
         return res;
     }
@@ -883,26 +888,51 @@ public class JSONArray {
      *  Returns all the elements as Strings in the same order
      *  they are in the array.
      *  Does not convert data from other data types.
-     *  Will throw an exception if any element is NOT a String
+     *  Will throw an exception if any element is NOT a String.
      *  </p>
      */
     public List<String> getStringList() throws Exception {
         ArrayList<String> res = new ArrayList<String>();
-        for (int i=0; i<this.length();i++) {
-            res.add(this.getString(i));
+        for (int i=0; i<this.length(); i++) {
+            try {
+                res.add(this.getString(i));
+            }
+            catch (Exception e) {
+                throw new JSONException("Failure processing element number {0} of the JSONArray", e, i);
+            }
         }
         return res;
+    }
+
+    /**
+     * If the JSONArray is filled only with string values,
+     * then this method will test for the presence of a particular
+     * value in that list.   If the value is found, it returns
+     * true, otherwise false.
+     * Will throw an exception if any element is NOT a String.
+     */
+    public boolean containsString(String testValue) throws Exception {
+        for (String value : getStringList()) {
+            if (testValue.equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
     /**
      * <p>
-     * Produce a JSONObject by combining a JSONArray of names with the values
-     * of this JSONArray.
+     * Produce a JSONObject with values from this array,
+     * named by values in the array passed in.
+     * Say you have a JSONArray with 10 items in it.
+     * Call this method with another JSONArray with 10 names in it.
+     * Each named member of the generated object will be given the value that is found at the
+     * same position in this array.
      * </p>
      *
-     * @param names A JSONArray containing a list of key strings. These will be
-     * paired with the values.
+     * @param names A JSONArray containing a list of key name. These will be
+     * paired with the values according to position.
      * @return A JSONObject, or null if there are no names or if this JSONArray
      * has no values.
      * @throws JSONException If any of the names are null.

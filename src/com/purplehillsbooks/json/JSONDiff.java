@@ -1,14 +1,12 @@
 package com.purplehillsbooks.json;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.purplehillsbooks.json.JSONArray;
-import com.purplehillsbooks.json.JSONObject;
+
 import com.purplehillsbooks.streams.CSVHelper;
+import com.purplehillsbooks.streams.UTF8FileWriter;
 
 
 /**
@@ -170,6 +168,15 @@ public class JSONDiff {
     }
 
 
+    /**
+     * A convenient way to dump the diff output to a CSV file
+     */
+    public static void dumpToCSV(File filePath, List<List<String>> table) throws Exception {
+        UTF8FileWriter ufw = new UTF8FileWriter(filePath);
+        CSVHelper.writeTable(ufw, table);
+        ufw.close();
+    }
+
  /**
  *
  * <p>The main routine can be called as a command-line command
@@ -222,11 +229,7 @@ public class JSONDiff {
             if (fileOut.exists()) {
                 fileOut.delete();
             }
-            FileOutputStream fos = new FileOutputStream(fileOut);
-            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-            CSVHelper.writeTable(osw, table);
-            osw.flush();
-            osw.close();
+            dumpToCSV(fileOut, table);
 
             //now write out the extended object
             File newSecondObject = new File(file2.getParentFile(), file2.getName()+".augment.json");

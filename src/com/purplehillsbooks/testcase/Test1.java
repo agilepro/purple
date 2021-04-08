@@ -25,12 +25,16 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
 import com.purplehillsbooks.json.Dom2JSON;
+import com.purplehillsbooks.json.JSONArray;
+import com.purplehillsbooks.json.JSONDiff;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
+import com.purplehillsbooks.json.YAMLSupport;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
@@ -283,7 +287,7 @@ public class Test1 extends TestAbstract implements TestSet {
 
     public void writeBothStylesAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
         writeFileAndCompare(me, fileNamePart + ".xml");
-        writeJSONAndCompare(me, fileNamePart + ".json", hints);
+        writeJSONAndCompare(me, fileNamePart, hints);
     }
 
 
@@ -304,7 +308,8 @@ public class Test1 extends TestAbstract implements TestSet {
      * read that file
      * write it again and compare to archive
      */
-    public void  writeJSONAndCompare(Mel me, String fileName, Hashtable<String,Integer> hints) throws Exception {
+    public void  writeJSONAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
+        String fileName = fileNamePart + ".json";
         JSONObject jsonRep = Dom2JSON.convertElementToJSON(me.getElement(), hints);
 
         File outputFile = new File(tr.getProperty("testoutput", null), fileName);
@@ -351,7 +356,22 @@ public class Test1 extends TestAbstract implements TestSet {
             jsonRep.writeToFile(outputFile);
         }
 
-        //FOURTH delete the intermediate so it is not in the archive
+        //FOURTH write out the YML file and read it back in
+        File yamlFile = new File(tr.getProperty("testoutput", null), fileNamePart + ".yml");
+        JSONObject cleanedKeyObj = cleanUpKeys(jsonRep);
+        //cleanedKeyObj.writeToFile(new File(tr.getProperty("testoutput", null), fileNamePart + ".cleaned.json"));
+        YAMLSupport.writeYAMLFile(cleanedKeyObj, yamlFile);
+        JSONObject yamlCopy = YAMLSupport.readYAMLFile(yamlFile);
+        JSONDiff differ = new JSONDiff(false);
+        List<List<String>> difRes = differ.createDiff(cleanedKeyObj, yamlCopy);
+        if (difRes.size()>0) {
+            //this means it failed
+            File difOutFile = new File(tr.getProperty("testoutput", null), fileNamePart + ".yml.failure.txt");
+            JSONDiff.dumpToCSV(difOutFile, difRes);
+        }
+
+
+        //FIFTH delete the intermediate so it is not in the archive
         intermediateFile.delete();
 
         compareFiles(outputFile, fileName);
@@ -363,6 +383,50 @@ public class Test1 extends TestAbstract implements TestSet {
         compareGeneratedTextFile(testId, fileName);
     }
 
+
+    /**
+     * YAML format does not allow colon characters in the keys, and will
+     * convert the key to have a hyphen.  This makes it hard to do a
+     * diff later.  Rather than write a special diff that ignores the
+     * difference in colon converted to hyphen, this method converts all
+     * the key values to have a hyphen so that the final comparison
+     * does not see any differences.
+     */
+    private JSONObject cleanUpKeys(JSONObject inObj) throws Exception {
+        JSONObject outObj = new JSONObject();
+        for (String key : inObj.keySet()) {
+            Object value = inObj.get(key);
+            if (key.contains(":")) {
+                key = key.replace(':', '-');
+            }
+            if (value instanceof JSONObject) {
+                outObj.put(key, cleanUpKeys((JSONObject)value));
+            }
+            else if (value instanceof JSONArray) {
+                outObj.put(key, cleanUpSubKeys((JSONArray)value));
+            }
+            else {
+                outObj.put(key, value);
+            }
+        }
+        return outObj;
+    }
+    private JSONArray cleanUpSubKeys(JSONArray inObj) throws Exception {
+        JSONArray outArray = new JSONArray();
+        for (int i=0; i<inObj.length(); i++) {
+            Object value = inObj.get(i);
+            if (value instanceof JSONObject) {
+                outArray.put(cleanUpKeys((JSONObject)value));
+            }
+            else if (value instanceof JSONArray) {
+                outArray.put(cleanUpSubKeys((JSONArray)value));
+            }
+            else {
+                outArray.put(value);
+            }
+        }
+        return outArray;
+    }
 
 
     public static InputStream getData1Stream() throws Exception {
@@ -419,8 +483,8 @@ public class Test1 extends TestAbstract implements TestSet {
         byte[] buf = sbx.getBytes("UTF-8");
         return new ByteArrayInputStream(buf);
     }
-    
-    
+
+
     private void testInvalidCharacters() throws Exception {
         Mel me = Mel.createEmpty("testroot", Mel.class);
         Mel firstContainer = me.addChild("charTesting", Mel.class);
@@ -433,9 +497,9 @@ public class Test1 extends TestAbstract implements TestSet {
         }
         safeSerialization(me);
     }
-    
+
     /**
-     * Found out that the XML parser bombs out if you put $#2; into the 
+     * Found out that the XML parser bombs out if you put $#2; into the
      * source XML file.   However, it writes this out just fine.   This means
      * data in memory can be written and no able to be read.  We need to assure
      * that everything written can be read without failure, so it means stripping
@@ -450,15 +514,15 @@ public class Test1 extends TestAbstract implements TestSet {
         File randomFile = new File(tr.getProperty("testoutput", null), "badData"+System.currentTimeMillis()+".xml");
         System.out.println("Writing to "+randomFile);
         me.writeToFile(randomFile);
-        
+
         //all we have to know is whether it fails to read it
         Mel.readFile(randomFile, Mel.class);
-        
+
     }
 
 
 
-    
+
 
     public static void main(String args[]) {
         Test1 thisTest = new Test1();
