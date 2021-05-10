@@ -27,6 +27,7 @@ import java.io.Writer;
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
+import com.purplehillsbooks.json.YAMLSupport;
 import com.purplehillsbooks.streams.MemFile;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
@@ -38,19 +39,23 @@ import com.purplehillsbooks.testframe.TestSet;
  * Copyright: Keith Swenson, all rights reserved
  * License: This code is made available under the GNU Lesser GPL license.
  */
-public class JSONTest implements TestSet {
+public class JSONTest extends TestAbstract implements TestSet {
 
     TestRecorder tr;
 
     public JSONTest() {
+    	super();
     }
 
     public void runTests(TestRecorder newTr) throws Exception {
+        super.initForTests(newTr);
         tr = newTr;
 
         testAllWriteAndReadOperations();
         testLongValues();
         testSorting();
+        testYMLReading();
+
     }
 
 
@@ -424,5 +429,33 @@ public class JSONTest implements TestSet {
             tr.markFailed(testSet+"["+index+"]", "Expected '"+value+"' but found '"+actual+"' instead");
         }
     }
+    
+    
+    private void testYMLReading() {
+    	File testDataFolder = new File(tr.getProperty("source", null), "testdata");
+    	
+    	for (File child : testDataFolder.listFiles()) {
+    		String name= child.getName();
+    		try {
+	    		if (!name.startsWith("YMLTest") || !name.endsWith("yml")) {
+	    			//skip all the files except the YMLTest0001.yml files
+	    			continue;
+	    		}
+	    		
+	    		String jsonName = name.substring(0, 10) + ".json";
+	    		JSONObject data = YAMLSupport.readYAMLFile(child);
+	    		
+	    		//File jsonFile = new File(testDataFolder, jsonName);
+	    		File outputFile = new File(tr.getProperty("testoutput", null), jsonName);
+
+	    		data.writeToFile(outputFile);
+	    		compareGeneratedTextFile(name, jsonName);	    		
+    		}
+    		catch (Exception e) {
+    			tr.markFatalError(e);
+    		}
+    	}
+    }
+
 
 }

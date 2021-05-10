@@ -110,10 +110,12 @@ public abstract class TestAbstract implements TestSet {
         fis2.close();
 
         if (b1 >= 0) {
+        	System.out.println("FAIL: "+testId);
             tr.markFailed(testId, "new file has more characters in it than the old file: "+sourceFile.getAbsolutePath());
             return;
         }
         if (b2 >= 0) {
+        	System.out.println("FAIL: "+testId);
             tr.markFailed(testId, "old file has more characters in it than the new file: "+sourceFile.getAbsolutePath());
             return;
         }

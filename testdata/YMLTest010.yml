@@ -1,0 +1,28 @@
+library: 
+  book: 
+    - author: Nicholas Taleb
+      stores: 
+        #comment
+        - Barnes & Noble
+            #comment
+        - Amazon
+    #comment
+        - Hicklebees
+          #comment
+        - Target
+      title: The Black Swan
+        #comment
+    - author: L. Frank Baum
+        #comment
+      stores: 
+        #comment
+        - Barnes & Noble
+  #comment
+        - Amazon
+        #comment
+        - Hicklebees
+        #comment
+        - Target
+        #comment
+      title: Wizard of Oz
+        #comment

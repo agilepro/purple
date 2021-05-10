@@ -1,0 +1,10 @@
+library: 
+  book: 
+    - author: Nicholas Taleb
+        #comment
+      stores: 
+        - Barnes & Noble
+        - Amazon
+        - Hicklebees
+        - Target
+      title: The Black Swan

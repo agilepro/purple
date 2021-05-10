@@ -359,7 +359,7 @@ public class Test1 extends TestAbstract implements TestSet {
         //FOURTH write out the YML file and read it back in
         File yamlFile = new File(tr.getProperty("testoutput", null), fileNamePart + ".yml");
         JSONObject cleanedKeyObj = cleanUpKeys(jsonRep);
-        //cleanedKeyObj.writeToFile(new File(tr.getProperty("testoutput", null), fileNamePart + ".cleaned.json"));
+        
         YAMLSupport.writeYAMLFile(cleanedKeyObj, yamlFile);
         JSONObject yamlCopy = YAMLSupport.readYAMLFile(yamlFile);
         JSONDiff differ = new JSONDiff(false);
@@ -519,7 +519,6 @@ public class Test1 extends TestAbstract implements TestSet {
         Mel.readFile(randomFile, Mel.class);
 
     }
-
 
 
 

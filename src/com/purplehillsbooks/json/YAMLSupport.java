@@ -201,6 +201,9 @@ public class YAMLSupport {
 
 
     private static int determineIndent(ReadAhead r) throws Exception {
+        while (r.ch=='#' || r.ch=='\n') {
+            r.skipToNewLine();
+        }
         while (r.ch==' ') {
             r.read();
 
@@ -231,9 +234,11 @@ public class YAMLSupport {
         while (r.nextChar()!='\n' && r.ch>0) {
             sb.append((char)r.nextChar());
             r.read();
+            if (r.ch=='#') {
+            	break;
+            }
         }
-        String val = sb.toString();
-        //System.out.println("VALUE: "+val);
+        String val = sb.toString().trim();
         return val;
     }
 
