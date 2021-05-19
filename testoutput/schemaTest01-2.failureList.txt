@@ -1,11 +1,11 @@
 0: @results.[0].idInst. - found a boolean but expecting a integer
-1: @results.[0].uda.Product. - found a integer but expecting a string
+1: @results.[0].uda.Product. - found an integer but expecting a string
 2: @results.[0].uda.Region property required by schema not found
 3: @results.[0].creationTime. - found a string but expecting a integer
 4: @results.[0].dueDate. - found a string but expecting a integer
 5: @results.[0].initiator. - found a number but expecting a string
-6: @results.[0].description. - found a integer but expecting a string
-7: @results.[0].owners. - found a integer but expecting a array
+6: @results.[0].description. - found an integer but expecting a string
+7: @results.[0].owners. - found an integer but expecting a array
 8: @results.[0].idDef. - found a boolean but expecting a integer
 9: @results.[0].ownersBogus - No entry in schema corresponding to this.
 10: @results.[0].closedTime. - found a string but expecting a boolean
@@ -23,7 +23,7 @@
 22: @results.[1].state. - found a string but expecting a integer
 23: @results.[1].parentProcess. - found a string but expecting a boolean
 24: @results.[1].priority. - found a string but expecting a number
-25: @results.[1].title. - found a integer but expecting a string
+25: @results.[1].title. - found an integer but expecting a string
 26: @results.[1].type. - found a string but expecting a integer
 27: @results.[1].creationTime property required by schema not found
 28: @results.[1].dueDate property required by schema not found

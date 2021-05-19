@@ -12,7 +12,7 @@
 11:  pd.asCommit.[0].name - Found string
 12:  pd.asCommit.[0].description - Found string
 13:  pd.asCommit.[0].class - Found string
-14:  pd.asCommit.[0].ordinal - Found number
+14:  pd.asCommit.[0].ordinal - Found integer
 15:  pd.asCommit.[1]. - Found Object
 16:  pd.asCommit.[1].args. - Found Array
 17:  pd.asCommit.[1].args.[0]. - Found string
@@ -23,7 +23,7 @@
 22:  pd.asCommit.[1].name - Found string
 23:  pd.asCommit.[1].description - Found string
 24:  pd.asCommit.[1].class - Found string
-25:  pd.asCommit.[1].ordinal - Found number
+25:  pd.asCommit.[1].ordinal - Found integer
 26:    ~Retrieving property 'asOwner' schema named 'Test08Sub
 27:  pd.asOwner. - Found Array
 28:    ~Retrieving item schema named 'Test08SubSub
@@ -37,7 +37,7 @@
 36:  pd.asOwner.[0].name - Found string
 37:  pd.asOwner.[0].description - Found string
 38:  pd.asOwner.[0].class - Found string
-39:  pd.asOwner.[0].ordinal - Found number
+39:  pd.asOwner.[0].ordinal - Found integer
 40:  pd.asOwner.[1]. - Found Object
 41:  pd.asOwner.[1].args. - Found Array
 42:  pd.asOwner.[1].args.[0]. - Found string
@@ -48,7 +48,7 @@
 47:  pd.asOwner.[1].name - Found string
 48:  pd.asOwner.[1].description - Found string
 49:  pd.asOwner.[1].class - Found string
-50:  pd.asOwner.[1].ordinal - Found number
+50:  pd.asOwner.[1].ordinal - Found integer
 51:  pd.asOwner.[2]. - Found Object
 52:  pd.asOwner.[2].args. - Found Array
 53:  pd.asOwner.[2].args.[0]. - Found string
@@ -59,7 +59,7 @@
 58:  pd.asOwner.[2].name - Found string
 59:  pd.asOwner.[2].description - Found string
 60:  pd.asOwner.[2].class - Found string
-61:  pd.asOwner.[2].ordinal - Found number
+61:  pd.asOwner.[2].ordinal - Found integer
 62:    ~Retrieving property 'asInit' schema named 'Test08Sub
 63:  pd.asInit. - Found Array
 64:    ~Retrieving item schema named 'Test08SubSub
@@ -72,7 +72,7 @@
 71:  pd.asInit.[0].name - Found string
 72:  pd.asInit.[0].description - Found string
 73:  pd.asInit.[0].class - Found string
-74:  pd.asInit.[0].ordinal - Found number
+74:  pd.asInit.[0].ordinal - Found integer
 75:  pd.asInit.[1]. - Found Object
 76:  pd.asInit.[1].args. - Found Array
 77:  pd.asInit.[1].args.[0]. - Found string
@@ -82,7 +82,7 @@
 81:  pd.asInit.[1].name - Found string
 82:  pd.asInit.[1].description - Found string
 83:  pd.asInit.[1].class - Found string
-84:  pd.asInit.[1].ordinal - Found number
+84:  pd.asInit.[1].ordinal - Found integer
 85:  pd.asInit.[2]. - Found Object
 86:  pd.asInit.[2].args. - Found Array
 87:  pd.asInit.[2].args.[0]. - Found string
@@ -92,4 +92,4 @@
 91:  pd.asInit.[2].name - Found string
 92:  pd.asInit.[2].description - Found string
 93:  pd.asInit.[2].class - Found string
-94:  pd.asInit.[2].ordinal - Found number
+94:  pd.asInit.[2].ordinal - Found integer

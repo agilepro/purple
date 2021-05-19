@@ -3,6 +3,7 @@ package com.purplehillsbooks.json;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.purplehillsbooks.streams.CSVHelper;
@@ -139,7 +140,9 @@ import com.purplehillsbooks.streams.UTF8FileWriter;
  */
 public class JSONDiff {
 
-    boolean includeAll = true;
+    private boolean includeAll = true;
+    private HashMap<String, String> listObjectKey = new HashMap<String, String>();
+
 
  /**
  * <p>The boolean parameter on the constructor defines whether to include all
@@ -151,6 +154,49 @@ public class JSONDiff {
     public JSONDiff(boolean reportAll) {
         includeAll = reportAll;
     }
+
+
+/**
+ * If the JSON structures you are comparing have arrays of JSONObjects, and those
+ * JSONObjects have a key id, then you can specify the key field, and it will attempt
+ * to compare the two arrays object by object by associating objects by key, and not
+ * simply the order that they find themselves.
+ *
+ * for example:
+ *
+ * {
+ *    "name": "my test case",
+ *    "houses": [
+ *      {
+ *        "parcel": "88-13423-6",
+ *        "color":  "yellow",
+ *        "size":   "2400"
+ *      },
+ *      {
+ *        "parcel": "88-13423-6",
+ *        "color":  "yellow",
+ *        "size":   "2400"
+ *      }
+ *    ]
+ *  }
+ *
+ *  if you pass in a map with:
+ *
+ *     "houses": "parcel"
+ *
+ *  in it, then the diff algorithm will try to find entries in the houses list with the
+ *  same value for parcel, and compare them for changes.   The association is only for the
+ *  immediate member holding the array, in this case "houses".   If you have many different
+ *  arrays with the same member name "houses" and with different key items this might not
+ *  work for you.  But if every array named "houses" has a key field "parcel" then the comparison
+ *  works fine.
+ *
+ *  If you do not specify a key-map value, then the arrays are compared in strict sequential order.
+ */
+    public void setObjectKeyMap(HashMap<String, String> newKeyMap) {
+        listObjectKey = newKeyMap;
+    }
+
 
 /**
 * <p>Creates a table that represents the difference of the two JSON objects
@@ -300,7 +346,7 @@ public class JSONDiff {
                     addRecursive(table, baseKey + key + ".", null, (JSONObject)o2);
                 }
                 else if (o2 instanceof JSONArray) {
-                    iterateArray(table, baseKey + key + "[", null, (JSONArray)o2);
+                    iterateArray(table, baseKey + key + "[", key, null, (JSONArray)o2);
                 }
                 else {
                     addRow(table, baseKey + key, val1, val2);
@@ -325,17 +371,17 @@ public class JSONDiff {
             }
             else if (o1 instanceof JSONArray) {
                 if (o2!=null && o2 instanceof JSONArray) {
-                    iterateArray(table, baseKey + key + "[", (JSONArray)o1, (JSONArray)o2);
+                    iterateArray(table, baseKey + key + "[", key, (JSONArray)o1, (JSONArray)o2);
                 }
                 else if (o2==null) {
                     //the object is missing to add it
                     JSONArray replace = new JSONArray();
                     ob2.put(key, replace);
-                    iterateArray(table, baseKey + key + "[", (JSONArray)o1, replace);
+                    iterateArray(table, baseKey + key + "[", key, (JSONArray)o1, replace);
                 }
                 else {
                     //in all other cases have to consider o2 to be null
-                    iterateArray(table, baseKey + key + "[", (JSONArray)o1, null);
+                    iterateArray(table, baseKey + key + "[", key, (JSONArray)o1, null);
                 }
             }
             else {
@@ -358,10 +404,21 @@ public class JSONDiff {
         }
     }
 
-    private void iterateArray(List<List<String>> table, String baseKey, JSONArray ja1, JSONArray ja2) throws Exception {
-        if (ja2==null) {
+    private void iterateArray(List<List<String>> table, String baseKey, String localKey, JSONArray ja1, JSONArray ja2) throws Exception {
+        if (ja1 == null) {
+            ja1 = new JSONArray();
+        }
+        if (ja2 == null) {
             ja2 = new JSONArray();
         }
+        if (listObjectKey!=null) {
+            String dataKey = listObjectKey.get(localKey);
+            if (dataKey != null) {
+                compareArrayByKey(table, baseKey, dataKey, ja1, ja2);
+                return;
+            }
+        }
+
         int size = ja1.length();
         if (ja2.length()>size) {
             size = ja2.length();
@@ -374,7 +431,7 @@ public class JSONDiff {
             }
             Object o2 = null;
             if (i<ja2.length()) {
-                o2 = ja1.get(i);
+                o2 = ja2.get(i);
             }
             if (o1==null) {
                 if (o2==null) {
@@ -394,10 +451,10 @@ public class JSONDiff {
             }
             else if (o1 instanceof JSONArray) {
                 if (o2!=null && o2 instanceof JSONArray) {
-                    iterateArray(table, baseKey+i+"][", (JSONArray)o1, (JSONArray)o2);
+                    iterateArray(table, baseKey+i+"][", localKey, (JSONArray)o1, (JSONArray)o2);
                 }
                 else {
-                    iterateArray(table, baseKey+i+"][", (JSONArray)o1, null);
+                    iterateArray(table, baseKey+i+"][", localKey, (JSONArray)o1, null);
                 }
             }
             else {
@@ -407,5 +464,47 @@ public class JSONDiff {
     }
 
 
+    /**
+     * Given two java arrays, and a dataKey, this will compare two arrays of JSONObjects
+     * by finding the objects with the same data key value, and comparing them.
+     */
+    private void compareArrayByKey(List<List<String>> table, String baseKey, String dataKey, JSONArray ja1, JSONArray ja2) throws Exception {
 
+        ArrayList<String> keyValues = new ArrayList<String>();
+        HashMap<String, JSONObject> map1 = new HashMap<String, JSONObject>();
+        HashMap<String, JSONObject> map2 = new HashMap<String, JSONObject>();
+
+        addKeyValues(keyValues, map1, ja1, dataKey);
+        addKeyValues(keyValues, map2, ja2, dataKey);
+        Collections.sort(keyValues);
+
+        for (String comVal : keyValues) {
+            JSONObject res1 = map1.get(comVal);
+            JSONObject res2 = map2.get(comVal);
+            if (res1==null) {
+                addRecursive(table, baseKey + comVal + "].", new JSONObject(), res2);
+            }
+            else if (res2==null) {
+                addRecursive(table, baseKey + comVal + "].", res1, new JSONObject());
+            }
+            else {
+                addRecursive(table, baseKey + comVal + "].", res1, res2);
+            }
+        }
+    }
+    private void addKeyValues(List<String> keyValues, HashMap<String, JSONObject> map, JSONArray array, String dataKey) throws Exception {
+        for (int i=0; i<array.length(); i++) {
+            Object val = array.get(i);
+            if (val instanceof JSONObject) {
+                JSONObject obj1 = (JSONObject)val;
+                if (obj1.has(dataKey)) {
+                    String keyVal = obj1.getString(dataKey);
+                    if (!keyValues.contains(keyVal)) {
+                        keyValues.add(keyVal);
+                    }
+                    map.put(keyVal, obj1);
+                }
+            }
+        }
+    }
 }

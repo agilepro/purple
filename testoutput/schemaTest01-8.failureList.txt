@@ -7,7 +7,7 @@
 6: @results.[0].Customer Type - No entry in schema corresponding to this.
 7: @results.[0].idInst. - found an array, but schema expects it to be: integer
 8: @results.[0].priorityx - No entry in schema corresponding to this.
-9: @results.[0].name. - found a integer but expecting a string
+9: @results.[0].name. - found an integer but expecting a string
 10: @results.[0].jsonRecord - No entry in schema corresponding to this.
 11: @results.[0].Region - No entry in schema corresponding to this.
 12: @results.[0].TimeToStart - No entry in schema corresponding to this.
