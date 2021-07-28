@@ -18,17 +18,13 @@ import com.purplehillsbooks.testframe.TestSet;
  * If you add or remove lines in the test framework, you may need to regenerate
  * the test results files.
  */
-public class TestExceptions implements TestSet {
-
-    TestRecorder tr;
-    File sourceDataFolder;
+public class TestExceptions extends TestAbstract implements TestSet {
 
     public TestExceptions() {
     }
 
     public void runTests(TestRecorder newTr) throws Exception {
-        tr = newTr;
-        sourceDataFolder = new File(tr.getProperty("source", null), "testData");
+    	initForTests(newTr);
         if (!sourceDataFolder.exists()) {
             System.out.println("Source data folder does not exist: "+sourceDataFolder);
             return;

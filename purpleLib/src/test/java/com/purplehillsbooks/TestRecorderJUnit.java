@@ -59,7 +59,7 @@ public class TestRecorderJUnit implements TestRecorder {
 		testSource   = new File(purpleLibPath, "src/test/resources/");
 		System.out.println("purpleLibPath is: "+purpleLibPath.getAbsolutePath());
 		System.out.println("testOutput is: "+testOutput.getAbsolutePath());
-		System.out.println("testData is: "+testSource.getAbsolutePath());
+		System.out.println("testSource is: "+testSource.getAbsolutePath());
 		
 		if (!testSource.exists()) {
 			throw new Exception("Something is wrong, testSource folder does not exist: "+testSource.getAbsolutePath());
