@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="lib/src/main/java"/>
+	<classpathentry kind="src" path="lib/src/test/java"/>
+	<classpathentry kind="lib" path="gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="lib" path="lib/build/libs/purple.jar"/>
+	<classpathentry kind="lib" path="C:/Users/keith/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-servlet-api/8.5.46/8b224433a27a70f5d8613431e972dcf3e96d1237/tomcat-servlet-api-8.5.46.jar" sourcepath="C:/Users/keith/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-servlet-api/8.5.46/b0ab5d76eed73547d9bdcd938185946521241ca0/tomcat-servlet-api-8.5.46-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="lib/build/classes/java/main"/>
+</classpath>

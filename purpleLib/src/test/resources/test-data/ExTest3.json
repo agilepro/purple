@@ -1,0 +1,51 @@
+{"error": {
+  "code": 400,
+  "context": "Test file ExTest3.json for course 1222",
+  "details": [
+    {
+      "code": "JSONException",
+      "message": "caught and rethrow from level: 22",
+      "param0": "22",
+      "template": "caught and rethrow from level: {0}"
+    },
+    {
+      "code": "JSONException",
+      "message": "caught and rethrow from level: 2",
+      "param0": "2",
+      "template": "caught and rethrow from level: {0}"
+    },
+    {
+      "code": "JSONException",
+      "message": "caught and rethrow from level: ",
+      "param0": "",
+      "template": "caught and rethrow from level: {0}"
+    },
+    {
+      "code": "Exception",
+      "message": "top level exception thrown by exception test when course string ran out"
+    }
+  ],
+  "innerError": {},
+  "stack": [
+    "top level exception thrown by exception test when course string ran out",
+    "    TestExceptions.java: callHigher: 86",
+    "    TestExceptions.java: sampleMethod2: 73",
+    "    (continued below)",
+    "caught and rethrow from level: ",
+    "    TestExceptions.java: sampleMethod2: 76",
+    "    TestExceptions.java: callHigher: 93",
+    "    TestExceptions.java: sampleMethod2: 73",
+    "    (continued below)",
+    "caught and rethrow from level: 2",
+    "    TestExceptions.java: sampleMethod2: 76",
+    "    TestExceptions.java: callHigher: 93",
+    "    TestExceptions.java: sampleMethod2: 73",
+    "    (continued below)",
+    "caught and rethrow from level: 22",
+    "    TestExceptions.java: sampleMethod2: 76",
+    "    TestExceptions.java: callHigher: 93",
+    "    TestExceptions.java: sampleMethod1: 68",
+    "    TestExceptions.java: callHigher: 90",
+    "    TestExceptions.java: testExceptionStackTrace: 150"
+  ]
+}}

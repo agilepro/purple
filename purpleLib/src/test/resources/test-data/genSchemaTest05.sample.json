@@ -1,0 +1,22 @@
+{
+  "list":[
+    {
+        "author": "Richard Dawkins",
+        "title": "The Selfish Gene",
+        "year": 1976,
+        "available": true
+    },
+    {
+        "available": true,
+        "author": "Richard Dawkins",
+        "title": "The Extended Phenotype",
+        "year": 1982
+    },
+    {
+        "year": 1968,
+        "available": false,
+        "author": "Noam Chomsky",
+        "title": "Language and Mind"
+    }
+  ]
+}
