@@ -3,3 +3,6 @@
 
 # Ignore Gradle build output directory
 build
+
+#ignore folders that eclipse puts in there
+bin
