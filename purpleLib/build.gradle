@@ -28,3 +28,10 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+//java source files are UTF-8
+apply plugin: "java"
+tasks.withType(JavaCompile) {
+  options.encoding = "UTF-8"
+}
+

@@ -59,13 +59,13 @@ public class MemFileTester implements TestSet {
 		tr = newTr;
 
 		testMemFiles("basic", "abc 123");
-		testMemFiles("upper ascii", "Sämplé\nStrîñg\t");
+		testMemFiles("upper ascii", "SÃ¤mplÃ©\nStrÃ®Ã±g\t");
 		testMemFiles("double byte", "\u1234\u1235\u1236");
 		// testMemFiles("surrogate pairs", "\u1234\u1235\u1236");
 
 		testJSEncode("nothing special", "abc123", "abc123");
 		testJSEncode("punctuation", "the \"big\" and\\or", "the \\\"big\\\" and\\\\or");
-		testJSEncode("upper ascii", "Sämplé\nStrîñg\t", "S\\xE4mpl\\xE9\\nStr\\xEE\\xF1g\\t");
+		testJSEncode("upper ascii", "SÃ¤mplÃ©\nStrÃ®Ã±g\t", "S\\xE4mpl\\xE9\\nStr\\xEE\\xF1g\\t");
 		testJSEncode("just a quote", "\"", "\\\"");
 		testJSEncode("two quotes", "\"\"", "\\\"\\\"");
 		testJSEncode("one backslash", "\\", "\\\\");
@@ -75,7 +75,7 @@ public class MemFileTester implements TestSet {
 		testWriteHTML("nothing special", "abc123", "abc123");
 		testWriteHTML("quote and angle", "the \"big\" and<or>case",
 				"the &quot;big&quot; and&lt;or&gt;case");
-		testWriteHTML("upper ascii", "Sämplé\nStrîñg\t", "Sämplé\nStrîñg\t");
+		testWriteHTML("upper ascii", "SÃ¤mplÃ©\nStrÃ®Ã±g\t", "SÃ¤mplÃ©\nStrÃ®Ã±g\t");
 
 		letsTestAllPossibleCharacters();
 	}
