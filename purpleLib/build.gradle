@@ -16,6 +16,7 @@ repositories {
     mavenCentral()
 }
 
+//jar.archivesBaseName = 'purple'
 jar.baseName = 'purple'
 
 dependencies {

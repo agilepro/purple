@@ -6,3 +6,4 @@ build
 
 #ignore folders that eclipse puts in there
 bin
+.settings
