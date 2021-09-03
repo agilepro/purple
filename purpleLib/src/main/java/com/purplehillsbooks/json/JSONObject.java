@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -192,7 +193,6 @@ public class JSONObject {
      */
     public static JSONObject readFromFile(File inFile) throws Exception {
         try {
-            //System.out.println("JSONObject.readFromFile: "+inFile);
             FileInputStream fis = new FileInputStream(inFile);
             JSONTokener jt = new JSONTokener(fis);
             JSONObject jo = new JSONObject(jt);
@@ -200,9 +200,22 @@ public class JSONObject {
             return jo;
         }
         catch (Exception e) {
-            //System.out.println("JSONObject.readFromFile FAILURE: "+inFile);
-            //e.printStackTrace();
             throw new Exception("Unable to read JSON objects from file: "+inFile.getAbsolutePath(), e);
+        }
+    }
+    
+    
+    /**
+     * Accept a Reader object, and parse the JSON Object from it.
+     */
+    public static JSONObject readFromReader(Reader r) throws Exception {
+        try {
+            JSONTokener jt = new JSONTokener(r);
+            JSONObject jo = new JSONObject(jt);
+            return jo;
+        }
+        catch (Exception e) {
+            throw new Exception("Unable to read JSON objects from Reader", e);
         }
     }
 
@@ -219,7 +232,6 @@ public class JSONObject {
      */
     public static JSONObject readFileIfExists(File inFile) throws Exception {
         try {
-            //System.out.println("JSONObject.readFileIfExists: "+inFile);
             if (!inFile.exists()) {
                 return new JSONObject();
             }
@@ -230,8 +242,6 @@ public class JSONObject {
             return jo;
         }
         catch (Exception e) {
-            //System.out.println("JSONObject.readFileIfExists FAILURE: "+inFile);
-            //e.printStackTrace();
             throw new Exception("Unable to read JSON objects from file: "+inFile.getAbsolutePath(), e);
         }
     }

@@ -306,6 +306,32 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
 
         doDelta("JSONDelta-strList4a", ob1, ob2);
         doDelta("JSONDelta-strList4b", ob2, ob1);
+        
+        //now clear that out and lets test some boolean objects
+        ob1 = new JSONObject();
+        ob2 = new JSONObject();
+        
+        ob1.put("description", "This is ob1 for testing boolean values");
+        ob2.put("description", "This is ob2 for testing boolean values");
+        
+        ob1.put("nochangetrue", true);
+        ob2.put("nochangetrue", true);
+        ob1.put("nochangefalse", false);
+        ob2.put("nochangefalse", false);
+        ob1.put("true2false", true);
+        ob2.put("true2false", false);
+        ob1.put("false2true", false);
+        ob2.put("false2true", true);
+        
+
+        ob1.put("false2omitted", false);
+        ob1.put("true2omitted", true);
+
+        ob2.put("omitted2true", true);
+        ob2.put("omitted2false", false);
+        
+        doDelta("JSONDelta-boolean-forward", ob1, ob2);
+        doDelta("JSONDelta-boolean-backward", ob2, ob1);
     }
 
 
@@ -470,7 +496,7 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
     	System.out.println("*** wrote log file: "+outputFile);
         FileOutputStream fos = new FileOutputStream(outputFile);
         OutputStreamWriter w = new OutputStreamWriter(fos, "UTF-8");
-        w.write("JDON Delta TEST OUTPUT\n\n==============================\nOLD object:\n");
+        w.write("JSON Delta TEST OUTPUT\n\n==============================\nOLD object:\n");
         w.write(oldObj.toString(2));
         w.write("\n\n==============================\nNEW object:\n");
         w.write(newObj.toString(2));

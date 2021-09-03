@@ -1,0 +1,9 @@
+{
+  "description": "This is ob1 for testing boolean values",
+  "false2omitted": false,
+  "false2true": false,
+  "omitted2false": "@deleteMe@",
+  "omitted2true": "@deleteMe@",
+  "true2false": true,
+  "true2omitted": true
+}
