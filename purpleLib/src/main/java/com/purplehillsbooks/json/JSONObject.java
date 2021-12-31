@@ -108,7 +108,7 @@ import java.util.Set;
  * <code>{ } [ ] / \ : , = ; #</code> and if they do not look like numbers and
  * if they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
- * <li>Keys can be followed by <code>=</code> or <code>=></code> as well as by
+ * <li>Keys can be followed by <code>=</code> or <code>=&gt;</code> as well as by
  * <code>:</code>.</li>
  * <li>Values can be followed by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>
@@ -155,10 +155,9 @@ import java.util.Set;
  * into LockableJSONFile for proper file system level locking of JSON files.</p>
  *
  * @see com.purplehillsbooks.json.LockableJSONFile
+ * 
  *
- * <hr/>
- *
- * </p>Originally written by JSON.org released 2012-10-26 but heavily modified
+ * <p>Originally written by JSON.org released 2012-10-26 but heavily modified
  * by Keith Swenson in the years after that to make the object classes
  * conform to style guidelines discussed in http://agiletribe.wordpress.com/</p>
  */
@@ -363,15 +362,15 @@ public class JSONObject {
      * stream directly and builds the object in the most efficient manner.
      * <p>
      * For a UTF-8 encoded stream, use:
-     * <br/>
+     * </p><p>
      * <code> new JSONObject( new JSONTokener( inputStream ) );</code>
-     * <br/>
+     * </p><p>
      * For a character based reader, including inputStreams of other encodings
      * wrapped in the appropriate InputStreamReader, use:
-     * <br/>
+     * </p><p>
      * <code> new JSONObject( new JSONTokener( reader ) );</code>
-     * <br/>
-     * <p>
+     * </p>
+     * 
      * @param x A JSONTokener object containing the source string.
      * @throws JSONException If there is a syntax error in the source string
      *  or a duplicated key.
@@ -1542,6 +1541,7 @@ public class JSONObject {
     }
 
     /**
+     * <p>
      * Make a JSON text of this JSONObject. For compactness, no whitespace
      * is added. If this would not result in a syntactically correct JSON text,
      * or if there is an exception for any other reason,
@@ -1562,7 +1562,8 @@ public class JSONObject {
      * but use it sparingly.
      * </p><p>
      * Warning: This method assumes that the data structure is acyclical.
-     *
+     * </p>
+     * 
      * @return a printable, displayable, portable, transmittable
      *  representation of the object, beginning
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
@@ -1578,6 +1579,7 @@ public class JSONObject {
 
 
     /**
+     * <p>
      * Make a JSON text String representation of this JSONObject.
      * Think carefully before using this method!  Do you really need
      * a String in memory?  Since JSON is used as a data transport format
@@ -1606,7 +1608,6 @@ public class JSONObject {
      *  representation of the object, beginning
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
-     * @throws JSONException If the object contains an invalid number.
      */
     public String toString(int indentFactor) {
         try {

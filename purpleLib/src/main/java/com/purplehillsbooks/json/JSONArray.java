@@ -1087,7 +1087,7 @@ public class JSONArray {
     /**
      * Sorts the JSONArray according to the Comparator provided.
      * You can provide a comparator and sort the array.
-     * You must provide a Comparator<Object> because that is what the
+     * You must provide a Comparator&lt;Object&gt; because that is what the
      * underlying array is, and your compare functions must handle
      * either the raw Objects, or cast appropriately to the objects you
      * expect to find in the array.

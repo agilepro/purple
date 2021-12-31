@@ -201,7 +201,7 @@ public class JSONDiff {
 /**
 * <p>Creates a table that represents the difference of the two JSON objects
 * passed in. The table is a list of rows, and each row is a triplet of Strings
-* representing the column values for that row.></p>
+* representing the column values for that row.</p>
 *
 * <p>The first column is the full path key,
 * the second is the value from the first json object,

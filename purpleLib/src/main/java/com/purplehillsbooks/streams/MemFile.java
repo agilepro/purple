@@ -29,28 +29,28 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 /**
- * Holds a stream of bytes in memory. It is a buffer that you can stream to, and
+ * <p>Holds a stream of bytes in memory. It is a buffer that you can stream to, and
  * stream from, in either bytes or characters. More efficient than a byte array
  * since the bytes are not held in a contiguous array, and the bytes do not need
  * to be copied around in order to keep the byte array contiguous.
- * <p>
+ * </p><p>
  * To write bytes to the memory file, either 1) Get an output stream and write
  * output to it 2) Instruct the memory file to fill itself from an InputStream
- * <p>
+ * </p><p>
  * To read bytes from the memory file, either 3) Get an InputStream and read
  * from it 4) Instruct the memory file to write itself to an OutputStream.
- * <p>
- * For character-oriented reading & writing, only UTF-8 character encoding is
+ * </p><p>
+ * For character-oriented reading and writing, only UTF-8 character encoding is
  * supported, because that is the only encoding that can represent the entire
  * Unicode set without loss.
- * <p>
+ * </p><p>
  * For getting characters into a mem file you can: 5) Get a Writer to write
  * characters to the memory file 6) Instruct to read all chars from a Reader
  * into the mem file.
- * <p>
+ * </p><p>
  * for getting characters out of a mem file, you can: 7) Get a Reader to read
  * characters from the memory file 8) Instruct to write all chars to a Writer.
- * <p>
+ * </p><p>
  * Usage and Justification: The main usage is that you need to construct the
  * contents of a file programmatically, and then parse it, or alternately you
  * need to write something out, and the examine the results. In both cases you
@@ -62,10 +62,10 @@ import java.util.ArrayList;
  * programs, but constructing a long string programmatically, by building
  * substring and putting them together in a recursive way is very inefficient,
  * and the string is copied many times in the process.
- * <p>
+ * </p><p>
  * To compose something from strings in memory, use this approach:
  *
- * <pre>
+ * </p><pre>
  * MemFile mf = new MemFile();
  * Writer w = mf.getWriter();
  * w.write(&quot;This is the first line\n&quot;);
@@ -73,13 +73,13 @@ import java.util.ArrayList;
  * w.write(&quot;This is the third line\n&quot;);
  * // then use getReader() or getInputStream() to pass to a method that consumes
  * // the file as if it was a stream.
- * </pre>
+ * </pre><p>
  *
  * Threading: MemFile should be used and accessed only from a single thread.
  * Program should input everything to the mem file, and then read everything.
  * Helper classes for InputStream and OutputStream will not necessarily return
  * the right values if input is done at the same time as output.
- * <p>
+ * </p><p>
  * <i>Why not use a StringBuffer?</i> Because a StringBuffer is optimized for fast
  * conversion to a string, and to do this it keeps all the characters in a
  * single contiguous array. While you are filling the buffer, if it runs out of room, it
@@ -87,14 +87,15 @@ import java.util.ArrayList;
  * old buffer to the new buffer. This can happen multiple times. MemFile will
  * never do this, because it does not require the bytes to be in a single
  * contiguous array.
- * <p>
+ * </p><p>
  * What if you need a String to pass to a method. You can construct a string in
  * the normal way: Create a StringBuffer, create a StringBufferWriter, and ask
  * the MemFile to write the entire contents to that.  But once you start using
  * streams correctly, the need to convert them to strings is almost elminated.
- * <p>
+ * </p><p>
  * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
  * This code is made available under the GNU Lesser GPL license.
+ * </p>
  */
 public class MemFile {
 

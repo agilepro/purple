@@ -32,7 +32,7 @@ SOFTWARE.
 */
 
 /**
- * A JSONTokener takes a source stream and parses it for the JSONObject / JSONArray.
+ * <p>A JSONTokener takes a source stream and parses it for the JSONObject / JSONArray.
  * The only way to use this is in a constructor to a JSONObject / JSONArray.</p>
  * 
  * <h1>USAGE</h1>

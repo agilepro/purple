@@ -40,10 +40,10 @@ import com.purplehillsbooks.streams.UTF8FileWriter;
  *     Reflexively, there is nothing special you have to do if you have a value with
  *     braces or square brackets.  They are just treated as any other character.
  * (4) Space characters on either side of key or value will be trimmed off
- * (5) "&" anchors and "*" aliases are not supported.  You must literally copy the value in the file
+ * (5) "&amp;" anchors and "*" aliases are not supported.  You must literally copy the value in the file
  *     when you need two or more copies of a value.
  * (6) Multi-line values are not supported, strings must be a single line.
- *     Neither the literal '|' nor the folded '>' supported, and no chomping either
+ *     Neither the literal '|' nor the folded '&gt;' supported, and no chomping either
  * (7) Colons do not require space after them, thus the first colon found terminates a key whether
  *     it is followed by a space or not.  Further colons on a line are treated as characters.
  * (8) triple-dash document start and triple-dot document end is not supported.   It is assumed
@@ -57,7 +57,7 @@ import com.purplehillsbooks.streams.UTF8FileWriter;
  * (15) The only escaped characters are \n and \\ and \" when writing
  * (16) Newline \n is the only control character encoded and written out
  * (17) Unicode \ u#### and \ U######## are not supported, just use UTF-8 encoding for everything
- * (18) verbatim tags '!<' and '>' are not supported, these are treated as characters
+ * (18) verbatim tags '!&lt;' and '&gt;' are not supported, these are treated as characters
  * (19) Actual newlines (multiple lines) are not allowed in quoted values, use \n instead
  * (20) Byte order mark is not supported and not needed in UTF-8
  *

@@ -26,14 +26,14 @@ import java.util.List;
  * Converts list of String values into a line of a CSV file parseLine: read a
  * line from a LineNumberReader and return the list of Strings
  *
- * That should be all you need. Create or open the file & streams yourself from
- * whatever source you need to read from.. Everything in this class works on
+ * That should be all you need. Create or open the file and streams yourself from
+ * whatever source you need to read from.  Everything in this class works on
  * characters, and not bytes.
  */
 public class CSVHelper {
 
     /**
-     * Just a convenience method that iterates teh rows of a table and outputs
+     * Just a convenience method that iterates the rows of a table and outputs
      * to a writer which is presumably a CSV file.
      */
     public static void writeTable(Writer w, List<List<String>> table) throws Exception {
@@ -69,7 +69,7 @@ public class CSVHelper {
     /**
      * Write a single row of a CSV table, all values are quoted
      * using variable parameter syntax so you are not required 
-     * to construct a List<String> object
+     * to construct a List&lt;String&gt; object
      */
     public static void writeLine(Writer w, String ... values) throws Exception {
         boolean firstVal = true;

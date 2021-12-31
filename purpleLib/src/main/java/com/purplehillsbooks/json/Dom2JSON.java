@@ -24,7 +24,7 @@ import org.w3c.dom.NodeList;
  * <h1>ALGORITHM EXPLANATION</h1>
  *
  * <p> * An element can come in two forms:  scalar value and object
- * The Object has members, and two types of member: scalar or vector<p/>
+ * The Object has members, and two types of member: scalar or vector</p>
  * 
  * <h2>
  * A: &lt;elementA&gt;value&lt;/elementA&gt;

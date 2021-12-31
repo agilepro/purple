@@ -1,0 +1,112 @@
+signing.keyId=########
+signing.password=********
+signing.secretKeyRingFile=//c:/Users/USERNAME/.gradle/secret-keys.gpg
+
+ossrhUsername=Abcdefgh
+ossrhPassword=********
+
+
+---------------------------------
+
+This video was helpful:
+
+    https://www.youtube.com/watch?v=24gsrR9jsF4&t=1238s
+
+1================
+
+In order to get the "gradle publish" to work, you need to set up a few things.
+The above lines need to be placed in a file at the following place:
+
+    C:\Users\USERNAME\.gradle\gradle.properties
+
+For USERNAME use the windows user you are logger into.  For unix the .gradle folder is in your user home directory.
+
+2================
+
+Download Gnu Privacy Guard (GPG) from https://gpg4win.org/thanks-for-download.html
+
+Install.
+
+3 ===============
+
+You have to create a key for signing.   Create a key by using:
+
+    gpg --gen-key
+    
+    real user name: (enter your first and last name, just descriptive)
+    
+    email: (enter you email address)
+    
+    Password: (you will be prompted for a signing password, and confirmation)
+
+This will generate the key and display the results.   The output can be redisplayed by executing 
+
+    gpg -K
+
+The display will be something like
+
+    ------------------------------------------------
+    sec   ed25519 2021-12-31 [SC] [expires: 2023-12-31]
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXE8F13691
+    uid           [ultimate] Keith Swenson <gpg@purplehillsbooks.com>
+    ssb   cv25519 2021-12-31 [E] [expires: 2023-12-31]
+    
+Note the last 8 digits of the very long hex number.  You will need that as you keyId.
+
+4 ==============
+
+You need to send this key to a public keystore.   That is done with:
+
+    gpg --keyserver hkp://keyserver.ubuntu.com --send-keys ########
+    
+Put your keyId in for the hash signs.
+
+5 ==============
+
+Generate the key ring that gradle needs to do the signing
+
+   gpg --expoert-secret-keys ######## > c:/Users/USERNAME/.gradle/secret-keys.gpg
+   
+Again, replace teh pound signs with your keyId.   This file is referenced in the config file above.
+
+6 ==============
+
+Sign up for a group ID and repository access with sonatype.org.  I don't have the instructions here, but fairly good ones are available if you search.   
+
+From this you will need:
+
+group id: this is 'com.purplehillsbooks.purple' for this library
+
+userName: this is the user name you register there, called occasionally a Jira user it
+
+password: the password you set.
+
+
+7 =============
+
+Update the .gradle/gradle.properties file, as mentioned at the top
+
+signing.keyId=       the same 8 digits from the key
+signing.password=    the password you set when generating the key
+signing.secretKeyRingFile=//c:/Users/USERNAME/.gradle/secret-keys.gpg
+
+ossrhUsername=       the user name from SonaType
+ossrhPassword=       the password from SonaType
+
+
+8 ============
+
+If this is all set correctly, you can use the following command to upload a new version:
+
+    gradle publish
+    
+Then you need to use the repository manager and RELEASE the staged repo to the official repo
+
+    https://s01.oss.sonatype.org/#stagingRepositories
+
+    
+
+    
+   
+
+

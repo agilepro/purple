@@ -9,7 +9,7 @@ import java.util.List;
  * but the objects themselves don't know the order, instead the order is specified externally
  * and might or might not be provided.
  *
- * In order to sort them, make a list of Envelope<MyClass> objects and specify the sort
+ * In order to sort them, make a list of Envelope&lt;MyClass&gt; objects and specify the sort
  * value at the same time that you put the object into the envelope.  Then sort the list of
  * envelopes.  then, iterate the envelopes and retrieve the objects in the right order.
  */

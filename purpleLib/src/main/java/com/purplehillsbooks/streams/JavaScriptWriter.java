@@ -22,7 +22,7 @@ import java.io.StringWriter;
 
 /**
  * This class is for encoding values in order to make Java or JavaScript literal
- * expressions. If you are onstructing a web page that will have a JS script in
+ * expressions. If you are constructing a web page that will have a JS script in
  * it, and you want to make a simple assignment statement like this:
  *
  * <pre>
@@ -33,7 +33,7 @@ import java.io.StringWriter;
  * as a string in memory, you need to properly encode the value. If there are
  * any quote characters, they need to be escaped with a backslash. If there are
  * any newline characters, they need to be replaced with the appropriate
- * backslash expression. If there are Unicode characters >128, they need to be
+ * backslash expression. If there are Unicode characters greater than 128, they need to be
  * encoded into hex value expressions. That is what this class will do.
  *
  * There are two ways: a writer and an encoding method. Both methods assume you
@@ -57,7 +57,7 @@ import java.io.StringWriter;
  * static encode method, passing a Writer and the string you want converted. The
  * string will be converted as it is written to the Writer.
  *
- * the Java to ccreate the above expression above might be:
+ * the Java to create the above expression above might be:
  *
  * <pre>
  * Writer w; // given as the place the page is being written

@@ -166,7 +166,7 @@ public class TemplateStreamer {
     * @param ttr the TemplateTokenRetriever that understands how to find values
     *        for each of the possible token names in the file, and can stream
     *        that value to the Writer object.
-    * @exception an exception will be thrown if anything does not perform
+    * @throws Exception if anything does not perform
     *        correctly: for example if the file is not found, or can not be
     *        opened, or can not be read, or the output Writer can not be written
     *        to, or the system runs out of memory, or if the template has a
