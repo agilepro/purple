@@ -1,0 +1,109 @@
+Publishing JAR to Maven using Gradle 7.0
+
+The documentation on the Maven site on how to publish with Gradle is out of date, and only works for Gradle 6.  Some of the elements used have been deprecated and removed from Gradle 7.   Here I have produced an updated document for publishing to Maven with Gradle 7.0.  
+
+Links to documentation
+
+Gradle publishing overview which is the place you have to start: 
+https://docs.gradle.org/current/userguide/publishing_setup.html#publishing_overview:what
+
+Specifics about Maven Publishing
+https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven
+
+The details for what you can do on repositories is in the RepositoryHandler ishttps://docs.gradle.org/current/dsl/org.gradle.api.artifacts.dsl.RepositoryHandler.html
+
+
+Publishing Extension tells you the common publishing methods and properties
+
+
+I am publishing a JAR library of Java code.  The JAR file is the artifact to publish, but we also want to include JavaDoc in a zip, as well as zip file of the source.  All of this is specified in a POM file which Maven consumes.  They all need to be signed and checksummed.
+
+You will use the "maven-publish" plugin.  Versions earlier than 7.0 had a plugin called just "maven" but that is deprecated.  Add the plugin using the standard script, here it is along with the java-library necessary to do all the other work.  These will bring in a few other plugins.
+
+plugins {
+    // Apply the java-library plugin for API and implementation separation.
+    id 'java-library';
+    id 'maven-publish';
+}
+
+If you want to find out all the plugins that are installed by this, use:
+
+project.plugins.each {
+   println "PLUGIN: "+ it
+}
+
+I get this:
+
+PLUGIN: org.gradle.api.plugins.HelpTasksPlugin@66e28e2
+PLUGIN: org.gradle.buildinit.plugins.BuildInitPlugin@51743e82
+PLUGIN: org.gradle.buildinit.plugins.WrapperPlugin@2040e4fe
+PLUGIN: org.gradle.language.base.plugins.LifecycleBasePlugin@52cc08bb
+PLUGIN: org.gradle.api.plugins.BasePlugin@72a2c060
+PLUGIN: org.gradle.api.plugins.JvmEcosystemPlugin@4019875f
+PLUGIN: org.gradle.api.plugins.ReportingBasePlugin@75a747b7
+PLUGIN: org.gradle.api.plugins.JavaBasePlugin$Inject@354c6bac
+PLUGIN: org.gradle.api.plugins.JavaPlugin@51090ca5
+PLUGIN: org.gradle.api.plugins.JavaLibraryPlugin@5d264aa4
+PLUGIN: org.gradle.api.publish.plugins.PublishingPlugin@12f33448
+PLUGIN: org.gradle.api.publish.maven.plugins.MavenPublishPlugin@44b43cb1
+
+Looking at all the tasks, you find these new ones:
+
+Publishing tasks
+----------------
+publish - Publishes all publications produced by this project.
+publishToMavenLocal - Publishes all Maven publications produced by this project to the local Maven cache.
+
+The documentation says there should be more than this?  Why?
+
+
+
+
+
+
+
+Testing the Basic Artifact Generations
+
+Of course, you will want to test that the JAR, and ZIP files, and the POM are created correctly before you actually upload, because once published it can never be removed.   For testing, you use the 'publishToMavenLocal' task.  This will create all the artifacts in the folder c:\Users\<username>\.m2\
+
+Sort of, you can call this task all day, but it won't put anything there until you configure correctly.   When it is not configured correctly, there is no error message or anything.   It simply does not make the output files.
+
+You publish to a repository, and in this case Maven:
+
+repositories({
+    // first for resolving dependencies.
+    mavenCentral();
+    // for publishing
+    maven {
+       url ''
+       name 'forPublish'
+    }
+});
+
+The repositories property is of type RepositoryHandler (this is documented in the Project detail documentation) and it allows the following:
+
+maven - is a command to configure a maven repository, and it is of type MavenArtifactRepository.
+
+mavenCentral creates a repository named MavenRepo, why this command was not named MavenRepo mystifies me.  Also it is the repository at https://repo.maven.apache.org/maven2/
+
+If you want to find out what repositories have been defined:
+
+project.repositories.each {
+   println "REPO: "+ it
+}
+
+
+I get 
+
+REPO: org.gradle.api.internal.artifacts.repositories.DefaultMavenArtifactRepository_Decorated@2ef7969f
+
+For publishing, you need to set the MavenArtifactRepository.url property.  I was told to publish snapshot and release artifacts to s01.oss.sonatype.org.  
+
+https://s01.oss.sonatype.org/content/repositories/snapshots/ 
+https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
+
+maven {
+   url ''
+}
+
+

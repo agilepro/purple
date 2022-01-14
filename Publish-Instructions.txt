@@ -19,7 +19,7 @@ The above lines need to be placed in a file at the following place:
 
     C:\Users\USERNAME\.gradle\gradle.properties
 
-For USERNAME use the windows user you are logger into.  For unix the .gradle folder is in your user home directory.
+For USERNAME use the windows user you are logged into.  For unix the .gradle folder is in your user home directory.
 
 2================
 
@@ -51,7 +51,7 @@ The display will be something like
     uid           [ultimate] Keith Swenson <gpg@purplehillsbooks.com>
     ssb   cv25519 2021-12-31 [E] [expires: 2023-12-31]
     
-Note the last 8 digits of the very long hex number.  You will need that as you keyId.
+Note the last 8 digits of the very long hex number.  You will need that as your keyId.
 
 4 ==============
 
@@ -67,7 +67,7 @@ Generate the key ring that gradle needs to do the signing
 
    gpg --expoert-secret-keys ######## > c:/Users/USERNAME/.gradle/secret-keys.gpg
    
-Again, replace teh pound signs with your keyId.   This file is referenced in the config file above.
+Again, replace the pound signs with your keyId.   This file is referenced in the config file above.
 
 6 ==============
 

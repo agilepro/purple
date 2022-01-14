@@ -1,0 +1,10 @@
+
+
+* lists are nice, maps are nice
+
+* semicolon and parens options - not always a benefit
+
+* automatic getters and setters, can override
+
+* automatic map constructors, keys appear like properties on the map
+
