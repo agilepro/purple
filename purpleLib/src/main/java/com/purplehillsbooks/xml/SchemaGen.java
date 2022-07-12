@@ -16,10 +16,9 @@
 
 package com.purplehillsbooks.xml;
 
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
-
+import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,7 +27,7 @@ import org.w3c.dom.CDATASection;
 
 @Deprecated
 public class SchemaGen {
-	public Vector<String> ambiguousCases = new Vector<String>();
+	public List<String> ambiguousCases = new ArrayList<String>();
 
 	private SchemaGen() {
 
@@ -51,7 +50,7 @@ public class SchemaGen {
 	public void generateForChildren(Schema schema, Element parent) throws Exception {
 		// dive down to the children first
 		NodeList childNdList = parent.getChildNodes();
-		Vector<Element> children = new Vector<Element>();
+		ArrayList<Element> children = new ArrayList<Element>();
 
 		// first scan to see if there are child Elements, or just text
 		boolean hasChildElements = false;
@@ -157,9 +156,7 @@ public class SchemaGen {
 			}
 
 			Hashtable<String, String> alreadySeen = new Hashtable<String, String>();
-			Enumeration<Element> e = children.elements();
-			while (e.hasMoreElements()) {
-				Element child = e.nextElement();
+			for (Element child : children) {
 				String childName = child.getNodeName();
 				boolean haveAlreadySeen = (alreadySeen.get(childName) != null);
 				alreadySeen.put(childName, childName);
@@ -181,9 +178,7 @@ public class SchemaGen {
 	}
 	@Deprecated
 	public void finishAmbiguousCases(Schema schema) throws Exception {
-		Enumeration<String> e = ambiguousCases.elements();
-		while (e.hasMoreElements()) {
-			String ambigName = e.nextElement();
+		for (String ambigName : ambiguousCases) {
 			SchemaDef sd = schema.lookUpDefinition(ambigName);
 			if (sd == null) {
 				sd = schema.addData(ambigName);

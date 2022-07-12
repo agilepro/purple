@@ -6,10 +6,9 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
-
 import com.purplehillsbooks.streams.CSVHelper;
 import com.purplehillsbooks.streams.MemFile;
 import com.purplehillsbooks.testframe.TestRecorder;
@@ -67,7 +66,7 @@ public class Test2 implements TestSet {
 
     private void randomizedCases() throws Exception {
 
-        Vector<String> sourceVals = new Vector<String>();
+        List<String> sourceVals = new ArrayList<String>();
         sourceVals.add("a");              //one letter
         sourceVals.add("bbbbbbbbbbbbb");  //bunch of letters
         sourceVals.add("c c c c c");      //letters and spaces
@@ -106,15 +105,15 @@ public class Test2 implements TestSet {
         testRandomMatrix(10,20,1,10, sourceVals, "random-3 ");
     }
 
-    private void testRandomMatrix(int rowMin, int rowMax, int colMin, int colMax,  Vector<String> sourceVals, String desc) throws Exception {
+    private void testRandomMatrix(int rowMin, int rowMax, int colMin, int colMax,  List<String> sourceVals, String desc) throws Exception {
 
 
-        Vector< Vector <String>> matrix = generateMatrix(rowMin, rowMax, colMin, colMax,  sourceVals);
+        List< List <String>> matrix = generateMatrix(rowMin, rowMax, colMin, colMax,  sourceVals);
 
         MemFile mf = new MemFile();
         Writer w = mf.getWriter();
 
-        for (Vector<String> row : matrix) {
+        for (List<String> row : matrix) {
             CSVHelper.writeLine(w, row);
         }
         w.flush();
@@ -122,7 +121,7 @@ public class Test2 implements TestSet {
         Reader r = mf.getReader();
         LineNumberReader lnr = new LineNumberReader(r);
         int count = 0;
-        for(Vector<String> row : matrix) {
+        for(List<String> row : matrix) {
 
             List<String> parsedRow = CSVHelper.parseLine(lnr);
             if (parsedRow==null) {
@@ -144,8 +143,9 @@ public class Test2 implements TestSet {
 
     }
 
-    private Vector<Vector<String>> generateMatrix(int rowMin, int rowMax, int colMin, int colMax,  Vector<String> sourceVals) {
-        Vector< Vector <String>> matrix = new Vector< Vector <String>>();
+    private List<List<String>> generateMatrix(int rowMin, int rowMax, int colMin, 
+            int colMax,  List<String> sourceVals) {
+        List< List <String>> matrix = new ArrayList< List <String>>();
         Random rand = new Random();
         int rows = rowMin;
         if (rowMax>rowMin) {
@@ -157,7 +157,7 @@ public class Test2 implements TestSet {
             if (colMax>colMin) {
                 cols += rand.nextInt(colMax-colMin);
             }
-            Vector<String> oneRow = new Vector<String>();
+            ArrayList<String> oneRow = new ArrayList<String>();
             for (int j=0; j<cols; j++) {
                 oneRow.add( sourceVals.get( rand.nextInt(sourceVals.size()) ));
             }

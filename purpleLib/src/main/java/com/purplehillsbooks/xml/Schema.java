@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Hashtable;
-import java.util.Vector;
-
+import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,7 +36,7 @@ public class Schema extends Mel {
 			allElements = new Hashtable<String, SchemaDef>();
 		}
 
-		Vector<SchemaDef> containers = getChildren("container", SchemaDef.class);
+		List<SchemaDef> containers = getChildren("container", SchemaDef.class);
 		for (SchemaDef sd : containers) {
 			String eleName = sd.getAttribute("name");
 			if (eleName == null || eleName.length() == 0) {

@@ -23,12 +23,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
-
 import com.purplehillsbooks.json.Dom2JSON;
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONDiff;
@@ -65,7 +63,7 @@ public class Test1 extends TestAbstract implements TestSet {
     public void TestUserProfileFile() throws Exception {
         Mel me = Mel.readInputStream(getData1Stream(), Mel.class);
 
-        Enumeration<Mel> userprofile_enum = me.getChildren("userprofile").elements();
+        List<Mel> userprofileList = me.getChildren("userprofile");
 
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
         hints.put("userprofile", Dom2JSON.HINT_OBJECT_ARRAY);
@@ -76,7 +74,7 @@ public class Test1 extends TestAbstract implements TestSet {
         hints.put("contains",    Dom2JSON.HINT_OBJECT_ARRAY);
 
 
-        Mel userprofile = userprofile_enum.nextElement();
+        Mel userprofile = userprofileList.get(0);
         testNotNull(userprofile, "first user profile object");
         testVal(userprofile.getName(), "userprofile", "first user profile object: name");
         testVal(userprofile.getAttribute("id"), "MOBQNTGYF", "first user profile object: id");
@@ -87,7 +85,7 @@ public class Test1 extends TestAbstract implements TestSet {
         testScalar(userprofile, "nonexistantkey", "", "first user profile object");
 
         // get the second user profile element
-        userprofile = userprofile_enum.nextElement();
+        userprofile = userprofileList.get(1);
         testNotNull(userprofile, "second user profile object");
         testVal(userprofile.getName(), "userprofile", "second user profile object: name");
         testScalar(userprofile, "username", "BBB", "second user profile object");
@@ -98,7 +96,7 @@ public class Test1 extends TestAbstract implements TestSet {
         testVal(idrec.getAttribute("loginid"), "aaa@gmail.com", "second user idrec object login id");
 
         // get the third user profile element
-        userprofile = userprofile_enum.nextElement();
+        userprofile = userprofileList.get(2);
         testNotNull(userprofile, "third user profile object");
         testVal(userprofile.getName(), "userprofile", "third user profile object: name");
         testScalar(userprofile, "username", "CCC", "third user profile object");
@@ -132,7 +130,7 @@ public class Test1 extends TestAbstract implements TestSet {
         book1.setScalar("author", "Nicholas Taleb");
         writeBothStylesAndCompare(testTree, "constTest004", hints);
 
-        Vector<String> stores = new Vector<String>();
+        List<String> stores = new ArrayList<String>();
         stores.add("Barnes & Noble");
         stores.add("Amazon");
         stores.add("Hicklebees");

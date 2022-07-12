@@ -23,12 +23,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Random;
-import java.util.Vector;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -503,8 +502,8 @@ public class Mel {
         return testValue.equals(val);
     }
 
-    public Vector<String> getAllAttributeNames() {
-        Vector<String> result = new Vector<String>();
+    public List<String> getAllAttributeNames() {
+        ArrayList<String> result = new ArrayList<String>();
         NamedNodeMap nnm = fEle.getAttributes();
         if (nnm == null) {
             return result;
@@ -567,12 +566,12 @@ public class Mel {
      * memberName: the name of the tag holding a data value returns: a Vector of
      * string values
      */
-    public Vector<String> getVector(String memberName) {
+    public List<String> getVector(String memberName) {
         if (memberName == null) {
             throw new RuntimeException("Program logic error: a null member name"
                     + " was passed to getVector.");
         }
-        Vector<String> list = new Vector<String>();
+        ArrayList<String> list = new ArrayList<String>();
         NodeList childNdList = fEle.getChildNodes();
         for (int i = 0; i < childNdList.getLength(); i++) {
             org.w3c.dom.Node n = childNdList.item(i);
@@ -597,7 +596,7 @@ public class Mel {
      * memberName: the name of the tag holding a data value values: a Vector of
      * string values
      */
-    public void setVector(String memberName, Vector<String> values) {
+    public void setVector(String memberName, List<String> values) {
         if (memberName == null) {
             throw new RuntimeException("Program logic error: a null member name"
                     + " was passed to setVector.");
@@ -709,13 +708,13 @@ public class Mel {
         return null;
     }
 
-    public Vector<Mel> getChildren(String elementName) throws Exception {
+    public List<Mel> getChildren(String elementName) throws Exception {
         return getChildren(elementName, Mel.class);
     }
 
-    public <T extends Mel> Vector<T> getChildren(String elementName, Class<T> childClass)
+    public <T extends Mel> List<T> getChildren(String elementName, Class<T> childClass)
             throws Exception {
-        Vector<T> list = new Vector<T>();
+        ArrayList<T> list = new ArrayList<T>();
         Constructor<T> con = childClass.getConstructor(constructParams);
         Object[] inits = new Object[2];
         inits[0] = fDoc;
@@ -742,8 +741,8 @@ public class Mel {
      * "isContainer" method to determine whether this element is a data value or
      * not.
      */
-    public Vector<Mel> getAllChildren() throws Exception {
-        Vector<Mel> list = new Vector<Mel>();
+    public List<Mel> getAllChildren() throws Exception {
+        ArrayList<Mel> list = new ArrayList<Mel>();
         Constructor<Mel> con = Mel.class.getConstructor(constructParams);
         Object[] inits = new Object[2];
         inits[0] = fDoc;
@@ -852,7 +851,7 @@ public class Mel {
         // between
         // the Element nodes.
 
-        Vector<Element> elementSet = new Vector<Element>();
+        ArrayList<Element> elementSet = new ArrayList<Element>();
         for (int i = 0; i < childNdList.getLength(); i++) {
             Node n = childNdList.item(i);
             if (n.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
@@ -879,19 +878,16 @@ public class Mel {
 
         Collections.sort(elementSet, new DOMElementComparator());
 
-        Enumeration<Element> e1 = elementSet.elements();
-        while (e1.hasMoreElements()) {
+        for (Element ele : elementSet) {
             parent.appendChild(fDoc.createTextNode(newIndent));
-            Element ele = e1.nextElement();
             parent.appendChild(ele);
         }
 
         parent.appendChild(fDoc.createTextNode(indent));
 
         // recursively indent the children elements now
-        e1 = elementSet.elements();
-        while (e1.hasMoreElements()) {
-            indentChildren(e1.nextElement(), newIndent);
+        for (Element ele :  elementSet) {
+            indentChildren(ele, newIndent);
         }
 
     }
