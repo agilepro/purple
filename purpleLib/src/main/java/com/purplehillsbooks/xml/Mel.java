@@ -563,7 +563,7 @@ public class Mel {
      * tag will be accessed, and the value included in the vector in the same
      * order.
      *
-     * memberName: the name of the tag holding a data value returns: a Vector of
+     * memberName: the name of the tag holding a data value returns: a List of
      * string values
      */
     public List<String> getVector(String memberName) {
@@ -593,7 +593,7 @@ public class Mel {
      * Call setVector, and a child tag and value will be created in the DOM tree
      * for each value in the vector. Any previous values will be removed.
      *
-     * memberName: the name of the tag holding a data value values: a Vector of
+     * memberName: the name of the tag holding a data value values: a List of
      * string values
      */
     public void setVector(String memberName, List<String> values) {

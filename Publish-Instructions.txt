@@ -104,6 +104,9 @@ Then you need to use the repository manager and RELEASE the staged repo to the o
 
     https://s01.oss.sonatype.org/#stagingRepositories
 
+    The library is uploaded as "open"
+    You need to "close" it
+    Then "release" it
     
 
     
