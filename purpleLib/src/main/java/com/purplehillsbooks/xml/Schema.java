@@ -26,8 +26,8 @@ import org.w3c.dom.Element;
 
 @Deprecated
 public class Schema extends Mel {
-	Hashtable<String, SchemaDef> allElements;
-	boolean hasRoot = false;
+	private Hashtable<String, SchemaDef> allElements;
+	private boolean hasRoot = false;
 
 	public Schema(Document doc, Element ele) throws Exception {
 		super(doc, ele);

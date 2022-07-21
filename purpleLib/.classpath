@@ -6,7 +6,11 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="*|**|**/*" including="aaaaaa" kind="src" path="src/test/resources"/>
+	<classpathentry excluding="*|**|**/*" including="aaaaaa" kind="src" path="src/test/resources">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="bin/main" path="src/main/resources">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
