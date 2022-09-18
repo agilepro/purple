@@ -10,6 +10,7 @@
         <load-on-startup>6</load-on-startup>
     </servlet>
     <servlet>
+        <display-name>DataFeedServlet</display-name>
         <servlet-name>DataFeedServlet</servlet-name>
         <servlet-class>com.fujitsu.nugen.DataFeedServlet</servlet-class> 
     </servlet>    

@@ -1,6 +1,6 @@
 {"error": {
   "code": 400,
-  "context": "Test file ExTest4.json",
+  "context": "Test file ExDTest4.json",
   "details": [
     {
       "code": "JSONException",
@@ -18,7 +18,6 @@
     "top level exception thrown by exception test when course string ran out",
     "    TestExceptions.java: callHigher: 122",
     "    TestExceptions.java: sampleMethod2: 75",
-    "    (continued below)",
     "caught and rethrow from level: ",
     "    TestExceptions.java: sampleMethod2: 112",
     "    TestExceptions.java: callHigher: 129",

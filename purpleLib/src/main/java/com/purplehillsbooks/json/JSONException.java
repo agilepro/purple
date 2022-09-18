@@ -6,7 +6,9 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JSONException is mainly a class that has a few helpful methods for handling
@@ -317,6 +319,13 @@ public class JSONException extends Exception implements TemplatizedMessage {
                 trace.add(line);
             }
         }
+        
+        //This does not work perfectly in the case that the exception does not
+        //have the full stack trace in the first place.  Previously truncated
+        //stack traces (such as reconstituted exceptions) will falsely get extra
+        //truncated IF the source trace is highly repetitive.  That occurs in the
+        //test cases, but rarely in real life.
+        //but works in most normal cases.
         public void removeTail(List<String> lower) {
             int offUpper = trace.size()-1;
             int offLower = lower.size()-1;
@@ -484,6 +493,7 @@ public class JSONException extends Exception implements TemplatizedMessage {
      **/
     public static Exception convertJSONToException(JSONObject ex) {
         Exception trailer = null;
+        Map<String, Exception> msgMap = new HashMap<String, Exception>();
         try {
             if (ex==null) {
                 return new Exception("Failure converting JSONToException: Null parameter to JSONToException");
@@ -524,6 +534,8 @@ public class JSONException extends Exception implements TemplatizedMessage {
                         trailer = new Exception(message);
                     }
                 }
+                //store this associated with the message which appears in the trace below
+                msgMap.put(message, trailer);
                 //zero out the stack traces on these objects
                 trailer.setStackTrace(new StackTraceElement[0]);
             }
@@ -534,6 +546,7 @@ public class JSONException extends Exception implements TemplatizedMessage {
             if (error.has("stack")) {
                 JSONArray stack = error.getJSONArray("stack");
                 ArrayList<StackTraceElement> newStack = new  ArrayList<StackTraceElement>();
+                Exception currentException = trailer;
                 for (int i=0; i<stack.length(); i++) {
                     String line = stack.getString(i);
                     //now parse this into part according to the form
@@ -546,12 +559,22 @@ public class JSONException extends Exception implements TemplatizedMessage {
                         continue;
                     }
                     if (!"  ".equals(line.substring(0,2))) {
-                        //ignore lines that don't start with two spaces
+                        //lines without space indicate that this is an exception message
+                        //so find that exception and make it current
+                        Exception matchingException = msgMap.get(line);
+                        if (matchingException!=null) {
+                            putStackTraceOnException(currentException, newStack);
+
+                            //we assume that each exception appears only once and have no stack trace
+                            newStack = new  ArrayList<StackTraceElement>();
+                            currentException = matchingException;
+                        }
                         continue;
                     }
                     int pos = line.lastIndexOf(":");
                     if (pos<0) {
                         //ignore lines without any colons in them
+                        //that includes lines that say '(continued below)'
                         continue;
                     }
                     lineNumber = safeConvertInt(line.substring(pos+1));
@@ -564,17 +587,25 @@ public class JSONException extends Exception implements TemplatizedMessage {
                     fileName = line.trim();
                     newStack.add(new StackTraceElement("", methodName, fileName, lineNumber));
                 }
-                StackTraceElement[] newStackArray = new StackTraceElement[newStack.size()];
-                for (int i=0; i<newStack.size(); i++) {
-                    newStackArray[i] = newStack.get(i);
-                }
-                trailer.setStackTrace(newStackArray);
+                putStackTraceOnException(currentException, newStack);
             }
             return trailer;
         }
         catch (Exception xxx) {
             return new Exception("Failure converting JSONToException: "+ex.toString(), xxx);
         }
+    }
+    
+    private static void putStackTraceOnException(Exception e, ArrayList<StackTraceElement> newStack) {
+        if (newStack.size()==0) {
+            //ignore empty lists
+            return; 
+        }
+        StackTraceElement[] newStackArray = new StackTraceElement[newStack.size()];
+        for (int i=0; i<newStack.size(); i++) {
+            newStackArray[i] = newStack.get(i);
+        }
+        e.setStackTrace(newStackArray);
     }
 
     @Override

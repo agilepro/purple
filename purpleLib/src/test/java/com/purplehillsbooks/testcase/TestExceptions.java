@@ -19,7 +19,7 @@ import com.purplehillsbooks.testframe.TestSet;
  * the test results files.
  */
 public class TestExceptions extends TestAbstract implements TestSet {
-
+    
     public TestExceptions() {
     }
 
@@ -29,10 +29,11 @@ public class TestExceptions extends TestAbstract implements TestSet {
             System.out.println("Source data folder does not exist: "+sourceDataFolder);
             return;
         }
-        testExceptionStackTrace("11121112333", "ExTest1.json");
-        testExceptionStackTrace("3",           "ExTest2.json");
-        testExceptionStackTrace("1222",        "ExTest3.json");
-        testExceptionStackTrace("2",           "ExTest4.json");
+        testExceptionStackTrace("11121112333", "Test1");
+        testExceptionStackTrace("3",           "Test2");
+        testExceptionStackTrace("1222",        "Test3");
+        testExceptionStackTrace("2",           "Test4");
+        testExceptionStackTrace("123123123123","Test5");
 
 
         compareString(newTr, "testing format 1", "test whether it works", String.format("test %s it works", "whether"));
@@ -64,9 +65,48 @@ public class TestExceptions extends TestAbstract implements TestSet {
         callHigher(course);
     }
 
+    static int unique2 = 0;
     private void sampleMethod2(String course) throws Exception {
         try {
-            callHigher(course);
+            //this is a goofy scheme to try not to have so much exactly the same in the 
+            //stack traces
+            switch (unique2++) {
+                case 0:
+                    callHigher(course);
+                    return;
+                case 1:
+                    callHigher(course);
+                    return;
+                case 2:
+                    callHigher(course);
+                    return;
+                case 3:
+                    callHigher(course);
+                    return;
+                case 4:
+                    callHigher(course);
+                    return;
+                case 5:
+                    callHigher(course);
+                    return;
+                case 6:
+                    callHigher(course);
+                    return;
+                case 7:
+                    callHigher(course);
+                    return;
+                case 8:
+                    callHigher(course);
+                    return;
+                case 9:
+                    callHigher(course);
+                    return;
+                case 10:
+                    callHigher(course);
+                    return;
+                default:
+                    callHigher(course);
+            }
         }
         catch (Exception e) {
             throw new JSONException("caught and rethrow from level: {0}", e, course);
@@ -126,23 +166,14 @@ public class TestExceptions extends TestAbstract implements TestSet {
     }
 
 
-    private void testExceptionStackTrace(String course, String fileName) {
-        File outFolder = new File(tr.getProperty("testoutput", null));
-        if (!outFolder.exists()) {
-            tr.markFatalError(new Exception ("testExceptionStackTrace: Test output folder does not exist: "+outFolder));
-            return;
-        }
+    private void testExceptionStackTrace(String course, String fileNameBase) {
         Exception testException = null;
-        File expectedExceptionFile = new File(sourceDataFolder, fileName);
-        if (!expectedExceptionFile.exists()) {
-            tr.markFailed(fileName, "testExceptionStackTrace: the test file is missing from source folder: "+expectedExceptionFile);
-            return;
-        }
         
         //this generates an exception will varying levels of calls in it.   We want an exception
         //with a detailed stack trace to make sure that the stack is being handled appropriately.
         //the method callHigher is a recursive method that then throws and catches/rethrow at various levels
         try {
+            unique2 = 0;
             callHigher(course);
         }
         catch (Exception e) {
@@ -151,32 +182,46 @@ public class TestExceptions extends TestAbstract implements TestSet {
 
         try {
 
-            JSONObject receivedExceptionForm = JSONException.convertToJSON(testException, "Test file "+fileName+" for course "+course);
-            JSONObject expectedExceptionForm = JSONObject.readFromFile(expectedExceptionFile);
-            //dumpTraceFile(outFolder, fileName, testException);
-            File receivedExceptionFile = new File(outFolder, fileName);
-            receivedExceptionForm.writeToFile(receivedExceptionFile);
-            String s1 = receivedExceptionForm.toString();
-            String s2 = expectedExceptionForm.toString();
-            if (s1.equals(s2)) {
-                tr.markPassed(fileName);
-            }
-            else {
-                tr.markFailed(fileName, "testExceptionStackTrace: these files do not match ("+receivedExceptionFile+") and ("+expectedExceptionFile+")");
-            }
-
-            String secondFileName = fileName.substring(0,fileName.length()-5)+"-2.json";
+            //first check that the JSON format is as expected
+            String fileName = "Ex"+fileNameBase+".json";
+            compareExceptionToFile(testException, fileName);
+            
+            //now convert back to exception, and see if you get what is expected
+            //this might be slightly different than the original, but should be similar
+            JSONObject receivedExceptionForm = JSONException.convertToJSON(testException, "Test file "+fileName);
+            String secondFileName = "ExD"+fileNameBase+".json";
             Exception reconvert = JSONException.convertJSONToException(receivedExceptionForm);
-            JSONObject reExObj = JSONException.convertToJSON(reconvert, "Test file "+fileName+" for course "+course);
-            compareExceptions(secondFileName, receivedExceptionForm, reExObj);
-            //dumpTraceFile(outFolder, secondFileName, reconvert);
-            File outputFile3 = new File(outFolder, secondFileName);
-            reExObj.writeToFile(outputFile3);
-
+            compareExceptionToFile(reconvert, secondFileName);
+            
         }
         catch (Exception e) {
             System.out.println("FATAL ERROR: "+e);
         }
+    }
+    
+    private void compareExceptionToFile(Exception testException, String fileName) throws Exception {
+        //generate the current result file
+        JSONObject testExcJSON = JSONException.convertToJSON(testException, "Test file "+fileName);
+        File resultFile = new File(testOutputFolder, fileName);
+        testExcJSON.writeToFile(resultFile);
+        
+        //now see if it matches expected
+        File compareFile = new File(sourceDataFolder, fileName);
+        if (!compareFile.exists()) {
+            tr.markFailed(fileName, "testExceptionStackTrace: the test file is missing from source folder: "+compareFile);
+            return;
+        }
+        JSONObject compareExcJSON = JSONObject.readFromFile(compareFile);
+
+        
+        String s1 = testExcJSON.toString();
+        String s2 = compareExcJSON.toString();
+        if (s1.equals(s2)) {
+            tr.markPassed(fileName);
+        }
+        else {
+            tr.markFailed(fileName, "testExceptionStackTrace: these files do not match ("+resultFile+") and ("+compareFile+")");
+        }        
     }
 
     public static void main(String args[]) {

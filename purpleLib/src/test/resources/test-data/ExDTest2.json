@@ -1,6 +1,6 @@
 {"error": {
   "code": 400,
-  "context": "Test file ExTest2.json",
+  "context": "Test file ExDTest2.json",
   "details": [{
     "code": "Exception",
     "message": "top level exception thrown by exception test when course string ran out"

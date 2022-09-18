@@ -1,6 +1,6 @@
 {"error": {
   "code": 400,
-  "context": "Test file ExTest1.json",
+  "context": "Test file ExDTest1.json",
   "details": [
     {
       "code": "JSONException",
@@ -30,7 +30,6 @@
     "    TestExceptions.java: sampleMethod3: 117",
     "    TestExceptions.java: callHigher: 132",
     "    TestExceptions.java: sampleMethod2: 78",
-    "    (continued below)",
     "caught and rethrow from level: 333",
     "    TestExceptions.java: sampleMethod2: 112",
     "    TestExceptions.java: callHigher: 129",
@@ -41,7 +40,6 @@
     "    TestExceptions.java: sampleMethod1: 65",
     "    TestExceptions.java: callHigher: 126",
     "    TestExceptions.java: sampleMethod2: 75",
-    "    (continued below)",
     "caught and rethrow from level: 1112333",
     "    TestExceptions.java: sampleMethod2: 112",
     "    TestExceptions.java: callHigher: 129",
