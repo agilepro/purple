@@ -18796,7 +18796,10 @@
         "To": "483"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "IsAddressCorrect == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -18819,7 +18822,10 @@
         "To": "470"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "IsAddressCorrect == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -18850,7 +18856,10 @@
         "To": "481"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "__condition == Get WU Card Red Hist",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19029,7 +19038,10 @@
         "To": "477"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "__condition == Process",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19052,7 +19064,10 @@
         "To": "474"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "sendError == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19149,7 +19164,10 @@
         "To": "485"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "RequiresOutboundCorresp == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19374,7 +19392,10 @@
         "To": "498"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "sendError == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19431,7 +19452,10 @@
         "To": "473"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "RequiresOutboundCorresp == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19500,7 +19524,10 @@
         "To": "499"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "WUCardCommentsUpdated == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19531,7 +19558,10 @@
         "To": "476"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "WUCardCommentsUpdated == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19626,7 +19656,10 @@
         "To": "469"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "__condition == Get WU Card Red Hist",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19661,7 +19694,10 @@
         "To": "475"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "__condition == Update WU Card Comments",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {

@@ -221,7 +221,26 @@ public class Dom2JSON {
     public static final int HINT_OBJECT_ARRAY = 3;
 
     
-    
+/**
+ * if UseAtSignForAttributeName is set false, then attribute names will be 
+ * used directly in the JSONObject member without modification.
+ * 
+ * if UseAtSignForAttributeName is true, then attribute names will have 
+ * an at-sign (@) prepended to the name for the JSONOjbect member.
+ */
+    public static boolean UseAtSignForAttributeName = false;
+
+/**
+ * if includeContentsWithAttributes affects what happens with XML tags that have
+ * attributes and also have direct string contents.  This is set to true,
+ * the contents of an element which has attributes, no children, but contains text
+ * will have the text places in a member calles "@"
+ * 
+ * Previously the converted did not do this, and would simply throw the text away
+ * of the element had attributes.  Get the old behavior by setting this false.
+ */
+    public static boolean includeContentsWithAttributes = true;
+        
     /**
      * Pass in a DOM Document, and you get a JSON object that represents
      * the entire contents.
@@ -246,7 +265,7 @@ public class Dom2JSON {
      * has siblings.  It only works for a single, standing alone element like
      * the root element of a document or the root of any tree.
      */
-    public static JSONObject convertElementToJSON(Element rootEle) throws Exception {
+    private static JSONObject convertElementToJSON(Element rootEle) throws Exception {
         return convertElementToJSON(rootEle, new Hashtable<String,Integer>());
     }
 
@@ -256,7 +275,7 @@ public class Dom2JSON {
      * has siblings.  It only works for a single, standing alone element like
      * the root element of a document or the root of any tree.
      */
-    public static JSONObject convertElementToJSON(Element rootEle,
+    private static JSONObject convertElementToJSON(Element rootEle,
             Hashtable<String,Integer> hints) throws Exception {
 
         JSONObject jo = new JSONObject();
@@ -279,7 +298,7 @@ public class Dom2JSON {
      * Simple elements can be converted to a string value.
      * Non-simple elements need to be converted to a JSONObject
      */
-    public static boolean elementIsSimple(Element ele, Integer hintValue) {
+    private static boolean elementIsSimple(Element ele, Integer hintValue) {
         if (hintValue!=null) {
             int val = hintValue.intValue();
             return (val==HINT_SIMPLE || val==HINT_SIMPLE_ARRAY);
@@ -315,7 +334,7 @@ public class Dom2JSON {
      * This does NOT use the element name, it returns everything except
      * for the name.
      */
-    public static JSONObject getElementObj(Element ele, Hashtable<String,Integer> hints) throws Exception {
+    private static JSONObject getElementObj(Element ele, Hashtable<String,Integer> hints) throws Exception {
         JSONObject jo = new JSONObject();
         NodeList nl = ele.getChildNodes();
         int last = nl.getLength();
@@ -323,6 +342,7 @@ public class Dom2JSON {
         Set<String> isObject = new HashSet<String>();
         Set<String> isArray = new HashSet<String>();
         Set<String> wasSeen = new HashSet<String>();
+        boolean hasChildren = false;
         for (int i=0; i<last; i++) {
             Node node = nl.item(i);
             short type = node.getNodeType();
@@ -343,6 +363,7 @@ public class Dom2JSON {
                 }
             }
             else if (Node.ELEMENT_NODE==type) {
+                hasChildren = true;
                 Element ele2 = (Element)node;
                 String tagName = ele2.getTagName();
                 if (wasSeen.contains(tagName)) {
@@ -374,6 +395,9 @@ public class Dom2JSON {
             short type = node.getNodeType();
             if (Node.ATTRIBUTE_NODE==type) {
                 String attName = node.getNodeName();
+                if (UseAtSignForAttributeName) {
+                    attName = "@"+attName;
+                }
                 String attValue = node.getNodeValue();
                 ArrayList<String> stringList = stringMap.get(attName);
                 if (stringList==null) {
@@ -383,6 +407,7 @@ public class Dom2JSON {
                 stringList.add(attValue);
             }
             else if (Node.ELEMENT_NODE==type) {
+                hasChildren = true;
                 Element ele2 = (Element)node;
                 String tagName = ele2.getTagName();
                 if (!isObject.contains(tagName)) {
@@ -433,6 +458,18 @@ public class Dom2JSON {
                 jo.put(key, ja);
             }
         }
+        if (!hasChildren && includeContentsWithAttributes) {
+            //if there are no children elements  AND if the text is 
+            //non trivial, then make a new member with '@' by itself.
+            //This covers cases where an element has both attributes
+            //and contents.  Note, this is an at-sign by itself, and 
+            //so it can not conflict with attributes that have at-sign
+            //at the beginning of the name.
+            String contents = getElementText(ele).trim();
+            if (contents.length()>0) {
+                jo.put("@", contents);
+            }
+        }
 
         //are attributes separate?  Don't understand why they did not appear in the children above
         NamedNodeMap nnm = ele.getAttributes();
@@ -455,7 +492,7 @@ public class Dom2JSON {
      * If there are multiple spans of text, all the text
      * is appended together.
      */
-    public static String getElementText(Element ele) throws Exception {
+    private static String getElementText(Element ele) throws Exception {
         NodeList nl = ele.getChildNodes();
         StringBuffer sb = new StringBuffer();
         int last = nl.getLength();
@@ -469,6 +506,59 @@ public class Dom2JSON {
             }
         }
         return sb.toString();
+    }
+    
+    /**
+     * XML has tags that have namespace prefixes on them, and since those prefixes are not
+     * necessarily the same from every source, this method will simply strip the prefix off
+     * of keys and leave you will only the base key name on the presumption that no XML
+     * key is duplicated -- that is, the XML you are working with does not actually need 
+     * the prefix to distinguish the keys at a given level.  This is usually the case,
+     * but certainly not guaranteed.
+     */
+    public static void recusiveStripNameSpace(JSONObject jo) throws Exception {
+        ArrayList<String> keys = new ArrayList<String>();
+        for (String key : jo.keySet()) {
+            keys.add(key);
+        }
+        for (String key : keys) {
+            int colonPos = key.indexOf(":");
+            if (colonPos>0) {
+                Object value = jo.get(key);
+                jo.remove(key);
+                String bareKey = key.substring(colonPos+1);
+                jo.put(bareKey, value);
+            }
+        }
+        for (String key : jo.keySet()) {
+            Object value = jo.get(key);
+            if (value instanceof JSONObject) {
+                recusiveStripNameSpace((JSONObject)value);
+            }
+            else if (value instanceof JSONArray) {
+                listStripNameSpace((JSONArray)value);
+            }
+        }
+    }
+    
+    /**
+     * XML has tags that have namespace prefixes on them, and since those prefixes are not
+     * necessarily the same from every source, this method will simply strip the prefix off
+     * of keys and leave you will only the base key name on the presumption that no XML
+     * key is duplicated -- that is, the XML you are working with does not actually need 
+     * the prefix to distinguish the keys at a given level.  This is usually the case,
+     * but certainly not guaranteed.
+     */
+    public static void listStripNameSpace(JSONArray ja) throws Exception {
+        for (int i=0; i<ja.length(); i++) {
+            Object value = ja.get(i);
+            if (value instanceof JSONObject) {
+                recusiveStripNameSpace((JSONObject)value);
+            }
+            else if (value instanceof JSONArray) {
+                listStripNameSpace((JSONArray)value);
+            }
+        }
     }
 
 }

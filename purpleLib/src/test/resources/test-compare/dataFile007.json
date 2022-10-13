@@ -19364,7 +19364,10 @@
     },
     "Transitions": {"Transition": [
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "IsAddressCorrect == false",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19461,7 +19464,10 @@
         "To": "2451"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "sendError == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19532,7 +19538,10 @@
         "To": "2453"
       },
       {
-        "Condition": {"Type": "OTHERWISE"},
+        "Condition": {
+          "@": "RequiresOutboundCorresp == true",
+          "Type": "OTHERWISE"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19727,7 +19736,10 @@
         "To": "2458"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "sendError == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19784,7 +19796,10 @@
         "To": "2449"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "RequiresOutboundCorresp == false",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {
@@ -19875,7 +19890,10 @@
         "To": "2445"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "IsAddressCorrect == true",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": {
           "Coordinates": [
             {

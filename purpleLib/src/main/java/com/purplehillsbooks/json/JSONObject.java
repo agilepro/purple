@@ -191,6 +191,9 @@ public class JSONObject {
      * JSONObject tree that the file represents.
      */
     public static JSONObject readFromFile(File inFile) throws Exception {
+        if (!inFile.exists()) {
+            throw new Exception("File for JSON objects does not exist: "+inFile.getAbsolutePath());
+        }
         try {
             FileInputStream fis = new FileInputStream(inFile);
             JSONTokener jt = new JSONTokener(fis);
@@ -230,19 +233,10 @@ public class JSONObject {
      * does not actually update the file system with a new file.
      */
     public static JSONObject readFileIfExists(File inFile) throws Exception {
-        try {
-            if (!inFile.exists()) {
-                return new JSONObject();
-            }
-            FileInputStream fis = new FileInputStream(inFile);
-            JSONTokener jt = new JSONTokener(fis);
-            JSONObject jo = new JSONObject(jt);
-            fis.close();
-            return jo;
+        if (!inFile.exists()) {
+            return new JSONObject();
         }
-        catch (Exception e) {
-            throw new Exception("Unable to read JSON objects from file: "+inFile.getAbsolutePath(), e);
-        }
+        return readFromFile(inFile);
     }
 
     /**
@@ -453,13 +447,20 @@ public class JSONObject {
 
 
     /**
-     * Construct a JSONObject from a source JSON text string.
-     *
-     * @deprecated don't use this, use the JSONTokener
-     * instead.  The JSON stream should never be  a string, but
-     * instead should always be a Stream.  It is always more
+     * <p>Construct a JSONObject from a source JSON text string.</p>
+     * 
+     * <p><b>Don't use this!</b>  If you are using this, it is either a 
+     * mistake, or a desperate situation where some other API
+     * is forcing you to have JSON as a string.</p>
+     * 
+     * <p>The JSON stream should never be  a string, but
+     * instead should always be a byte Stream.  It is always more
      * efficient to stream the JSON representation in and out.
-     * Never use a string for this.
+     * Never use a string for this.</p>
+     * 
+     * <p>However, sometimes other API give you a string and
+     * you have to deal with it, so this convenient shortcut
+     * creates the JSONTokener for you.</p>
      */
     public JSONObject(String source) throws JSONException {
         this(new JSONTokener(source));
@@ -873,7 +874,7 @@ public class JSONObject {
 
     /**
      * Don't use this, because it is an iterator.  Deprecated.
-     * Use sortedKeySet instead which gives you the same functionality
+     * Use sortedKeySet() instead which gives you the same functionality
      * but as a List object which allows for the normal Java language
      * capability to iterate automatically over it.
      * @deprecated use sortedKeySet instead because iterators are old fashioned

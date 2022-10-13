@@ -60,7 +60,7 @@ public class Test1 extends TestAbstract implements TestSet {
         testGenSchema();
     }
 
-    public void TestUserProfileFile() throws Exception {
+    private void TestUserProfileFile() throws Exception {
         Mel me = Mel.readInputStream(getData1Stream(), Mel.class);
 
         List<Mel> userprofileList = me.getChildren("userprofile");
@@ -111,7 +111,7 @@ public class Test1 extends TestAbstract implements TestSet {
         writeBothStylesAndCompare(me, "UP_Test002", hints);
     }
 
-    public void TestEmpty() throws Exception {
+    private void TestEmpty() throws Exception {
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
         hints.put("book",    Dom2JSON.HINT_OBJECT_ARRAY);
         hints.put("library", new Integer(3));
@@ -181,7 +181,7 @@ public class Test1 extends TestAbstract implements TestSet {
 
     }
 
-    public void TestReadWrite() throws Exception {
+    private void TestReadWrite() throws Exception {
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
         hints.put("userprofile", new Integer(3));
         hints.put("servlet", new Integer(3));
@@ -237,7 +237,7 @@ public class Test1 extends TestAbstract implements TestSet {
 
     }
 
-    public void testGenSchema() throws Exception {
+    private void testGenSchema() throws Exception {
         Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
         hints.put("userprofile", new Integer(3));
         hints.put("servlet", new Integer(3));
@@ -281,13 +281,13 @@ public class Test1 extends TestAbstract implements TestSet {
     }
 
 
-    public void writeBothStylesAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
+    private void writeBothStylesAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
         writeFileAndCompare(me, fileNamePart + ".xml");
         writeJSONAndCompare(me, fileNamePart, hints);
     }
 
 
-    public void writeFileAndCompare(Mel me, String fileName) throws Exception {
+    private void writeFileAndCompare(Mel me, String fileName) throws Exception {
         me.reformatXML();
 
         File outputFile = new File(tr.getProperty("testoutput", null), fileName);
@@ -304,9 +304,9 @@ public class Test1 extends TestAbstract implements TestSet {
      * read that file
      * write it again and compare to archive
      */
-    public void  writeJSONAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
+    private void  writeJSONAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
         String fileName = fileNamePart + ".json";
-        JSONObject jsonRep = Dom2JSON.convertElementToJSON(me.getElement(), hints);
+        JSONObject jsonRep = Dom2JSON.convertDomToJSON(me.getDocument(), hints);
 
         File outputFile = new File(tr.getProperty("testoutput", null), fileName);
         File intermediateFile = new File(tr.getProperty("testoutput", null), fileName+"$testtmp$");
@@ -374,7 +374,7 @@ public class Test1 extends TestAbstract implements TestSet {
     }
 
 
-    public void compareFiles(File outputFile, String fileName) throws Exception {
+    private void compareFiles(File outputFile, String fileName) throws Exception {
         String testId = "Compare output to " + fileName;
         compareGeneratedTextFile(testId, fileName);
     }

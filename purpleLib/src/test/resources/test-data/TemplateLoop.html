@@ -2,26 +2,67 @@
 <body>
 <h1>This is a compound page template</h1>
 
-Hello {{tester.name}},<br/>
+Hello Harry Houdini,<br/>
 
-{{!LOOP addr address}}
-<p>People from {{addr.city}}, in {{addr.state}}, 
+
+<p>People from Tulsa, in Oklahoma, 
 can clearly see values substituted into the text.</p>
-{{!ENDLOOP}}
 
-Since you are a {{tester.age}} year-old {{tester.occupation}} you should
+<p>People from Demoines, in Iowa, 
+can clearly see values substituted into the text.</p>
+
+
+Since you are a 102 year-old Escape Artist you should
 be able to see it too.
 
-Please vote for {{!LOOP flavor flavors}}{{flavor}}, {{!ENDLOOP}} as the best flavors.
+Please vote for cherry, blueberry, peach, almond,  as the best flavors.
 
 <table>
-{{!LOOP addr1 address}}
-{{!LOOP addr2 address}}
-{{!LOOP flavor flavors}}
-<tr><td>{{addr1.city}}</td><td>is better than</td><td>{{addr2.city}}</td><td>for {{flavor}}</td></tr>
-{{!ENDLOOP}}
-{{!ENDLOOP}}
-{{!ENDLOOP}}
+
+
+
+<tr><td>Tulsa</td><td>is better than</td><td>Tulsa</td><td>for cherry</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Tulsa</td><td>for blueberry</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Tulsa</td><td>for peach</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Tulsa</td><td>for almond</td></tr>
+
+
+
+<tr><td>Tulsa</td><td>is better than</td><td>Demoines</td><td>for cherry</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Demoines</td><td>for blueberry</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Demoines</td><td>for peach</td></tr>
+
+<tr><td>Tulsa</td><td>is better than</td><td>Demoines</td><td>for almond</td></tr>
+
+
+
+
+
+<tr><td>Demoines</td><td>is better than</td><td>Tulsa</td><td>for cherry</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Tulsa</td><td>for blueberry</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Tulsa</td><td>for peach</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Tulsa</td><td>for almond</td></tr>
+
+
+
+<tr><td>Demoines</td><td>is better than</td><td>Demoines</td><td>for cherry</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Demoines</td><td>for blueberry</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Demoines</td><td>for peach</td></tr>
+
+<tr><td>Demoines</td><td>is better than</td><td>Demoines</td><td>for almond</td></tr>
+
+
+
 </table>
 
 Goodbye

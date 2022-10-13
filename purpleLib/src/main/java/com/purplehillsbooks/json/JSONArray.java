@@ -1102,8 +1102,10 @@ public class JSONArray {
      * Anything in the JSONArray that is not a String will be essentially ignored
      * and placed after all the strings.
      *
-     * @param isDescending: false if you want ascending order, true if you want descending
-     * @param caseSensitive: false if you upper and lower case together, true if you want ASCII order
+     * @param isDescending 
+     *            false if you want ascending order, true if you want descending
+     * @param caseSensitive 
+     *            false if you upper and lower case together, true if you want ASCII order
      */
     public static Comparator<Object> stringComparator(boolean isDescending, boolean caseSensitive) {
         return new StringComparator(isDescending, caseSensitive);

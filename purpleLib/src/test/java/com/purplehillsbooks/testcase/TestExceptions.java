@@ -1,7 +1,6 @@
 package com.purplehillsbooks.testcase;
 
 import java.io.File;
-import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.testframe.TestRecorder;
@@ -136,6 +135,7 @@ public class TestExceptions extends TestAbstract implements TestSet {
         }
     }
 
+    /*
     private void compareExceptions(String testCase, JSONObject ex1, JSONObject ex2) throws Exception {
         try {
             JSONObject error1 = ex1.getJSONObject("error");
@@ -164,6 +164,7 @@ public class TestExceptions extends TestAbstract implements TestSet {
             tr.markFailed(testCase, "Exception while processing comparison: "+e.toString());
         }
     }
+    */
 
 
     private void testExceptionStackTrace(String course, String fileNameBase) {

@@ -76,6 +76,9 @@ public class WebRequest {
         session = request.getSession();
         setUpForCrossBrowser();
         parsePath();
+        if (aw==null) {
+            throw new Exception("WebRequest constructor must be passed a non-null Writer object");
+        }
         w = aw;
         request.setAttribute("wrappedRequest", this);
     }
@@ -93,7 +96,7 @@ public class WebRequest {
     public static WebRequest findOrCreate(HttpServletRequest _req, HttpServletResponse _resp, Writer aw) throws Exception {
         WebRequest wr = (WebRequest) _req.getAttribute("wrappedRequest");
         if (wr == null) {
-            wr = new WebRequest(_req, _resp);
+            wr = new WebRequest(_req, _resp, aw);
         }
         return wr;
     }

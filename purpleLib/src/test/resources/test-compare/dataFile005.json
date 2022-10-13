@@ -1509,7 +1509,10 @@
         "To": "f523dacd-0a70-43b1-baea-f588311ea9c6"
       },
       {
-        "Condition": {"Type": "CONDITION"},
+        "Condition": {
+          "@": "TRUE",
+          "Type": "CONDITION"
+        },
         "ConnectorGraphicsInfos": {"ConnectorGraphicsInfo": [
           {
             "Coordinates": [
