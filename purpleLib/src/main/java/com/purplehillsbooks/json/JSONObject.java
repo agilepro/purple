@@ -1898,5 +1898,36 @@ public class JSONObject {
         }
     }
 
-
+     public static JSONObject deepCopy(JSONObject input) throws Exception {
+         JSONObject output = new JSONObject();
+         for (String key : input.keySet()) {
+             Object o = input.get(key);
+             if (o instanceof JSONObject) {
+                 output.put(key, deepCopy((JSONObject)o));
+             }
+             else if (o instanceof JSONArray) {
+                 output.put(key, deepCopyArray((JSONArray)o));
+             }
+             else {
+                 output.put(key, o);
+             }
+         }
+         return output;
+     }
+     public static JSONArray deepCopyArray(JSONArray input) throws Exception {
+         JSONArray output = new JSONArray();
+         for (int i=0; i<input.length(); i++) {
+             Object o = input.get(i);
+             if (o instanceof JSONObject) {
+                 output.put(deepCopy((JSONObject)o));
+             }
+             else if (o instanceof JSONArray) {
+                 output.put(deepCopyArray((JSONArray)o));
+             }
+             else {
+                 output.put(o);
+             }
+         }
+         return output;
+     }
 }
