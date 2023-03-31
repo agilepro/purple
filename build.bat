@@ -1,3 +1,3 @@
 cd purpleLib
-call gradle clean build
+call mvn clean package
 pause

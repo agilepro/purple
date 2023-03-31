@@ -19,7 +19,6 @@ import com.purplehillsbooks.testframe.TestResultRecord;
 public class TestRecorderJUnit implements TestRecorder {
 	
     Collection<DynamicTest> dynamicTests = new ArrayList<>();
-    File purpleLibPath;
     File testOutput;
     File testSource;
     public ArrayList<TestResultRecord> resultSet = new ArrayList<TestResultRecord>();
@@ -53,16 +52,15 @@ public class TestRecorderJUnit implements TestRecorder {
     
 	public TestRecorderJUnit() throws Exception {
 		
-		File classLocation = new File(getClass().getResource("").toURI());
-		purpleLibPath = classLocation.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getParentFile();
-		testOutput  = new File(purpleLibPath, "build/test-results/test-output");
-		testSource   = new File(purpleLibPath, "src/test/resources/");
-		System.out.println("purpleLibPath is: "+purpleLibPath.getAbsolutePath());
+		testSource   = new File("src/test/resources/");
+		testOutput  = new File("target/test-output");
+        
 		System.out.println("testOutput is: "+testOutput.getAbsolutePath());
 		System.out.println("testSource is: "+testSource.getAbsolutePath());
 		
 		if (!testSource.exists()) {
-			throw new Exception("Something is wrong, testSource folder does not exist: "+testSource.getAbsolutePath());
+			throw new Exception("Something is wrong, testSource folder does not exist: "
+                    +testSource.getAbsolutePath());
 		}
 		if (!testOutput.exists()) {
 			testOutput.mkdirs();
