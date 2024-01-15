@@ -2,9 +2,9 @@ package com.purplehillsbooks.web;
 
 import java.io.File;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;

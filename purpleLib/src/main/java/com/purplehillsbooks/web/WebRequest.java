@@ -8,15 +8,16 @@ import java.io.Writer;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
 import com.purplehillsbooks.streams.StreamHelper;
+import com.purplehillsbooks.streams.WriterUTF8OutputStream;
 
 
 /**
@@ -47,17 +48,6 @@ public class WebRequest {
     private ArrayList<String>  path;
     private int pathPos = 0;
     private JSONObject postedObject = null;
-
-    public WebRequest (HttpServletRequest _req, HttpServletResponse _resp) throws Exception {
-        request = _req;
-        response = _resp;
-        session = request.getSession();
-        setUpForCrossBrowser();
-        parsePath();
-        outStream = _resp.getOutputStream();
-        w = new OutputStreamWriter(outStream);
-        request.setAttribute("wrappedRequest", this);
-    }
 
 
     /**

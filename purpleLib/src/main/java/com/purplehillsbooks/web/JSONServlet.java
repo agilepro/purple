@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONException;
@@ -34,7 +34,7 @@ import com.purplehillsbooks.json.JSONObject;
  */
 
 @SuppressWarnings("serial")
-public abstract class JSONServlet extends javax.servlet.http.HttpServlet {
+public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
     protected SessionManager smgr = null;
 
@@ -109,7 +109,7 @@ public abstract class JSONServlet extends javax.servlet.http.HttpServlet {
                 return;
             }
 
-            wr = new WebRequest(req, resp);
+            wr = new WebRequest(req, resp, resp.getWriter());
             rh = constructHandler(wr);
         }
         catch (Exception nonReturnable) {
