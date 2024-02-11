@@ -23,10 +23,10 @@ public class FileSchemaLibrary implements SchemaLibrary {
     }
 
     @Override
-    public JSONObject getSchema(String name) throws Exception {
+    public JSONObject getSchema(String name) {
         try {
             if (!folder.exists()) {
-                throw new JSONException("FileSchemaLibrary did not find a file folder at ({0})",
+                throw new SimpleException("FileSchemaLibrary did not find a file folder at (%s)",
                         folder.getAbsolutePath());
             }
             if (library.containsKey(name)) {
@@ -34,14 +34,14 @@ public class FileSchemaLibrary implements SchemaLibrary {
             }
             File expectedFile = new File(folder, "Schema-"+name+".json");
             if (!expectedFile.exists()) {
-                throw new JSONException("Schema file does not exist: {0}", expectedFile.getAbsolutePath());
+                throw new SimpleException("Schema file does not exist: %s", expectedFile.getAbsolutePath());
             }
             JSONObject schema = JSONObject.readFromFile(expectedFile);
             library.put(name, schema);
             return schema;
         }
         catch (Exception e) {
-            throw new JSONException("Unable to return a schema named '{0}'", e, name);
+            throw new SimpleException("Unable to return a schema named (%s)", e, name);
         }
     }
 

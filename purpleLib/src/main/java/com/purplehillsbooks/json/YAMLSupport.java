@@ -80,7 +80,7 @@ public class YAMLSupport {
             return readYAMLStream(reader);
         }
         catch (Exception e) {
-            throw new JSONException("Failure to read YML file {0}", e, yamlFile.getAbsolutePath());
+            throw new SimpleException("Failure to read YML file %s", e, yamlFile.getAbsolutePath());
         }
         finally {
             reader.close();
@@ -124,7 +124,7 @@ public class YAMLSupport {
                 writeYAMLStream(jo, ufw);
             }
             catch (Exception e) {
-                throw new JSONException("Failure writing to YAML file: {0}", e, tempFile.getAbsolutePath());
+                throw new SimpleException("Failure writing to YAML file: %s", e, tempFile.getAbsolutePath());
             }
             finally {
                 ufw.close();
@@ -311,12 +311,12 @@ public class YAMLSupport {
         JSONArray ja = new JSONArray();
         while (r.colNo()==myIndent && r.ch>0) {
             if (r.ch!='-') {
-                throw new JSONException("Expected a hyphen, line {0} column {1}", r.lineNo(), r.colNo() );
+                throw new SimpleException("Expected a hyphen, line %d column %d", r.lineNo(), r.colNo() );
             }
             readArrayValue(r, ja);
         }
         if (r.ch>0 && r.colNo() > myIndent) {
-            throw new JSONException("Invalid indenting line {0} column {1}, must not be greater than the last array line", r.lineNo(), r.colNo() );
+            throw new SimpleException("Invalid indenting line %d column %d, must not be greater than the last array line", r.lineNo(), r.colNo() );
         }
         //we are popping out back to an previous level, so just return the created array
         return ja;
@@ -335,12 +335,12 @@ public class YAMLSupport {
         while (r.colNo()==myIndent && r.ch>0) {
             key = scanForKey(r).trim();
             if (r.ch!=':') {
-                throw new JSONException("Failed to find a colon on line {0} and column {1}", r.lineNo(), r.colNo());
+                throw new SimpleException("Failed to find a colon on line %d and column %d", r.lineNo(), r.colNo());
             }
             readMapValue(r, jo, key, myIndent);
         }
         if (r.ch>0 && r.colNo() > myIndent) {
-            throw new JSONException("Invalid indenting line {0} column {1}, must not be greater than the last object map line", r.lineNo(), r.colNo() );
+            throw new SimpleException("Invalid indenting line %d column %d, must not be greater than the last object map line", r.lineNo(), r.colNo() );
         }
         //we are popping out back to an previous level, so just return
         return jo;
@@ -359,7 +359,7 @@ public class YAMLSupport {
         if (indent.length() > 100) {
             // it is useful to abort attempts to iterate a looped JSON tree
             // rather than run forever and getting a stack overflow.
-            throw new JSONException("Too many levels of indent.  This JSON tree is probably linked in a loop, "
+            throw new SimpleException("Too many levels of indent.  This JSON tree is probably linked in a loop, "
                     +"which causes an infinite recursion.  Aborting output.");
         }
         try {
@@ -378,9 +378,8 @@ public class YAMLSupport {
                 writeValue(w, jo.get(key), newindent, false);
             }
         } catch (IOException exception) {
-            throw new JSONException(
-                    "Unable to write object JSONObject indent level: " + indent,
-                    exception);
+            throw new SimpleException(
+                    "Unable to write object JSONObject indent level: %d", exception, indent);
         }
     }
     private static void writeKey(Writer w, String key) throws Exception {
@@ -398,7 +397,7 @@ public class YAMLSupport {
         if (indent.length() > 100) {
             // it is useful to abort attempts to iterate a looped JSON tree
             // rather than run forever and getting a stack overflow.
-            throw new JSONException("Too many levels of indent.  This JSON tree is probably linked in a loop, "
+            throw new SimpleException("Too many levels of indent.  This JSON tree is probably linked in a loop, "
                     +"which causes an infinite recursion.  Aborting output.");
         }
         try {
@@ -409,9 +408,8 @@ public class YAMLSupport {
                 writeValue(w, jo.get(i), newindent, true);
             }
         } catch (IOException exception) {
-            throw new JSONException(
-                    "Unable to write object JSONObject indent level: " + indent,
-                    exception);
+            throw new SimpleException(
+                    "Unable to write object JSONObject indent level: ", exception, indent);
         }
     }
 

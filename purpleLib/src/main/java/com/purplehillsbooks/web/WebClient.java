@@ -11,6 +11,7 @@ import java.net.URL;
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;
 import com.purplehillsbooks.json.JSONTokener;
+import com.purplehillsbooks.json.SimpleException;
 
 public class WebClient {
 
@@ -109,7 +110,6 @@ public class WebClient {
             return resp;
         }
         catch (Exception e) {
-            String template = "WebClient failed to send {0} request to server url {1}. The request and response is {2}";
             JSONObject jo = new JSONObject();
             if (msg != null) {
                 jo.put("request", msg);
@@ -124,24 +124,22 @@ public class WebClient {
                 } catch (Exception ee) {
                     jo.put("response", responseString);
                 }
-
-            } else {
-                //jo.put("response", JSONObject.NULL);
             }
-            throw new JSONException(template, e, method, url.toString(), jo.toString());
+            throw new SimpleException("WebClient failed to send %s request to server url %s. The request and response is %s", 
+                    e, method, url.toString(), jo.toString());
         } finally {
             if(is != null) {
                 try {
                     is.close();
                 } catch (IOException ioe) {
-                    JSONException.traceException(ioe, "WebClient encountered an error when closing input stream for url " + url);
+                    SimpleException.traceException(ioe, "WebClient encountered an error when closing input stream for url " + url);
                 }
             }
             if(osw != null) {
                 try {
                     osw.close();
                 } catch (IOException ioe2) {
-                    JSONException.traceException(ioe2, "WebClient encountered an error when closing output stream for url " + url);
+                    SimpleException.traceException(ioe2, "WebClient encountered an error when closing output stream for url " + url);
                 }
             }
         }
@@ -163,7 +161,7 @@ public class WebClient {
             httpCon.setDoOutput(true);
             httpCon.setDoInput(true);
             httpCon.setUseCaches(false);
-            httpCon.setRequestProperty( "Content-Type", "text/plain" );
+            httpCon.setRequestProperty("Content-Type", "text/plain" );
             httpCon.setRequestProperty("Origin", "http://bogus.example.com/");
 
             httpCon.setRequestMethod("HEAD");
@@ -179,8 +177,8 @@ public class WebClient {
             }
         }
         catch (Exception e) {
-            JSONException.traceException(e, "WebClient existTest for url " + url + " encountered an exception");
-            throw new Exception("WebClient existTest for url " + url + " encountered an exception", e);
+            SimpleException.traceException(e, "WebClient existTest for url " + url + " encountered an exception");
+            throw new SimpleException("WebClient existTest for url (%s) encountered an exception", e, url);
         }
     }
 

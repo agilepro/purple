@@ -380,7 +380,7 @@ public class LockableJSONFile {
             }
             catch (Exception e) {
                 System.out.println();
-                JSONException.traceException(e, "LockableJSONFile.writeTarget:  Try #"+retryCount+" writing file got an exception.");
+                SimpleException.traceException(e, "LockableJSONFile.writeTarget:  Try #"+retryCount+" writing file got an exception.");
                 Thread.sleep(50);
             }
         }
@@ -414,7 +414,7 @@ public class LockableJSONFile {
             catch (Exception e) {
                 lastException = e;
                 System.out.println();
-                JSONException.traceException(e, "LockableJSONFile.writeTarget:  Try #"+retryCount+" writing file got an exception.");
+                SimpleException.traceException(e, "LockableJSONFile.writeTarget:  Try #"+retryCount+" writing file got an exception.");
                 Thread.sleep(50);
             }
         }
@@ -452,7 +452,7 @@ public class LockableJSONFile {
             return JSONObject.readFromFile(target);
         }
         catch (Exception e) {
-            JSONException.traceException(e, "LockableJSONFile.readTargetIfExists FAILURE: "+target);
+            SimpleException.traceException(e, "LockableJSONFile.readTargetIfExists FAILURE: "+target);
             throw new Exception("readTargetIfExists failed for "+target, e);
         }
         finally {

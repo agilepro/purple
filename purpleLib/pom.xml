@@ -6,6 +6,39 @@
   <groupId>com.purplehillsbooks</groupId>
   <artifactId>purple</artifactId>
   <version>3.2</version>
+  <packaging>jar</packaging>
+ 
+  <name>Purple Utility Classes</name>
+  <description>A collection of useful Java classes used in other projects</description>
+  <url>https://purplehillsbooks.com/purpleDoc/</url>
+  
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+      <connection>scm:git:git://github.com/agilepro/purple.git</connection>
+      <developerConnection>scm:git:ssh://github.com:agilepro/purple.git</developerConnection>
+      <url>http://github.com/agilepro/purple</url>
+  </scm>
+  <distributionManagement>
+      <snapshotRepository>
+        <id>ossrh</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+  </distributionManagement>
+
+  <developers>
+    <developer>
+      <name>Keith Swenson</name>
+      <email>purple@purplehillsbooks.com</email>
+      <organization>Purple Hills Books</organization>
+      <organizationUrl>http://www.purplehillsbooks.com</organizationUrl>
+    </developer>
+  </developers>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>8</maven.compiler.target>
@@ -43,6 +76,17 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+              <groupId>org.sonatype.plugins</groupId>
+              <artifactId>nexus-staging-maven-plugin</artifactId>
+              <version>1.6.7</version>
+              <extensions>true</extensions>
+              <configuration>
+                <serverId>ossrh</serverId>
+                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              </configuration>
+            </plugin>
             <plugin>
                 <!-- March 2023: Must not use the Maven default surefire plugin because it
                 does not support JUnit 5 behaviors, so this is required until maven 

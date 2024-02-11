@@ -25,8 +25,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+
+import com.purplehillsbooks.json.SimpleException;
 
 /**
  * <p>Holds a stream of bytes in memory. It is a buffer that you can stream to, and
@@ -108,7 +111,7 @@ public class MemFile {
     private int    incomingPos   = 0;
 
 
-    public MemFile() throws Exception {
+    public MemFile() {
         contents = new ArrayList<byte[]>();
         incomingBytes = new byte[5000];
     }
@@ -126,7 +129,7 @@ public class MemFile {
     /*
      * This is the CORE routine for adding bytes to the internal buffers
      */
-    private void addByte(int b) throws IOException {
+    private void addByte(int b) {
         if (incomingPos >= 5000) {
             adopt(incomingBytes);
             incomingBytes = new byte[5000];
@@ -143,7 +146,7 @@ public class MemFile {
      * contents in memory.  The file is expected to be
      * UTF-8 encoded.
      */
-    public void fillWithFile(File file) throws Exception {
+    public void fillWithFile(File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
         try {
             fillWithInputStream(fis);
@@ -158,7 +161,7 @@ public class MemFile {
      * Reads all bytes from the passed in InputStream and stored the entire
      * contents in memory.  Closes the input stream.
      */
-    public void fillWithInputStream(InputStream in) throws Exception {
+    public void fillWithInputStream(InputStream in) throws IOException {
         byte[] buf = new byte[5000];
         OutputStream out = getOutputStream();
         try {
@@ -183,7 +186,7 @@ public class MemFile {
      * Reads all character from the passed in Reader and stores the entire
      * contents in memory.  Closes the reader.
      */
-    public void fillWithReader(Reader in) throws Exception {
+    public void fillWithReader(Reader in) throws IOException {
         char[] buf = new char[5000];
         Writer w = getWriter();
         try {
@@ -258,8 +261,15 @@ public class MemFile {
      * Returns a Reader which may be read from in order to read the contents of
      * the memory file, assuming that the file is in UTF-8 encoding.
      */
-    public Reader getReader() throws Exception {
-        return new InputStreamReader(getInputStream(), "UTF-8");
+    public Reader getReader() {
+        try {
+            return new InputStreamReader(getInputStream(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // it is impossible that UTF-8 is not supported, but this will be thrown if
+            // for some reason it is not there.
+            throw new SimpleException("Unable to create InputStreamReason, for possibly some reason UTF-8 is not recognized", e);
+        }
     }
 
     /**
@@ -279,10 +289,17 @@ public class MemFile {
      * buffer, so be sure to flush and/or close to get the complete value into
      * the mem file.
      */
-    public Writer getWriter() throws Exception {
-        return new OutputStreamWriter(getOutputStream(), "UTF-8");
-        // Should get this to work some day so that there is no buffer in the middle
-        //return new UTF8Writer(getOutputStream());
+    public Writer getWriter() {
+        try {
+            // Should get this to work some day so that there is no buffer in the middle
+            //return new UTF8Writer(getOutputStream());
+            return new OutputStreamWriter(getOutputStream(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // it is impossible that UTF-8 is not supported, but this will be thrown if
+            // for some reason it is not there.
+            throw new SimpleException("Unable to create OutputStreamWriter, for possibly some reason UTF-8 is not recognized", e);
+        }
     }
 
     /**
@@ -395,7 +412,7 @@ public class MemFile {
             return res;
         }
         catch (Exception e) {
-            throw new RuntimeException("FATAL ERROR while converting a MemFile to a String", e);
+            throw new SimpleException("FATAL ERROR while converting a MemFile to a String", e);
         }
     }
 
@@ -422,6 +439,7 @@ public class MemFile {
             posInBuf = 0;
         }
 
+        @Override
         public int read() throws IOException {
             if (posInBuf >= currentBufAmt) {
                 if (idx > mf.contents.size()) {
@@ -445,6 +463,7 @@ public class MemFile {
         }
 
         // returns the number of bytes in the current buffer
+        @Override
         public int available() throws IOException {
             if (currentBuf == null) {
                 return 0;
@@ -463,14 +482,17 @@ public class MemFile {
             mf = newmf;
         }
 
+        @Override
         public void write(int b) throws IOException {
             mf.addByte(b);
         }
 
+        @Override
         public void flush() throws IOException {
             //there is nothing to do, no flushing required
         }
 
+        @Override
         public void close() throws IOException {
             //there is nothing to do, no flushing required
         }
@@ -485,6 +507,7 @@ public class MemFile {
             wos = _wos;
         }
 
+        @Override
         public void write(int ch) throws IOException {
 
             //handle the second half of a surrogate char pair
@@ -531,11 +554,12 @@ public class MemFile {
             }
         }
 
-
+        @Override
         public void flush() throws IOException {
             //there is nothing to do, no flushing required
         }
 
+        @Override
         public void close() throws IOException {
             //there is nothing to do, no flushing required
         }
