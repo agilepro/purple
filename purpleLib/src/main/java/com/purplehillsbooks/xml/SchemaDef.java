@@ -21,51 +21,50 @@ import org.w3c.dom.Element;
 
 @Deprecated
 public class SchemaDef extends Mel {
-	public SchemaDef(Document doc, Element ele) {
-		super(doc, ele);
-	}
+    public SchemaDef(Document doc, Element ele) {
+        super(doc, ele);
+    }
 
-	public boolean isContainer() {
-		return ("container".equals(getName()));
-	}
+    public boolean isContainer() {
+        return ("container".equals(getName()));
+    }
 
-	@Deprecated
-	public Mel declareAttribute(String attrName) throws Exception {
-		Mel child = findChild("attr", "name", attrName, Mel.class);
-		if (child == null) {
-			// if it gets here, then it did not exist before
-			// so we need to add it
-			child = addChild("attr", Mel.class);
-			child.setAttribute("name", attrName);
-		}
-		return child;
-	}
+    @Deprecated
+    public Mel declareAttribute(String attrName) throws Exception {
+        Mel child = findChild("attr", "name", attrName, Mel.class);
+        if (child == null) {
+            // if it gets here, then it did not exist before
+            // so we need to add it
+            child = addChild("attr", Mel.class);
+            child.setAttribute("name", attrName);
+        }
+        return child;
+    }
 
-	@Deprecated
-	public Mel declareChild(String childName) throws Exception {
-		Mel child = findChild("contains", "name", childName, Mel.class);
-		if (child == null) {
-			// if it gets here, then it did not exist before
-			// so we need to add it
-			child = addChild("contains", Mel.class);
-			child.setAttribute("name", childName);
-		}
-		return child;
-	}
+    @Deprecated
+    public Mel declareChild(String childName) throws Exception {
+        Mel child = findChild("contains", "name", childName, Mel.class);
+        if (child == null) {
+            // if it gets here, then it did not exist before
+            // so we need to add it
+            child = addChild("contains", Mel.class);
+            child.setAttribute("name", childName);
+        }
+        return child;
+    }
 
-	@Deprecated
-	public void declareChild(String childName, boolean allowPlural) throws Exception {
-		Mel child = declareChild(childName);
-		child.setAttribute("plural", allowPlural ? "true" : "false");
-	}
+    @Deprecated
+    public void declareChild(String childName, boolean allowPlural) throws Exception {
+        Mel child = declareChild(childName);
+        child.setAttribute("plural", allowPlural ? "true" : "false");
+    }
 
-	@Deprecated
-	public boolean childIsPlural(String childName) throws Exception {
-		Mel child = findChild("contains", "name", childName, Mel.class);
-		if (child == null) {
-			return false;
-		}
-		return ("true".equals(child.getAttribute("plural")));
-	}
-
+    @Deprecated
+    public boolean childIsPlural(String childName) throws Exception {
+        Mel child = findChild("contains", "name", childName, Mel.class);
+        if (child == null) {
+            return false;
+        }
+        return ("true".equals(child.getAttribute("plural")));
+    }
 }

@@ -16,17 +16,16 @@
 
 package com.purplehillsbooks.testcase;
 
+import com.purplehillsbooks.streams.MemFile;
+import com.purplehillsbooks.testframe.TestRecorder;
+import com.purplehillsbooks.testframe.TestSet;
+import com.purplehillsbooks.xml.Mel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
-
-import com.purplehillsbooks.streams.MemFile;
-import com.purplehillsbooks.testframe.TestRecorder;
-import com.purplehillsbooks.testframe.TestSet;
-import com.purplehillsbooks.xml.Mel;
 
 /*
  *
@@ -37,29 +36,30 @@ import com.purplehillsbooks.xml.Mel;
 public abstract class TestAbstract implements TestSet {
 
     TestRecorder tr;
-    File sourceDataFolder;     //input data for tests
-    File testOutputFolder;     //output from tests
-    File testCompareFolder;    //contains 'correct' output to compare actual output to
+    File sourceDataFolder; // input data for tests
+    File testOutputFolder; // output from tests
+    File testCompareFolder; // contains 'correct' output to compare actual output to
 
-    public TestAbstract() {
-    }
+    public TestAbstract() {}
 
     public void initForTests(TestRecorder newTr) throws Exception {
         tr = newTr;
         sourceDataFolder = new File(tr.getProperty("source", null), "test-data");
         if (!sourceDataFolder.exists()) {
-        	throw new Exception("the source data folder does not exist: "+sourceDataFolder.getAbsolutePath());
+            throw new Exception(
+                    "the source data folder does not exist: " + sourceDataFolder.getAbsolutePath());
         }
         testCompareFolder = new File(tr.getProperty("source", null), "test-compare");
         if (!testCompareFolder.exists()) {
-        	throw new Exception("the test compare folder does not exist: "+testCompareFolder.getAbsolutePath());
+            throw new Exception(
+                    "the test compare folder does not exist: "
+                            + testCompareFolder.getAbsolutePath());
         }
         testOutputFolder = new File(tr.getProperty("testoutput", null));
         if (!testOutputFolder.exists()) {
-        	testOutputFolder.mkdirs();
+            testOutputFolder.mkdirs();
         }
     }
-
 
     /*
      * Specify a testId for reporting the problems
@@ -71,12 +71,14 @@ public abstract class TestAbstract implements TestSet {
 
         File sourceFile = new File(testOutputFolder, fileName);
         if (!sourceFile.exists()) {
-            throw new Exception("Source file to compare does not exist: "+sourceFile.getAbsolutePath());
+            throw new Exception(
+                    "Source file to compare does not exist: " + sourceFile.getAbsolutePath());
         }
         File compareFile = new File(testCompareFolder, fileName);
         if (!compareFile.exists()) {
-            //remember, when new tests are created there won't yet be comparison files checked in
-            tr.markFailed(testId, "file to compare to is missing from: " + compareFile.getAbsolutePath());
+            // remember, when new tests are created there won't yet be comparison files checked in
+            tr.markFailed(
+                    testId, "file to compare to is missing from: " + compareFile.getAbsolutePath());
             return;
         }
 
@@ -89,26 +91,32 @@ public abstract class TestAbstract implements TestSet {
         int lineCount = 1;
         while (b1 >= 0 && b2 >= 0) {
             if (b1 == '\r') {
-                //ignore line feeds
+                // ignore line feeds
                 b1 = fis1.read();
                 continue;
             }
             if (b2 == '\r') {
-                //ignore line feeds
+                // ignore line feeds
                 b2 = fis2.read();
                 continue;
             }
             if (b1 != b2) {
-                tr.markFailed(testId, "Difference at line " + lineCount + " and character "+charCount+" of file "+sourceFile.getAbsolutePath());
+                tr.markFailed(
+                        testId,
+                        "Difference at line "
+                                + lineCount
+                                + " and character "
+                                + charCount
+                                + " of file "
+                                + sourceFile.getAbsolutePath());
                 fis1.close();
                 fis2.close();
                 return;
             }
-            if (b1=='\n') {
+            if (b1 == '\n') {
                 lineCount++;
                 charCount = 1;
-            }
-            else {
+            } else {
                 charCount++;
             }
             b1 = fis1.read();
@@ -119,19 +127,24 @@ public abstract class TestAbstract implements TestSet {
         fis2.close();
 
         if (b1 >= 0) {
-        	System.out.println("FAIL: "+testId);
-            tr.markFailed(testId, "new file has more characters in it than the old file: "+sourceFile.getAbsolutePath());
+            System.out.println("FAIL: " + testId);
+            tr.markFailed(
+                    testId,
+                    "new file has more characters in it than the old file: "
+                            + sourceFile.getAbsolutePath());
             return;
         }
         if (b2 >= 0) {
-        	System.out.println("FAIL: "+testId);
-            tr.markFailed(testId, "old file has more characters in it than the new file: "+sourceFile.getAbsolutePath());
+            System.out.println("FAIL: " + testId);
+            tr.markFailed(
+                    testId,
+                    "old file has more characters in it than the new file: "
+                            + sourceFile.getAbsolutePath());
             return;
         }
 
         tr.markPassed(testId);
     }
-
 
     public static boolean compareStringIgnoringCR(String s1, String s2) {
         int i1 = 0;
@@ -159,8 +172,7 @@ public abstract class TestAbstract implements TestSet {
 
         if (expectedVal.equals(actualVal)) {
             tr.markPassed(note);
-        }
-        else {
+        } else {
             tr.markFailed(note, "values do not match");
             writeLiteralValue("expected", expectedVal);
             writeLiteralValue("actual", actualVal);
@@ -172,8 +184,7 @@ public abstract class TestAbstract implements TestSet {
 
         if (expectedVal.equals(actualVal)) {
             tr.markPassed(note);
-        }
-        else {
+        } else {
             tr.markFailed(note, "values do not match");
             writeLiteralValue("expected", expectedVal);
             writeLiteralValue("actual", actualVal);
@@ -183,9 +194,9 @@ public abstract class TestAbstract implements TestSet {
     public void testNotNull(Object value, String description) throws Exception {
         if (value != null) {
             tr.markPassed("Not Null: " + description);
-        }
-        else {
-            tr.markFailed("Not Null: " + description,
+        } else {
+            tr.markFailed(
+                    "Not Null: " + description,
                     "Test failure, got an unexpected null for the situation: " + description);
         }
     }
@@ -193,9 +204,9 @@ public abstract class TestAbstract implements TestSet {
     public void testNull(Object value, String description) throws Exception {
         if (value == null) {
             tr.markPassed("Is Null: " + description);
-        }
-        else {
-            tr.markFailed("Is Null: " + description,
+        } else {
+            tr.markFailed(
+                    "Is Null: " + description,
                     "Test failure, expected a null but did not get one for the situation: "
                             + description);
         }
@@ -204,11 +215,15 @@ public abstract class TestAbstract implements TestSet {
     public void testVal(String value, String expectedValue, String description) throws Exception {
         if (value != null && value.equals(expectedValue)) {
             tr.markPassed("Value: " + description);
-        }
-        else {
-            tr.markFailed("Value: " + description, "Test failure, expected the value '"
-                    + expectedValue + "' but instead got the value '" + value
-                    + "' for the situation: " + description);
+        } else {
+            tr.markFailed(
+                    "Value: " + description,
+                    "Test failure, expected the value '"
+                            + expectedValue
+                            + "' but instead got the value '"
+                            + value
+                            + "' for the situation: "
+                            + description);
             writeLiteralValue("expected", expectedValue);
             writeLiteralValue("actual", value);
         }
@@ -219,12 +234,17 @@ public abstract class TestAbstract implements TestSet {
         String value = me.getScalar(eName);
         if (value != null && value.equals(expectedValue)) {
             tr.markPassed("testScalar (" + eName + "): " + description);
-        }
-        else {
-            tr.markFailed("testScalar (" + eName + "): " + description,
-                    "Test failure, expected the value '" + expectedValue
-                            + "' but instead got the value '" + value + "' for the scaler value '"
-                            + eName + "' for  " + description);
+        } else {
+            tr.markFailed(
+                    "testScalar (" + eName + "): " + description,
+                    "Test failure, expected the value '"
+                            + expectedValue
+                            + "' but instead got the value '"
+                            + value
+                            + "' for the scaler value '"
+                            + eName
+                            + "' for  "
+                            + description);
             writeLiteralValue("expected", expectedValue);
             writeLiteralValue("actual", value);
         }
@@ -236,24 +256,19 @@ public abstract class TestAbstract implements TestSet {
             char ch = value.charAt(i);
             if (ch == '"') {
                 sb.append("\\\"");
-            }
-            else if (ch == '\\') {
+            } else if (ch == '\\') {
                 sb.append("\\\\");
-            }
-            else if (ch == '\n') {
+            } else if (ch == '\n') {
                 sb.append("\\n");
-            }
-            else if (ch == (char) 13) {
+            } else if (ch == (char) 13) {
                 // do output anything ... ignore these
-            }
-            else if (ch < 32 || ch > 128) {
+            } else if (ch < 32 || ch > 128) {
                 sb.append("\\u");
                 addHex(sb, (ch / 16 / 16 / 16) % 16);
                 addHex(sb, (ch / 16 / 16) % 16);
                 addHex(sb, (ch / 16) % 16);
                 addHex(sb, ch % 16);
-            }
-            else {
+            } else {
                 sb.append(ch);
             }
         }
@@ -269,25 +284,20 @@ public abstract class TestAbstract implements TestSet {
             char ch = value.charAt(i);
             if (ch == '"') {
                 sb.append("\\\"");
-            }
-            else if (ch == '\\') {
+            } else if (ch == '\\') {
                 sb.append("\\\\");
-            }
-            else if (ch == '\n') {
+            } else if (ch == '\n') {
                 sb.append("\"\n     +\"\\n");
-            }
-            else if (ch == (char) 13) {
+            } else if (ch == (char) 13) {
                 // strange workaround for literal problem
                 sb.append("\"+(char)13+\"");
-            }
-            else if (ch < 32 || ch > 128) {
+            } else if (ch < 32 || ch > 128) {
                 sb.append("\\u");
                 addHex(sb, (ch / 16 / 16 / 16) % 16);
                 addHex(sb, (ch / 16 / 16) % 16);
                 addHex(sb, (ch / 16) % 16);
                 addHex(sb, ch % 16);
-            }
-            else {
+            } else {
                 sb.append(ch);
             }
         }
@@ -298,11 +308,9 @@ public abstract class TestAbstract implements TestSet {
     private void addHex(StringBuffer sb, int val) {
         if (val >= 0 && val < 10) {
             sb.append((char) (val + '0'));
-        }
-        else if (val >= 0 && val < 16) {
+        } else if (val >= 0 && val < 16) {
             sb.append((char) (val + 'A' - 10));
-        }
-        else {
+        } else {
             sb.append('?');
         }
     }
@@ -318,6 +326,4 @@ public abstract class TestAbstract implements TestSet {
         }
         fw.close();
     }
-
-
 }

@@ -26,48 +26,41 @@ import java.io.Writer;
 /**
  * UTF8FileWriter
  *
- * I often want to write to a file using UTF8 and it is annoying having
- * to create two objects every time.   This class just combines
- * the FileOutputStream and the OutputStreamWriter into a single
- * class using the character encoding UTF8.   Very simple.
+ * <p>I often want to write to a file using UTF8 and it is annoying having to create two objects
+ * every time. This class just combines the FileOutputStream and the OutputStreamWriter into a
+ * single class using the character encoding UTF8. Very simple.
  *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
+ * <p>Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License: This code is made
+ * available under the GNU Lesser GPL license.
  */
 public class UTF8FileWriter extends Writer {
-	private OutputStreamWriter out;
+    private OutputStreamWriter out;
 
-	/**
-	 * Creates the necessary objects to serve as a Writer
-	 * to files.
-	 */
-	public UTF8FileWriter(File file) throws Exception {
-	    OutputStream os = new FileOutputStream(file);
-		out = new OutputStreamWriter(os, "UTF-8");
-	}
+    /** Creates the necessary objects to serve as a Writer to files. */
+    public UTF8FileWriter(File file) throws Exception {
+        OutputStream os = new FileOutputStream(file);
+        out = new OutputStreamWriter(os, "UTF-8");
+    }
 
-
-	/**
-	 * Flush.
-	 *
-	 * @exception IOException
-	 *                if the original Writer fails to be flushed
-	 */
+    /**
+     * Flush.
+     *
+     * @exception IOException if the original Writer fails to be flushed
+     */
     @Override
-	public void flush() throws IOException {
-		out.flush();
-	}
+    public void flush() throws IOException {
+        out.flush();
+    }
 
-	/**
-	 * Closes the wrapped OutputStream and terminates output.
-	 *
-	 * @exception IOException
-	 *                if the original Writer fails to be closed
-	 */
+    /**
+     * Closes the wrapped OutputStream and terminates output.
+     *
+     * @exception IOException if the original Writer fails to be closed
+     */
     @Override
-	public void close() throws IOException {
-		out.close();
-	}
+    public void close() throws IOException {
+        out.close();
+    }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {

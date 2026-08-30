@@ -16,6 +16,16 @@
 
 package com.purplehillsbooks.testcase;
 
+import com.purplehillsbooks.json.Dom2JSON;
+import com.purplehillsbooks.json.JSONArray;
+import com.purplehillsbooks.json.JSONDiff;
+import com.purplehillsbooks.json.JSONObject;
+import com.purplehillsbooks.json.JSONTokener;
+import com.purplehillsbooks.json.YAMLSupport;
+import com.purplehillsbooks.testframe.TestRecorder;
+import com.purplehillsbooks.testframe.TestRecorderText;
+import com.purplehillsbooks.testframe.TestSet;
+import com.purplehillsbooks.xml.Mel;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,16 +37,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
-import com.purplehillsbooks.json.Dom2JSON;
-import com.purplehillsbooks.json.JSONArray;
-import com.purplehillsbooks.json.JSONDiff;
-import com.purplehillsbooks.json.JSONObject;
-import com.purplehillsbooks.json.JSONTokener;
-import com.purplehillsbooks.json.YAMLSupport;
-import com.purplehillsbooks.testframe.TestRecorder;
-import com.purplehillsbooks.testframe.TestRecorderText;
-import com.purplehillsbooks.testframe.TestSet;
-import com.purplehillsbooks.xml.Mel;
 
 /*
  *
@@ -65,14 +65,13 @@ public class Test1 extends TestAbstract implements TestSet {
 
         List<Mel> userprofileList = me.getChildren("userprofile");
 
-        Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
+        Hashtable<String, Integer> hints = new Hashtable<String, Integer>();
         hints.put("userprofile", Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("data",        Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("idrec",       Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("container",   Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("attr",        Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("contains",    Dom2JSON.HINT_OBJECT_ARRAY);
-
+        hints.put("data", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("idrec", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("container", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("attr", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("contains", Dom2JSON.HINT_OBJECT_ARRAY);
 
         Mel userprofile = userprofileList.get(0);
         testNotNull(userprofile, "first user profile object");
@@ -93,7 +92,10 @@ public class Test1 extends TestAbstract implements TestSet {
 
         Mel idrec = userprofile.getChild("idrec", 0);
         testNotNull(idrec, "second user idrec object");
-        testVal(idrec.getAttribute("loginid"), "aaa@gmail.com", "second user idrec object login id");
+        testVal(
+                idrec.getAttribute("loginid"),
+                "aaa@gmail.com",
+                "second user idrec object login id");
 
         // get the third user profile element
         userprofile = userprofileList.get(2);
@@ -112,11 +114,11 @@ public class Test1 extends TestAbstract implements TestSet {
     }
 
     private void TestEmpty() throws Exception {
-        Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
-        hints.put("book",    Dom2JSON.HINT_OBJECT_ARRAY);
-        hints.put("library", new Integer(3));
-        hints.put("stores", new Integer(1));
-        hints.put("reading", new Integer(3));
+        Hashtable<String, Integer> hints = new Hashtable<String, Integer>();
+        hints.put("book", Dom2JSON.HINT_OBJECT_ARRAY);
+        hints.put("library", Integer.valueOf(3));
+        hints.put("stores", Integer.valueOf(1));
+        hints.put("reading", Integer.valueOf(3));
 
         Mel testTree = Mel.createEmpty("library", Mel.class);
         writeBothStylesAndCompare(testTree, "constTest001", hints);
@@ -178,31 +180,28 @@ public class Test1 extends TestAbstract implements TestSet {
         reading2.setScalar("rating", "B");
         reading3.setScalar("rating", "D-");
         writeBothStylesAndCompare(testTree, "constTest015", hints);
-
     }
 
     private void TestReadWrite() throws Exception {
-        Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
-        hints.put("userprofile", new Integer(3));
-        hints.put("servlet", new Integer(3));
-        hints.put("servlet-mapping", new Integer(3));
+        Hashtable<String, Integer> hints = new Hashtable<String, Integer>();
+        hints.put("userprofile", Integer.valueOf(3));
+        hints.put("servlet", Integer.valueOf(3));
+        hints.put("servlet-mapping", Integer.valueOf(3));
 
-        //these are the XPDL hints
-        hints.put("Pool", new Integer(3));
-        hints.put("NodeGraphicsInfo", new Integer(3));
-        hints.put("Lane", new Integer(3));
-        hints.put("TransitionRef", new Integer(3));
-        hints.put("Activity", new Integer(3));
-        hints.put("Transition", new Integer(3));
-        hints.put("Coordinates", new Integer(3));
-        hints.put("WorkflowProcess", new Integer(3));
-        hints.put("TransitionRestriction", new Integer(3));
-        hints.put("Transition", new Integer(3));
-        hints.put("ExtendedAttribute", new Integer(3));
-        hints.put("Participant", new Integer(3));
-        hints.put("Connector", new Integer(3));
-
-
+        // these are the XPDL hints
+        hints.put("Pool", Integer.valueOf(3));
+        hints.put("NodeGraphicsInfo", Integer.valueOf(3));
+        hints.put("Lane", Integer.valueOf(3));
+        hints.put("TransitionRef", Integer.valueOf(3));
+        hints.put("Activity", Integer.valueOf(3));
+        hints.put("Transition", Integer.valueOf(3));
+        hints.put("Coordinates", Integer.valueOf(3));
+        hints.put("WorkflowProcess", Integer.valueOf(3));
+        hints.put("TransitionRestriction", Integer.valueOf(3));
+        hints.put("Transition", Integer.valueOf(3));
+        hints.put("ExtendedAttribute", Integer.valueOf(3));
+        hints.put("Participant", Integer.valueOf(3));
+        hints.put("Connector", Integer.valueOf(3));
 
         File sourceFile = new File(sourceDataFolder, "UserProfiles.xml");
         Mel test = Mel.readFile(sourceFile, Mel.class);
@@ -234,40 +233,37 @@ public class Test1 extends TestAbstract implements TestSet {
 
         test = Mel.readFile(new File(sourceDataFolder, "Loyalty.xpdl"), Mel.class);
         writeBothStylesAndCompare(test, "dataFile010", hints);
-
     }
 
     private void testGenSchema() throws Exception {
-        Hashtable<String,Integer> hints = new Hashtable<String,Integer>();
-        hints.put("userprofile", new Integer(3));
-        hints.put("servlet", new Integer(3));
-        hints.put("servlet-mapping", new Integer(3));
+        Hashtable<String, Integer> hints = new Hashtable<String, Integer>();
+        hints.put("userprofile", Integer.valueOf(3));
+        hints.put("servlet", Integer.valueOf(3));
+        hints.put("servlet-mapping", Integer.valueOf(3));
 
-        //these are the XPDL hints
-        hints.put("Pool", new Integer(3));
-        hints.put("NodeGraphicsInfo", new Integer(3));
-        hints.put("Lane", new Integer(3));
-        hints.put("TransitionRef", new Integer(3));
-        hints.put("Activity", new Integer(3));
-        hints.put("Transition", new Integer(3));
-        hints.put("Coordinates", new Integer(3));
-        hints.put("WorkflowProcess", new Integer(3));
-        hints.put("TransitionRestriction", new Integer(3));
-        hints.put("Transition", new Integer(3));
-        hints.put("ExtendedAttribute", new Integer(3));
-        hints.put("Participant", new Integer(3));
+        // these are the XPDL hints
+        hints.put("Pool", Integer.valueOf(3));
+        hints.put("NodeGraphicsInfo", Integer.valueOf(3));
+        hints.put("Lane", Integer.valueOf(3));
+        hints.put("TransitionRef", Integer.valueOf(3));
+        hints.put("Activity", Integer.valueOf(3));
+        hints.put("Transition", Integer.valueOf(3));
+        hints.put("Coordinates", Integer.valueOf(3));
+        hints.put("WorkflowProcess", Integer.valueOf(3));
+        hints.put("TransitionRestriction", Integer.valueOf(3));
+        hints.put("Transition", Integer.valueOf(3));
+        hints.put("ExtendedAttribute", Integer.valueOf(3));
+        hints.put("Participant", Integer.valueOf(3));
 
-        //these are minimal schema elements
-        hints.put("container", new Integer(3));
-        hints.put("contains", new Integer(3));
-        hints.put("attr", new Integer(3));
+        // these are minimal schema elements
+        hints.put("container", Integer.valueOf(3));
+        hints.put("contains", Integer.valueOf(3));
+        hints.put("attr", Integer.valueOf(3));
 
-        //these are minimal rss elements
-        hints.put("item", new Integer(3));
-        hints.put("content", new Integer(3));
-        hints.put("category", new Integer(3));
-
-
+        // these are minimal rss elements
+        hints.put("item", Integer.valueOf(3));
+        hints.put("content", Integer.valueOf(3));
+        hints.put("category", Integer.valueOf(3));
 
         Mel me = Mel.readFile(new File(sourceDataFolder, "Loyalty.xpdl"), Mel.class);
         writeBothStylesAndCompare(me, "GEN_Test001", hints);
@@ -277,15 +273,13 @@ public class Test1 extends TestAbstract implements TestSet {
 
         me.eliminateCData();
         writeBothStylesAndCompare(me, "GEN_Test004", hints);
-
     }
 
-
-    private void writeBothStylesAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
+    private void writeBothStylesAndCompare(
+            Mel me, String fileNamePart, Hashtable<String, Integer> hints) throws Exception {
         writeFileAndCompare(me, fileNamePart + ".xml");
         writeJSONAndCompare(me, fileNamePart, hints);
     }
-
 
     private void writeFileAndCompare(Mel me, String fileName) throws Exception {
         me.reformatXML();
@@ -296,26 +290,26 @@ public class Test1 extends TestAbstract implements TestSet {
         compareFiles(outputFile, fileName);
     }
 
-    static private Random rand = new Random();
+    private static Random rand = new Random();
 
     /**
-     * Convert the XML to JSON
-     * write it to a file
-     * read that file
-     * write it again and compare to archive
+     * Convert the XML to JSON write it to a file read that file write it again and compare to
+     * archive
      */
-    private void  writeJSONAndCompare(Mel me, String fileNamePart, Hashtable<String,Integer> hints) throws Exception {
+    private void writeJSONAndCompare(Mel me, String fileNamePart, Hashtable<String, Integer> hints)
+            throws Exception {
         String fileName = fileNamePart + ".json";
         JSONObject jsonRep = Dom2JSON.convertDomToJSON(me.getDocument(), hints);
 
         File outputFile = new File(tr.getProperty("testoutput", null), fileName);
-        File intermediateFile = new File(tr.getProperty("testoutput", null), fileName+"$testtmp$");
+        File intermediateFile =
+                new File(tr.getProperty("testoutput", null), fileName + "$testtmp$");
 
-        //randomly choose one method or the other.  I don't like randomness in tests
-        //but there is too much overhead in testing every case both ways.
-        //If they both work, they should be exactly equal....
-        //we just want to know that they both work.  If this test starts to fail
-        //we may need to isolate to one or the other.
+        // randomly choose one method or the other.  I don't like randomness in tests
+        // but there is too much overhead in testing every case both ways.
+        // If they both work, they should be exactly equal....
+        // we just want to know that they both work.  If this test starts to fail
+        // we may need to isolate to one or the other.
         //
         // FIRST, write to intermediate file
         if (rand.nextBoolean()) {
@@ -324,69 +318,62 @@ public class Test1 extends TestAbstract implements TestSet {
             jsonRep.write(w, 2, 0);
             w.close();
             fos.close();
-        }
-        else {
+        } else {
             jsonRep.writeToFile(intermediateFile);
         }
 
-        //SECOND read from intermediate
+        // SECOND read from intermediate
         if (rand.nextBoolean()) {
             FileInputStream fis = new FileInputStream(intermediateFile);
             JSONTokener jt = new JSONTokener(fis);
             jsonRep = new JSONObject(jt);
             fis.close();
-        }
-        else {
+        } else {
             jsonRep = JSONObject.readFromFile(intermediateFile);
         }
 
-        //THIRD, write to final file
+        // THIRD, write to final file
         if (rand.nextBoolean()) {
             FileOutputStream fos = new FileOutputStream(outputFile);
             Writer w = new OutputStreamWriter(fos, "UTF-8");
             jsonRep.write(w, 2, 0);
             w.close();
             fos.close();
-        }
-        else {
+        } else {
             jsonRep.writeToFile(outputFile);
         }
 
-        //FOURTH write out the YML file and read it back in
+        // FOURTH write out the YML file and read it back in
         File yamlFile = new File(tr.getProperty("testoutput", null), fileNamePart + ".yml");
         JSONObject cleanedKeyObj = cleanUpKeys(jsonRep);
-        
+
         YAMLSupport.writeYAMLFile(cleanedKeyObj, yamlFile);
         JSONObject yamlCopy = YAMLSupport.readYAMLFile(yamlFile);
         JSONDiff differ = new JSONDiff(false);
         List<List<String>> difRes = differ.createDiff(cleanedKeyObj, yamlCopy);
-        if (difRes.size()>0) {
-            //this means it failed
-            File difOutFile = new File(tr.getProperty("testoutput", null), fileNamePart + ".yml.failure.txt");
+        if (difRes.size() > 0) {
+            // this means it failed
+            File difOutFile =
+                    new File(tr.getProperty("testoutput", null), fileNamePart + ".yml.failure.txt");
             JSONDiff.dumpToCSV(difOutFile, difRes);
         }
 
-
-        //FIFTH delete the intermediate so it is not in the archive
+        // FIFTH delete the intermediate so it is not in the archive
         intermediateFile.delete();
 
         compareFiles(outputFile, fileName);
     }
-
 
     private void compareFiles(File outputFile, String fileName) throws Exception {
         String testId = "Compare output to " + fileName;
         compareGeneratedTextFile(testId, fileName);
     }
 
-
     /**
-     * YAML format does not allow colon characters in the keys, and will
-     * convert the key to have a hyphen.  This makes it hard to do a
-     * diff later.  Rather than write a special diff that ignores the
-     * difference in colon converted to hyphen, this method converts all
-     * the key values to have a hyphen so that the final comparison
-     * does not see any differences.
+     * YAML format does not allow colon characters in the keys, and will convert the key to have a
+     * hyphen. This makes it hard to do a diff later. Rather than write a special diff that ignores
+     * the difference in colon converted to hyphen, this method converts all the key values to have
+     * a hyphen so that the final comparison does not see any differences.
      */
     private JSONObject cleanUpKeys(JSONObject inObj) throws Exception {
         JSONObject outObj = new JSONObject();
@@ -396,34 +383,30 @@ public class Test1 extends TestAbstract implements TestSet {
                 key = key.replace(':', '-');
             }
             if (value instanceof JSONObject) {
-                outObj.put(key, cleanUpKeys((JSONObject)value));
-            }
-            else if (value instanceof JSONArray) {
-                outObj.put(key, cleanUpSubKeys((JSONArray)value));
-            }
-            else {
+                outObj.put(key, cleanUpKeys((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                outObj.put(key, cleanUpSubKeys((JSONArray) value));
+            } else {
                 outObj.put(key, value);
             }
         }
         return outObj;
     }
+
     private JSONArray cleanUpSubKeys(JSONArray inObj) throws Exception {
         JSONArray outArray = new JSONArray();
-        for (int i=0; i<inObj.length(); i++) {
+        for (int i = 0; i < inObj.length(); i++) {
             Object value = inObj.get(i);
             if (value instanceof JSONObject) {
-                outArray.put(cleanUpKeys((JSONObject)value));
-            }
-            else if (value instanceof JSONArray) {
-                outArray.put(cleanUpSubKeys((JSONArray)value));
-            }
-            else {
+                outArray.put(cleanUpKeys((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                outArray.put(cleanUpSubKeys((JSONArray) value));
+            } else {
                 outArray.put(value);
             }
         }
         return outArray;
     }
-
 
     public static InputStream getData1Stream() throws Exception {
         StringBuffer sb = new StringBuffer();
@@ -480,49 +463,44 @@ public class Test1 extends TestAbstract implements TestSet {
         return new ByteArrayInputStream(buf);
     }
 
-
     private void testInvalidCharacters() throws Exception {
         Mel me = Mel.createEmpty("testroot", Mel.class);
         Mel firstContainer = me.addChild("charTesting", Mel.class);
-        for (int i=0; i<32; i++) {
-            firstContainer.setScalar("baddata"+i, "ABC"+((char)i)+"DEF");
-            firstContainer.setAttribute("badatt"+i, "ABC"+((char)i)+"DEF");
-            firstContainer.setScalar("badFirstChar"+i, ""+((char)i)+"DEF");
-            firstContainer.setScalar("badLastChar"+i, "ABC"+((char)i));
-            firstContainer.setScalar("badOnlyChar", ""+((char)i));
+        for (int i = 0; i < 32; i++) {
+            firstContainer.setScalar("baddata" + i, "ABC" + ((char) i) + "DEF");
+            firstContainer.setAttribute("badatt" + i, "ABC" + ((char) i) + "DEF");
+            firstContainer.setScalar("badFirstChar" + i, "" + ((char) i) + "DEF");
+            firstContainer.setScalar("badLastChar" + i, "ABC" + ((char) i));
+            firstContainer.setScalar("badOnlyChar", "" + ((char) i));
         }
         safeSerialization(me);
     }
 
     /**
-     * Found out that the XML parser bombs out if you put $#2; into the
-     * source XML file.   However, it writes this out just fine.   This means
-     * data in memory can be written and no able to be read.  We need to assure
-     * that everything written can be read without failure, so it means stripping
-     * out the illegal characters while writing.   Those characters are lost, but
-     * since they are not allowed, we can't allow them to be written.
+     * Found out that the XML parser bombs out if you put $#2; into the source XML file. However, it
+     * writes this out just fine. This means data in memory can be written and no able to be read.
+     * We need to assure that everything written can be read without failure, so it means stripping
+     * out the illegal characters while writing. Those characters are lost, but since they are not
+     * allowed, we can't allow them to be written.
      */
     private void safeSerialization(Mel me) throws Exception {
-        //MemFile mf = new MemFile();
-        //me.writeToOutputStream(mf.getOutputStream());
+        // MemFile mf = new MemFile();
+        // me.writeToOutputStream(mf.getOutputStream());
         //
-        //Mel.readInputStream(mf.getInputStream(), Mel.class);
-        File randomFile = new File(tr.getProperty("testoutput", null), "badData"+System.currentTimeMillis()+".xml");
-        System.out.println("Writing to "+randomFile);
+        // Mel.readInputStream(mf.getInputStream(), Mel.class);
+        File randomFile =
+                new File(
+                        tr.getProperty("testoutput", null),
+                        "badData" + System.currentTimeMillis() + ".xml");
+        System.out.println("Writing to " + randomFile);
         me.writeToFile(randomFile);
 
-        //all we have to know is whether it fails to read it
+        // all we have to know is whether it fails to read it
         Mel.readFile(randomFile, Mel.class);
-
     }
-
-
-
 
     public static void main(String args[]) {
         Test1 thisTest = new Test1();
         TestRecorderText.parseArgsRunTests(args, thisTest);
     }
-
-
 }

@@ -22,11 +22,12 @@ import org.w3c.dom.Element;
 @Deprecated
 public class ValidationResults extends Mel {
     @Deprecated
-	public ValidationResults(Document doc, Element ele) throws Exception {
-		super(doc, ele);
-	}
+    public ValidationResults(Document doc, Element ele) throws Exception {
+        super(doc, ele);
+    }
+
     @Deprecated
-	public void addResult(String result) {
-		addVectorValue("result", result);
-	}
+    public void addResult(String result) {
+        addVectorValue("result", result);
+    }
 }

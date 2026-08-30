@@ -16,16 +16,12 @@
 
 package com.purplehillsbooks.testframe;
 
-import java.util.ArrayList;
-
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONException;
 import com.purplehillsbooks.json.JSONObject;
+import java.util.ArrayList;
 
-/**
- *
- * Author: Keith Swenson
- */
+/** Author: Keith Swenson */
 public class TestResultRecord {
     public TestResultRecord(String cat, String det, boolean pf) {
         category = cat;
@@ -43,8 +39,6 @@ public class TestResultRecord {
     public ArrayList<String> savedLog;
     public Exception fatalException;
 
-
-
     public JSONObject getJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("category", category);
@@ -53,11 +47,13 @@ public class TestResultRecord {
         jo.put("pass", pass);
         jo.put("failureMessage", failureMessage);
         jo.put("duration", duration);
-        if (fatalException!=null) {
-            jo.put("fatalException", JSONException.convertToJSON(fatalException, "TestResultRecord"));
+        if (fatalException != null) {
+            jo.put(
+                    "fatalException",
+                    JSONException.convertToJSON(fatalException, "TestResultRecord"));
         }
 
-        if (savedLog!=null) {
+        if (savedLog != null) {
             JSONArray loga = new JSONArray();
             for (String line : savedLog) {
                 loga.put(line);

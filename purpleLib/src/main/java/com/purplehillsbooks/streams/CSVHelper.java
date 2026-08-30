@@ -22,30 +22,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helps to read and write a CSV file, all methods are static writeLine:
- * Converts list of String values into a line of a CSV file parseLine: read a
- * line from a LineNumberReader and return the list of Strings
+ * Helps to read and write a CSV file, all methods are static writeLine: Converts list of String
+ * values into a line of a CSV file parseLine: read a line from a LineNumberReader and return the
+ * list of Strings
  *
- * That should be all you need. Create or open the file and streams yourself from
- * whatever source you need to read from.  Everything in this class works on
- * characters, and not bytes.
+ * <p>That should be all you need. Create or open the file and streams yourself from whatever source
+ * you need to read from. Everything in this class works on characters, and not bytes.
  */
 public class CSVHelper {
 
     /**
-     * Just a convenience method that iterates the rows of a table and outputs
-     * to a writer which is presumably a CSV file.
+     * Just a convenience method that iterates the rows of a table and outputs to a writer which is
+     * presumably a CSV file.
      */
     public static void writeTable(Writer w, List<List<String>> table) throws Exception {
-        for (int i=0; i<table.size(); i++) {
+        for (int i = 0; i < table.size(); i++) {
             List<String> row = table.get(i);
             writeLine(w, row);
         }
     }
 
-    /**
-     * Write a single row of a CSV table, all values are quoted
-     */
+    /** Write a single row of a CSV table, all values are quoted */
     public static void writeLine(Writer w, List<String> values) throws Exception {
         boolean firstVal = true;
         for (String val : values) {
@@ -67,11 +64,10 @@ public class CSVHelper {
     }
 
     /**
-     * Write a single row of a CSV table, all values are quoted
-     * using variable parameter syntax so you are not required 
-     * to construct a List&lt;String&gt; object
+     * Write a single row of a CSV table, all values are quoted using variable parameter syntax so
+     * you are not required to construct a List&lt;String&gt; object
      */
-    public static void writeLine(Writer w, String ... values) throws Exception {
+    public static void writeLine(Writer w, String... values) throws Exception {
         boolean firstVal = true;
         for (String val : values) {
             if (!firstVal) {
@@ -91,34 +87,29 @@ public class CSVHelper {
         w.write("\n");
     }
 
-    /**
-    * returns a row of values as a list
-    * returns null if you are past the end of the line
-    */
+    /** returns a row of values as a list returns null if you are past the end of the line */
     public static List<String> parseLine(Reader r) throws Exception {
         int ch = r.read();
         while (ch == '\r') {
-            //ignore linefeed characters wherever they are, particularly just before end of file
+            // ignore linefeed characters wherever they are, particularly just before end of file
             ch = r.read();
         }
-        if (ch<0) {
+        if (ch < 0) {
             return null;
         }
         ArrayList<String> store = new ArrayList<String>();
         StringBuilder curVal = new StringBuilder();
         boolean inquotes = false;
         boolean started = false;
-        while (ch>=0) {
+        while (ch >= 0) {
             if (inquotes) {
-                started=true;
+                started = true;
                 if (ch == '\"') {
                     inquotes = false;
+                } else {
+                    curVal.append((char) ch);
                 }
-                else {
-                    curVal.append((char)ch);
-                }
-            }
-            else {
+            } else {
                 if (ch == '\"') {
                     inquotes = true;
                     if (started) {
@@ -126,21 +117,17 @@ public class CSVHelper {
                         // this is for the double quote in the middle of a value
                         curVal.append('\"');
                     }
-                }
-                else if (ch == ',') {
+                } else if (ch == ',') {
                     store.add(curVal.toString());
                     curVal = new StringBuilder();
                     started = false;
-                }
-                else if (ch == '\r') {
-                    //ignore LF characters
-                }
-                else if (ch == '\n') {
-                    //end of a line, break out
+                } else if (ch == '\r') {
+                    // ignore LF characters
+                } else if (ch == '\n') {
+                    // end of a line, break out
                     break;
-                }
-                else {
-                    curVal.append((char)ch);
+                } else {
+                    curVal.append((char) ch);
                 }
             }
             ch = r.read();

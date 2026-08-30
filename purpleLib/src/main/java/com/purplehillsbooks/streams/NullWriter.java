@@ -19,36 +19,27 @@ package com.purplehillsbooks.streams;
 import java.io.Writer;
 
 /**
- * NullWriter is a writer that throws everything away, and never stores anything
- * anywhere. All functions just return without doing anything. Useful when you
- * are required to pass a Writer, but you are not interested the output that is
- * going to the Writer.
+ * NullWriter is a writer that throws everything away, and never stores anything anywhere. All
+ * functions just return without doing anything. Useful when you are required to pass a Writer, but
+ * you are not interested the output that is going to the Writer.
  *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
+ * <p>Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License: This code is made
+ * available under the GNU Lesser GPL license.
  */
 public class NullWriter extends Writer {
-	public NullWriter() {
-	}
+    public NullWriter() {}
 
-	public void close() {
-	}
+    public void close() {}
 
-	public void flush() {
-	}
+    public void flush() {}
 
-	public void write(char[] cbuf) {
-	}
+    public void write(char[] cbuf) {}
 
-	public void write(char[] cbuf, int off, int len) {
-	}
+    public void write(char[] cbuf, int off, int len) {}
 
-	public void write(int c) {
-	}
+    public void write(int c) {}
 
-	public void write(String str) {
-	}
+    public void write(String str) {}
 
-	public void write(String str, int off, int len) {
-	}
+    public void write(String str, int off, int len) {}
 }

@@ -1,15 +1,5 @@
 package com.purplehillsbooks.testcase;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.List;
-
 import com.purplehillsbooks.json.JSONArray;
 import com.purplehillsbooks.json.JSONDelta;
 import com.purplehillsbooks.json.JSONDiff;
@@ -20,6 +10,15 @@ import com.purplehillsbooks.streams.StreamHelper;
 import com.purplehillsbooks.testframe.TestRecorder;
 import com.purplehillsbooks.testframe.TestRecorderText;
 import com.purplehillsbooks.testframe.TestSet;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
 
 /*
  *
@@ -33,24 +32,23 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
     JSONDiff jdLtd;
 
     public TestJSONDiff() {
-    	super();
+        super();
     }
 
     public void runTests(TestRecorder newTr) throws Exception {
-    	initForTests(newTr);
+        initForTests(newTr);
         jdFull = new JSONDiff(true);
-        jdLtd  = new JSONDiff(false);
+        jdLtd = new JSONDiff(false);
         diffCases();
         deltaCases();
         deltaFileCases();
     }
 
-
     private void diffCases() throws Exception {
         JSONObject ob1 = new JSONObject();
         JSONObject ob2 = new JSONObject();
 
-        //test completely empty objects
+        // test completely empty objects
         doDiff("JSONDiff-test1", ob1, ob2);
 
         ob1.put("telephone", "555-444-3322");
@@ -75,10 +73,8 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         ob2.put("weather", weather2);
         doDiff("JSONDiff-test6", ob1, ob2);
 
-
         weather2.put("humidity", "98%");
         doDiff("JSONDiff-test7", ob1, ob2);
-
 
         weather2.put("wind", "light");
         doDiff("JSONDiff-test8", ob1, ob2);
@@ -90,9 +86,9 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         JSONObject tv1 = new JSONObject();
         JSONObject tv2 = new JSONObject();
         tv1.put("name", "Joe");
-        tv1.put("city",  "Los Angeles");
+        tv1.put("city", "Los Angeles");
         tv2.put("name", "Steve");
-        tv2.put("city",  "New York");
+        tv2.put("city", "New York");
 
         ar1.put(tv1);
         ar1.put(tv2);
@@ -107,11 +103,11 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         jdFull.setObjectKeyMap(listObjectKey);
         jdLtd.setObjectKeyMap(listObjectKey);
 
-        //these are the same, the objects are in a different order
+        // these are the same, the objects are in a different order
         doDiff("JSONDiff-array1", arrayTest1, arrayTest2);
 
-        //now make the second array have a single object
-        //but the one matches the second in the other
+        // now make the second array have a single object
+        // but the one matches the second in the other
         ar2 = new JSONArray();
         ar2.put(tv2);
         arrayTest2.put("people", ar2);
@@ -119,27 +115,24 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
 
         JSONObject tv3 = new JSONObject();
         tv3.put("name", "Joe");
-        tv3.put("city",  "Mexico");  //different city
+        tv3.put("city", "Mexico"); // different city
         ar2 = new JSONArray();
         ar2.put(tv2);
         ar2.put(tv3);
         arrayTest2.put("people", ar2);
         doDiff("JSONDiff-array3", arrayTest1, arrayTest2);
-
     }
 
     private void deltaFileCases() throws Exception {
 
         deltaJSONFiles("AllNodeTypes");
-
     }
-
 
     private void deltaCases() throws Exception {
         JSONObject ob1 = new JSONObject();
         JSONObject ob2 = new JSONObject();
 
-        //test completely empty objects
+        // test completely empty objects
         doDelta("JSONDelta-test1", ob1, ob2);
 
         ob1.put("telephone", "555-444-3322");
@@ -168,11 +161,9 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         doDelta("JSONDelta-test6a", ob1, ob2);
         doDelta("JSONDelta-test6b", ob2, ob1);
 
-
         weather2.put("humidity", "98%");
         doDelta("JSONDelta-test7a", ob1, ob2);
         doDelta("JSONDelta-test7b", ob2, ob1);
-
 
         weather2.put("wind", "light");
         doDelta("JSONDelta-test8a", ob1, ob2);
@@ -238,7 +229,6 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         doDelta("JSONDelta-testList3a", ob1, ob2);
         doDelta("JSONDelta-testList3b", ob2, ob1);
 
-
         ar1 = new JSONArray();
         ar2 = new JSONArray();
         ar1.put(person1);
@@ -264,7 +254,7 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         stringList2.put("tea");
         stringList2.put("muffin");
 
-        //set the people objects the same, and the string lists as well
+        // set the people objects the same, and the string lists as well
         ob1.put("people", ar1);
         ob2.put("people", ar1);
         ob1.put("food", stringList1);
@@ -278,7 +268,6 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         doDelta("JSONDelta-strList2a", ob1, ob2);
         doDelta("JSONDelta-strList2b", ob2, ob1);
 
-
         stringList2.put("marmalade");
 
         doDelta("JSONDelta-strList3a", ob1, ob2);
@@ -286,12 +275,12 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
 
         JSONArray pointList1 = new JSONArray();
         JSONArray pointList2 = new JSONArray();
-        pointList1.put(pointObject(10,15));
-        pointList1.put(pointObject(20,25));
-        pointList1.put(pointObject(30,35));
-        pointList2.put(pointObject(10,15));
-        pointList2.put(pointObject(120,25));
-        pointList2.put(pointObject(30,35));
+        pointList1.put(pointObject(10, 15));
+        pointList1.put(pointObject(20, 25));
+        pointList1.put(pointObject(30, 35));
+        pointList2.put(pointObject(10, 15));
+        pointList2.put(pointObject(120, 25));
+        pointList2.put(pointObject(30, 35));
         ob1 = new JSONObject();
         ob2 = new JSONObject();
         ob1.put("overlap", "This is object 1");
@@ -306,14 +295,14 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
 
         doDelta("JSONDelta-strList4a", ob1, ob2);
         doDelta("JSONDelta-strList4b", ob2, ob1);
-        
-        //now clear that out and lets test some boolean objects
+
+        // now clear that out and lets test some boolean objects
         ob1 = new JSONObject();
         ob2 = new JSONObject();
-        
+
         ob1.put("description", "This is ob1 for testing boolean values");
         ob2.put("description", "This is ob2 for testing boolean values");
-        
+
         ob1.put("nochangetrue", true);
         ob2.put("nochangetrue", true);
         ob1.put("nochangefalse", false);
@@ -322,18 +311,16 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         ob2.put("true2false", false);
         ob1.put("false2true", false);
         ob2.put("false2true", true);
-        
 
         ob1.put("false2omitted", false);
         ob1.put("true2omitted", true);
 
         ob2.put("omitted2true", true);
         ob2.put("omitted2false", false);
-        
+
         doDelta("JSONDelta-boolean-forward", ob1, ob2);
         doDelta("JSONDelta-boolean-backward", ob2, ob1);
     }
-
 
     private void deltaJSONFiles(String baseName) throws Exception {
         File inputFileA = new File(sourceDataFolder, baseName + "A.json");
@@ -353,8 +340,7 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         JSONObject objDelta = fileDelta.createDelta(objA, objB);
         objDelta.writeToFile(outputDelta);
 
-        compareFiles(inputFileDelta, outputDelta, "JSONDelta file test "+baseName);
-
+        compareFiles(inputFileDelta, outputDelta, "JSONDelta file test " + baseName);
     }
 
     private HashMap<String, String> readHints(File hintFile) throws Exception {
@@ -363,11 +349,11 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         HashMap<String, String> res = new HashMap<String, String>();
 
         List<String> line = CSVHelper.parseLine(r);
-        while (line!=null) {
-	        if (line.size()==2) {
-	        	res.put(line.get(0), line.get(1));
-	        }
-	        line = CSVHelper.parseLine(r);
+        while (line != null) {
+            if (line.size() == 2) {
+                res.put(line.get(0), line.get(1));
+            }
+            line = CSVHelper.parseLine(r);
         }
         r.close();
         return res;
@@ -383,12 +369,10 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
     private void doDiff(String rootFile, JSONObject ob1, JSONObject ob2) throws Exception {
 
         List<List<String>> table = jdFull.createDiff(ob1, ob2);
-        compareToFile(rootFile+"a.csv", table);
+        compareToFile(rootFile + "a.csv", table);
         table = jdLtd.createDiff(ob1, ob2);
-        compareToFile(rootFile+"b.csv", table);
+        compareToFile(rootFile + "b.csv", table);
     }
-
-
 
     private void compareToFile(String fileName, List<List<String>> table) throws Exception {
         MemFile mf = new MemFile();
@@ -397,13 +381,12 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         w.flush();
         w.close();
 
-
         File outputFile1 = new File(testOutputFolder, fileName);
         StreamHelper.copyReaderToFile(mf.getReader(), outputFile1, "UTF-8");
 
         File inputFile1 = new File(sourceDataFolder, fileName);
         if (!inputFile1.exists()) {
-            tr.markFailed("JSONDiff test"+fileName, "test data file is missing: "+inputFile1);
+            tr.markFailed("JSONDiff test" + fileName, "test data file is missing: " + inputFile1);
             return;
         }
         FileInputStream fis = new FileInputStream(inputFile1);
@@ -411,25 +394,26 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         Reader r2 = mf.getReader();
         int ch = isr.read();
         int charPos = 0;
-        while (ch>=0) {
-            //consume the stupid line feed characters
-            while (ch=='\r') {
+        while (ch >= 0) {
+            // consume the stupid line feed characters
+            while (ch == '\r') {
                 ch = isr.read();
             }
             charPos++;
             int ch2 = r2.read();
-            //consume the stupid line feed characters
-            while (ch2=='\r') {
+            // consume the stupid line feed characters
+            while (ch2 == '\r') {
                 ch2 = r2.read();
             }
-            if (ch!=ch2) {
+            if (ch != ch2) {
                 isr.close();
-                tr.markFailed("JSONDiff test"+fileName, "comparison failed on character "+charPos);
+                tr.markFailed(
+                        "JSONDiff test" + fileName, "comparison failed on character " + charPos);
                 return;
             }
             ch = isr.read();
         }
-        tr.markPassed("JSONDiff test"+fileName);
+        tr.markPassed("JSONDiff test" + fileName);
         isr.close();
     }
 
@@ -438,48 +422,49 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         TestRecorderText.parseArgsRunTests(args, thisTest);
     }
 
-    private void doDelta(String compFile, JSONObject oldObj, JSONObject newObj) throws Exception {;
-    	JSONDelta deltaMaker = new JSONDelta();
-    	deltaMaker.setDeletedValueIndicator("@deleteMe@");
-    	JSONObject delta = deltaMaker.createDelta(oldObj, newObj);
+    private void doDelta(String compFile, JSONObject oldObj, JSONObject newObj) throws Exception {
+        ;
+        JSONDelta deltaMaker = new JSONDelta();
+        deltaMaker.setDeletedValueIndicator("@deleteMe@");
+        JSONObject delta = deltaMaker.createDelta(oldObj, newObj);
 
-        File outputFile = new File(testOutputFolder, compFile+".json");
-        File inputFile = new File(testCompareFolder, compFile+".json");
-    	delta.writeToFile(outputFile);
+        File outputFile = new File(testOutputFolder, compFile + ".json");
+        File inputFile = new File(testCompareFolder, compFile + ".json");
+        delta.writeToFile(outputFile);
 
         if (!inputFile.exists()) {
-            tr.markFailed("JSONDelta test"+compFile, "missing test data file not found: "+inputFile);
+            tr.markFailed(
+                    "JSONDelta test" + compFile, "missing test data file not found: " + inputFile);
             doDeltaLog(compFile, oldObj, newObj, delta);
             return;
         }
 
-        compareFiles(inputFile, outputFile, "JSONDelta test"+compFile);
+        compareFiles(inputFile, outputFile, "JSONDelta test" + compFile);
         doDeltaLog(compFile, oldObj, newObj, delta);
-
     }
 
-    private boolean compareFiles(File file1, File file2, String testDesc) throws Exception  {
-    	if (!file1.exists()) {
-    		tr.markFailed(testDesc, "first file does not exist: "+file1);
+    private boolean compareFiles(File file1, File file2, String testDesc) throws Exception {
+        if (!file1.exists()) {
+            tr.markFailed(testDesc, "first file does not exist: " + file1);
             return false;
-    	}
-    	if (!file2.exists()) {
-    		tr.markFailed(testDesc, "Second file does not exist: "+file2);
+        }
+        if (!file2.exists()) {
+            tr.markFailed(testDesc, "Second file does not exist: " + file2);
             return false;
-    	}
+        }
         FileInputStream fis1 = new FileInputStream(file1);
         InputStreamReader inputReader = new InputStreamReader(fis1, "UTF-8");
         FileInputStream fis2 = new FileInputStream(file2);
         InputStreamReader outputReader = new InputStreamReader(fis2, "UTF-8");
         int ch = inputReader.read();
         int charPos = 0;
-        while (ch>=0) {
+        while (ch >= 0) {
             charPos++;
             int ch2 = outputReader.read();
-            if (ch!=ch2) {
-            	inputReader.close();
-            	outputReader.close();
-                tr.markFailed(testDesc, "comparison failed on character "+charPos);
+            if (ch != ch2) {
+                inputReader.close();
+                outputReader.close();
+                tr.markFailed(testDesc, "comparison failed on character " + charPos);
                 return false;
             }
             ch = inputReader.read();
@@ -490,10 +475,10 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         return true;
     }
 
-
-    private void doDeltaLog(String compFile, JSONObject oldObj, JSONObject newObj, JSONObject delta) throws Exception  {
-        File outputFile = new File(testOutputFolder, compFile+"-LOG.txt");
-    	System.out.println("*** wrote log file: "+outputFile);
+    private void doDeltaLog(String compFile, JSONObject oldObj, JSONObject newObj, JSONObject delta)
+            throws Exception {
+        File outputFile = new File(testOutputFolder, compFile + "-LOG.txt");
+        System.out.println("*** wrote log file: " + outputFile);
         FileOutputStream fos = new FileOutputStream(outputFile);
         OutputStreamWriter w = new OutputStreamWriter(fos, "UTF-8");
         w.write("JSON Delta TEST OUTPUT\n\n==============================\nOLD object:\n");
@@ -505,6 +490,4 @@ public class TestJSONDiff extends TestAbstract implements TestSet {
         w.write("\n\n==============================\n");
         w.close();
     }
-
-
 }

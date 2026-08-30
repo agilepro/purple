@@ -16,18 +16,13 @@
 
 package com.purplehillsbooks.testframe;
 
+import com.purplehillsbooks.json.JSONException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import com.purplehillsbooks.json.JSONException;
-
-/**
- *
- * Author: Keith Swenson
- */
-
+/** Author: Keith Swenson */
 public class TestRunner {
 
     /**
@@ -42,12 +37,14 @@ public class TestRunner {
         try {
 
             if (args.length < 4) {
-                System.out.println("usage: com.fujitsu.iflowqa.testframe.TestRunner <userid> "
-                            +"<password> <NamingProvider> <NamingProviderURL> "
-                            +"[test case or testcase file list like]");
-                System.out.println("e.g.: com.fujitsu.iflowqa.testframe.TestRunner "
-                            +"ibpm_server1 Infosys123 weblogic.jndi.WLInitialContextFactory "
-                            +"t3://localhost:7001");
+                System.out.println(
+                        "usage: com.fujitsu.iflowqa.testframe.TestRunner <userid> "
+                                + "<password> <NamingProvider> <NamingProviderURL> "
+                                + "[test case or testcase file list like]");
+                System.out.println(
+                        "e.g.: com.fujitsu.iflowqa.testframe.TestRunner "
+                                + "ibpm_server1 Infosys123 weblogic.jndi.WLInitialContextFactory "
+                                + "t3://localhost:7001");
                 return;
             }
 
@@ -79,17 +76,15 @@ public class TestRunner {
                 for (int i = 4; i < args.length; i++) {
                     testArgs[i - 4] = args[i];
                 }
-            }
-            else {
-                testArgs = new String[] { className };
+            } else {
+                testArgs = new String[] {className};
             }
 
             TestRecorderText tr = new TestRecorderText(out, true, testArgs, prop);
             try {
                 TestDriver.DriveTests(tr, testArgs);
                 out.flush();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 out.write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
                 out.write("Fatal Error, in " + className + "\n");
                 TestDriver.deparenthesize(out, e.toString());
@@ -119,19 +114,17 @@ public class TestRunner {
                 out.write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
                 out.write("Printing configuration since there was a fatal test\n");
                 @SuppressWarnings("unchecked")
-                Enumeration<String> enumeration = (Enumeration<String>) tr.getProps()
-                        .propertyNames();
+                Enumeration<String> enumeration =
+                        (Enumeration<String>) tr.getProps().propertyNames();
                 while (enumeration.hasMoreElements()) {
                     String aName = enumeration.nextElement();
                     String val = tr.getProps().getProperty(aName);
                     out.write(aName + "=" + val + "\n");
                 }
                 out.write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-
             }
             out.flush();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JSONException.traceException(e, "TestRunner.run");
         }
     }

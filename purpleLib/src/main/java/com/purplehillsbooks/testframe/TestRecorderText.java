@@ -16,6 +16,7 @@
 
 package com.purplehillsbooks.testframe;
 
+import com.purplehillsbooks.json.JSONException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,69 +30,63 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import com.purplehillsbooks.json.JSONException;
-
 /**
  * TestRecorderText implements the TestRecorder interface so that:
- * <ol>
- * <li>(1) Configuration information is read from a text file called
- * 'test.conf'. This file has one name-value pair per line as
- * parameter_name=parameter_value
  *
- * <li>(2) Test results are written to a text file, typically 'FinalLog.log'.
+ * <ol>
+ *   <li>(1) Configuration information is read from a text file called 'test.conf'. This file has
+ *       one name-value pair per line as parameter_name=parameter_value
+ *   <li>(2) Test results are written to a text file, typically 'FinalLog.log'.
  * </ol>
  *
  * @see TestSet
  * @see TestDriver
- *
- *      Author: Keith Swenson
+ *     <p>Author: Keith Swenson
  */
 public class TestRecorderText implements TestRecorder {
     /**
-     * This is simply the count of tests that have been recorded as passed. It
-     * starts at zero, and when all tests are done the result is reported.
+     * This is simply the count of tests that have been recorded as passed. It starts at zero, and
+     * when all tests are done the result is reported.
      */
     private int passedTests = 0;
+
     /**
-     * This is simply the count of tests that have been recorded as failing. It
-     * starts at zero, and when all tests are done the result is reported.
+     * This is simply the count of tests that have been recorded as failing. It starts at zero, and
+     * when all tests are done the result is reported.
      */
     private int failedTests = 0;
+
     /**
-     * This is simply the count of tests that have been terminated prematurely.
-     * It starts at zero. Generally speaking, this should either be a zero or 1.
-     * If an exception is thrown from a test routine, it is a fatal error, and
-     * should stop all subsequent testing activity.
+     * This is simply the count of tests that have been terminated prematurely. It starts at zero.
+     * Generally speaking, this should either be a zero or 1. If an exception is thrown from a test
+     * routine, it is a fatal error, and should stop all subsequent testing activity.
      */
     private int fatalTests = 0;
 
     /**
-     * verbose == false means only failures are reported. verbose == true means
-     * in addition to the above, all log and passed items are also reported.
+     * verbose == false means only failures are reported. verbose == true means in addition to the
+     * above, all log and passed items are also reported.
      */
     private boolean verbose;
 
-
     /**
-     * A configuration file 'test.conf' is read in order to get all of the
-     * configuration properties for the tests. The properties are represented as
-     * a Properties object. Standard global configuration parameters should be
-     * placed in 'test.conf' and the tests can get access to those configuration
-     * settings in this variable.
+     * A configuration file 'test.conf' is read in order to get all of the configuration properties
+     * for the tests. The properties are represented as a Properties object. Standard global
+     * configuration parameters should be placed in 'test.conf' and the tests can get access to
+     * those configuration settings in this variable.
      *
-     * The originalProps (passed in on constructor) are then appended to this,
-     * which is where the connection properties come from. The property settings
-     * from originalProps will take precidence, that is the passed in properties
-     * will override the property values taken from 'test.conf'.
+     * <p>The originalProps (passed in on constructor) are then appended to this, which is where the
+     * connection properties come from. The property settings from originalProps will take
+     * precidence, that is the passed in properties will override the property values taken from
+     * 'test.conf'.
      */
     private Properties props;
 
     /**
-     * This is a properties object passed in which contain configuration details
-     * about the current system: e.g. server name, port number, and all the
-     * things that might change from installation to installation. These are
-     * then appended to the configuration properties that are read from the
-     * 'test.conf' config file.
+     * This is a properties object passed in which contain configuration details about the current
+     * system: e.g. server name, port number, and all the things that might change from installation
+     * to installation. These are then appended to the configuration properties that are read from
+     * the 'test.conf' config file.
      */
     private Properties originalProps;
 
@@ -114,7 +109,8 @@ public class TestRecorderText implements TestRecorder {
 
     public static ArrayList<TestResultRecord> resultSet;
 
-    public TestRecorderText(Writer forLog, boolean newVerbose, String[] args, Properties configProps)
+    public TestRecorderText(
+            Writer forLog, boolean newVerbose, String[] args, Properties configProps)
             throws Exception {
         this(forLog, newVerbose, args, null, configProps);
     }
@@ -128,24 +124,26 @@ public class TestRecorderText implements TestRecorder {
     }
 
     /**
-     * The test driver initializes this class and gives it to each test case.
-     * For a run of the tests, only one recorder is constructed, so that it can
-     * collect the results of all the tests.
-     * <p>
-     * A test class should never be creating a TestRecorder, only the TestDriver
-     * should do so. This allows the tests themselves to be reusable in any
-     * situation.  You can write your own test driver which calls all your tests,
-     * or you can use the generic TestDriver class that reads what it needs from
-     * input files in order to call the tests.
+     * The test driver initializes this class and gives it to each test case. For a run of the
+     * tests, only one recorder is constructed, so that it can collect the results of all the tests.
+     *
+     * <p>A test class should never be creating a TestRecorder, only the TestDriver should do so.
+     * This allows the tests themselves to be reusable in any situation. You can write your own test
+     * driver which calls all your tests, or you can use the generic TestDriver class that reads
+     * what it needs from input files in order to call the tests.
      */
-    public TestRecorderText(Writer forLog, boolean newVerbose, String[] args, String configDir,
-            Properties configProps) throws Exception {
+    public TestRecorderText(
+            Writer forLog,
+            boolean newVerbose,
+            String[] args,
+            String configDir,
+            Properties configProps)
+            throws Exception {
         testDir = configDir;
         logWriter = new PrintWriter(forLog);
         if (configProps != null) {
             originalProps = configProps;
-        }
-        else {
+        } else {
             originalProps = new Properties();
         }
         props = readConfFile(configDir);
@@ -210,16 +208,18 @@ public class TestRecorderText implements TestRecorder {
             iprop.load(new FileInputStream(configFile));
 
             return iprop;
-        }
-        catch (Exception e) {
-            throw new Exception("Unable to read the test framework configuration file '"
-                    + configDir + "test.conf'", e);
+        } catch (Exception e) {
+            throw new Exception(
+                    "Unable to read the test framework configuration file '"
+                            + configDir
+                            + "test.conf'",
+                    e);
         }
     }
 
     /**
-     * Read a property from the global properties file. If property does not
-     * exist, then default is returned.
+     * Read a property from the global properties file. If property does not exist, then default is
+     * returned.
      */
     public String getProperty(String name, String defaultVal) {
         String val = props.getProperty(name);
@@ -230,31 +230,30 @@ public class TestRecorderText implements TestRecorder {
     }
 
     /**
-     * Read a property from the global properties file. The specified property
-     * MUST exist in the properties file. Throws a nice exception if the
-     * property is missing. Use this for properties like "serverName" where
-     * there is no way to provide a reaonsable default. If you need a particular
-     * configuration value, then if it is not configured, then this is a
-     * configuration problem that must be addressed before running the tests.
-     * Throwing an exception will cause termination of the testing due to a
-     * fatal error, and it will display the reason for the fatal, which will
-     * encourage the tester to set the configuration up correctly.
+     * Read a property from the global properties file. The specified property MUST exist in the
+     * properties file. Throws a nice exception if the property is missing. Use this for properties
+     * like "serverName" where there is no way to provide a reaonsable default. If you need a
+     * particular configuration value, then if it is not configured, then this is a configuration
+     * problem that must be addressed before running the tests. Throwing an exception will cause
+     * termination of the testing due to a fatal error, and it will display the reason for the
+     * fatal, which will encourage the tester to set the configuration up correctly.
      */
     public String getRequiredProperty(String name) throws Exception {
         String val = props.getProperty(name);
         if (val != null) {
             return val;
         }
-        throw new Exception("Unable to find the '" + name
-                + "' property in the 'test.conf' configuration file.");
+        throw new Exception(
+                "Unable to find the '"
+                        + name
+                        + "' property in the 'test.conf' configuration file.");
     }
 
     /**
-     * Write out the number of seconds since the test started in the format
-     * sss.mmm where sss is a three digit number of seconds, and mmm is the
-     * three digit milliseconds. First, make sure that duration is less than 1
-     * million, then add a million so you have a 7 digit number of milliseconds.
-     * Then pick three digits for seconds and three digits for millis.
+     * Write out the number of seconds since the test started in the format sss.mmm where sss is a
+     * three digit number of seconds, and mmm is the three digit milliseconds. First, make sure that
+     * duration is less than 1 million, then add a million so you have a 7 digit number of
+     * milliseconds. Then pick three digits for seconds and three digits for millis.
      */
     private void timeStamp() {
         long dur = System.currentTimeMillis() - creationTime;
@@ -271,21 +270,19 @@ public class TestRecorderText implements TestRecorder {
     }
 
     /**
-     * When a simple test passes, for example a simple calculation performed,
-     * and the result matched the expected result, then this is called to
-     * indicate that the test has succeeded.
-     * <p>
-     * This will record the fact the that test succeeded and report it in the
-     * final results. The id is a simple name or description that can be used to
-     * uniquely identify this test. It might consist of the test number in a
-     * particular test set.
-     * <p>
-     * When verbose=false (normal situations) this will not produce any output
-     * to the log. The logic is that normally we will have hundreds of tests,
-     * and they all pass so we don't really need to know about those.
-     * <p>
-     * When verbose=true, it will record this pass to the log, which allows you
-     * to get a listing of all the tests that were run if you wish.
+     * When a simple test passes, for example a simple calculation performed, and the result matched
+     * the expected result, then this is called to indicate that the test has succeeded.
+     *
+     * <p>This will record the fact the that test succeeded and report it in the final results. The
+     * id is a simple name or description that can be used to uniquely identify this test. It might
+     * consist of the test number in a particular test set.
+     *
+     * <p>When verbose=false (normal situations) this will not produce any output to the log. The
+     * logic is that normally we will have hundreds of tests, and they all pass so we don't really
+     * need to know about those.
+     *
+     * <p>When verbose=true, it will record this pass to the log, which allows you to get a listing
+     * of all the tests that were run if you wish.
      */
     public void markPassed(String id) {
         TestResultRecord trr = new TestResultRecord(id, "", true);
@@ -301,34 +298,28 @@ public class TestRecorderText implements TestRecorder {
                 logWriter.flush();
             }
             savedLog.clear();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JSONException.traceException(logWriter, e, "Exception during markPassed");
         }
     }
 
     /**
-     * When a simple test fails, for example a simple calculation performed, and
-     * the result does not matched the expected result, then this is called to
-     * indicate that the test failed.
-     * <p>
-     * A log entry is printed to record the fact with the details regarless of
-     * whether verbose==true or verbose==false. The rationale is that you always
-     * want to know about failures. Not only is the id and details written out,
-     * but also a line that include the parameters that were passed to the test,
-     * as well as any log messages that were saved up since the last result
-     * message.
+     * When a simple test fails, for example a simple calculation performed, and the result does not
+     * matched the expected result, then this is called to indicate that the test failed.
+     *
+     * <p>A log entry is printed to record the fact with the details regarless of whether
+     * verbose==true or verbose==false. The rationale is that you always want to know about
+     * failures. Not only is the id and details written out, but also a line that include the
+     * parameters that were passed to the test, as well as any log messages that were saved up since
+     * the last result message.
+     *
      * <p>
      *
-     * @param id
-     *            follows the same rules as above (and it goes without saying
-     *            that the same id should be used when indicating success as
-     *            when indicating failure for a particular test.)
-     * @param details
-     *            is additional information explaining what was expected and
-     *            what was wrong about it. For example to explain what was being
-     *            done, what was unique about this test case, which might give a
-     *            clue to why the program failed.
+     * @param id follows the same rules as above (and it goes without saying that the same id should
+     *     be used when indicating success as when indicating failure for a particular test.)
+     * @param details is additional information explaining what was expected and what was wrong
+     *     about it. For example to explain what was being done, what was unique about this test
+     *     case, which might give a clue to why the program failed.
      */
     public void markFailed(String id, String details) {
         failedTests++;
@@ -348,8 +339,7 @@ public class TestRecorderText implements TestRecorder {
             resultSet.add(trr);
             // create a new one because the old one stays with test result
             savedLog = new ArrayList<String>();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JSONException.traceException(logWriter, e, "Exception during markFailed");
         }
     }
@@ -357,32 +347,27 @@ public class TestRecorderText implements TestRecorder {
     public void testInt(String id, int value, int expected) {
         if (value == expected) {
             markPassed(id);
-        }
-        else {
+        } else {
             markFailed(id, "Expected '" + expected + "' but got '" + value + "' instead.");
         }
     }
 
     /**
-     * A "fatal error" is an error that is so bad that subsequent tests were
-     * skipped. For example, a particular routine is expecting test 5
-     * consistency constraints on the contents of a file, but it finds that the
-     * file does not exist. There are two choices: call markFailed 5 times (so
-     * that all failures are recorded) or record a single markFatalError to
-     * indicate that something is so wrong it is not even worth continuing
-     * testing.
-     * <p>
-     * Recording a fatal error means tests has been skipped in this run, and the
-     * resulting statistics are meaningless. We don't have a complete record of
-     * all the tests that might have failed. The presence of a single fatal test
-     * should tell you that something is terribly broken in the tests, and the
-     * results are not valid.
-     * <p>
-     * Normally, a test case will indicate a fatal error by throwing an
-     * exception. The Test Framework will catch the exception, and use this
-     * method to record that a test failed to the extent that further testing
-     * had to be skipped. Throw a meaningful exception instead of calling this
-     * routine.
+     * A "fatal error" is an error that is so bad that subsequent tests were skipped. For example, a
+     * particular routine is expecting test 5 consistency constraints on the contents of a file, but
+     * it finds that the file does not exist. There are two choices: call markFailed 5 times (so
+     * that all failures are recorded) or record a single markFatalError to indicate that something
+     * is so wrong it is not even worth continuing testing.
+     *
+     * <p>Recording a fatal error means tests has been skipped in this run, and the resulting
+     * statistics are meaningless. We don't have a complete record of all the tests that might have
+     * failed. The presence of a single fatal test should tell you that something is terribly broken
+     * in the tests, and the results are not valid.
+     *
+     * <p>Normally, a test case will indicate a fatal error by throwing an exception. The Test
+     * Framework will catch the exception, and use this method to record that a test failed to the
+     * extent that further testing had to be skipped. Throw a meaningful exception instead of
+     * calling this routine.
      */
     public void markFatalError(Exception e) {
         if (e == null) {
@@ -397,7 +382,7 @@ public class TestRecorderText implements TestRecorder {
             logWriter.write(e.toString());
             logWriter.write("\n");
             logWriter.flush();
-            
+
             JSONException.traceException(logWriter, e, "markFatalError");
             logWriter.flush();
 
@@ -408,33 +393,30 @@ public class TestRecorderText implements TestRecorder {
             resultSet.add(trr);
             // create a new one because the old one stays with test result
             savedLog = new ArrayList<String>();
-        }
-        catch (Exception e1) {
+        } catch (Exception e1) {
             JSONException.traceException(logWriter, e, "Exception during markFatalError");
         }
     }
 
     /**
-     * Writes the specified string to the log file, only when verbose == true.
-     * This is used typically for debugging, and calls to this should be removed
-     * when the test case is ready for prime time.
-     * <p>
-     * Do not use the log method to write out whether a test passes or fails! It
-     * is remarkable how many time programmers write tests that require a person
-     * to read the log a determine whether the test succeeded or not. In normal
-     * testing situation, nobody reads the logs! In the case of automated
-     * builds, the automated run of a test produces a log, but if no error is
-     * indicated using markFailure, then nobody ever looks at the log files. So
-     * use it only for debug information while developing the test.
-     * <p>
-     * Note: there is a special capability to reduce clutter and still get
-     * meaningful results. When the log method is called, and verbose==false the
-     * line is not written to output, but is is saved up in a collection. If the
-     * next test result is "pass" then those lines are thrown away. But if the
-     * next result is "fail" then those saved up log items are output just
-     * before the failure message. So if you are outputting information using
-     * log statements before reporting the results of a test, those statements
-     * will be seen even with verbose==false if the test fails.
+     * Writes the specified string to the log file, only when verbose == true. This is used
+     * typically for debugging, and calls to this should be removed when the test case is ready for
+     * prime time.
+     *
+     * <p>Do not use the log method to write out whether a test passes or fails! It is remarkable
+     * how many time programmers write tests that require a person to read the log a determine
+     * whether the test succeeded or not. In normal testing situation, nobody reads the logs! In the
+     * case of automated builds, the automated run of a test produces a log, but if no error is
+     * indicated using markFailure, then nobody ever looks at the log files. So use it only for
+     * debug information while developing the test.
+     *
+     * <p>Note: there is a special capability to reduce clutter and still get meaningful results.
+     * When the log method is called, and verbose==false the line is not written to output, but is
+     * is saved up in a collection. If the next test result is "pass" then those lines are thrown
+     * away. But if the next result is "fail" then those saved up log items are output just before
+     * the failure message. So if you are outputting information using log statements before
+     * reporting the results of a test, those statements will be seen even with verbose==false if
+     * the test fails.
      */
     public void log(String s) {
         try {
@@ -446,16 +428,12 @@ public class TestRecorderText implements TestRecorder {
                 logWriter.write("\n");
                 logWriter.flush();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JSONException.traceException(logWriter, e, "Exception during logging");
         }
     }
 
-    /**
-     * See comment on savedLog. This writes out the contents of the saved up
-     * log.
-     */
+    /** See comment on savedLog. This writes out the contents of the saved up log. */
     private void dumpSavedLog() {
         // if it was verbose, then it already was written out.
         if (verbose) {
@@ -506,17 +484,15 @@ public class TestRecorderText implements TestRecorder {
     }
 
     /**
-     * This records results of a single test int eh records hashtable. But...the
-     * test recorder will be keeping a cumulative total of all tests, so pass in
-     * the previous values so they can be discounted.
+     * This records results of a single test int eh records hashtable. But...the test recorder will
+     * be keeping a cumulative total of all tests, so pass in the previous values so they can be
+     * discounted.
      *
-     * This is not the most straightforward way to do this. Perhaps a better way
-     * is to have a command to start a new test, which PUSHes a new results
-     * structure on a stack, and a command to complete a test which records the
-     * result, and add the results of that test to the global results. I have
-     * implemented such a mechanism in the past, but it has been deemed
-     * overkill. So this simpler approach will work for now, until we need
-     * something better.
+     * <p>This is not the most straightforward way to do this. Perhaps a better way is to have a
+     * command to start a new test, which PUSHes a new results structure on a stack, and a command
+     * to complete a test which records the result, and add the results of that test to the global
+     * results. I have implemented such a mechanism in the past, but it has been deemed overkill. So
+     * this simpler approach will work for now, until we need something better.
      */
     public void recordResults(String testName, int prevPass, int prevFail) {
         if (records == null) {
@@ -543,8 +519,7 @@ public class TestRecorderText implements TestRecorder {
         // will be null if no tests run yet....
         if (resultSet == null) {
             resultSet = new ArrayList<TestResultRecord>();
-        }
-        else {
+        } else {
             TestResultComparator trc = new TestResultComparator();
             Collections.sort(resultSet, trc);
         }
@@ -552,8 +527,7 @@ public class TestRecorderText implements TestRecorder {
     }
 
     static class TestResultComparator implements Comparator<TestResultRecord> {
-        TestResultComparator() {
-        }
+        TestResultComparator() {}
 
         public int compare(TestResultRecord o1, TestResultRecord o2) {
             TestResultRecord trr1 = o1;
@@ -574,13 +548,11 @@ public class TestRecorderText implements TestRecorder {
         }
     }
 
-
-
-/*
- * return true is all tests pass, false if anything else
- */
+    /*
+     * return true is all tests pass, false if anything else
+     */
     public static boolean parseArgsRunTests(String args[], TestSet ts) {
-        TestRecorderText tr=null;
+        TestRecorderText tr = null;
         try {
             if (args.length < 2) {
                 throw new Exception("USAGE: Test1  <source folder>  <test output folder>");
@@ -605,33 +577,32 @@ public class TestRecorderText implements TestRecorder {
                                 + outputFolder);
             }
 
-            File outputFile = new File(testout, "_output_"+ts.getClass().getSimpleName()+".txt");
+            File outputFile =
+                    new File(testout, "_output_" + ts.getClass().getSimpleName() + ".txt");
             if (outputFile.exists()) {
                 outputFile.delete();
             }
-            Writer w  = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
+            Writer w = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
             tr = new TestRecorderText(w, true, new String[0], ".", props);
             ts.runTests(tr);
             w.flush();
             w.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.print("\n\n\n====================================================");
             JSONException.traceException(e, "EXCEPTION CAUGHT AT MAIN LEVEL");
         }
-        if (tr!=null) {
+        if (tr != null) {
             System.out.print("\n\n\n====================================================");
-            System.out.print("\n               FINISHED RUN for "+ts.getClass().getName());
+            System.out.print("\n               FINISHED RUN for " + ts.getClass().getName());
             System.out.print("\n====================================================");
-            System.out.print("\n Number PASSED: "+tr.passedCount());
-            System.out.print("\n Number FAILED: "+tr.failedCount());
-            System.out.print("\n Number FATAL:  "+tr.fatalCount());
+            System.out.print("\n Number PASSED: " + tr.passedCount());
+            System.out.print("\n Number FAILED: " + tr.failedCount());
+            System.out.print("\n Number FATAL:  " + tr.fatalCount());
             System.out.print("\n====================================================\n");
-            return (tr.failedCount()+tr.fatalCount() == 0);
-        }
-        else {
-        	//don't know how it can get here but this is bad, so return false.
-        	return false;
+            return (tr.failedCount() + tr.fatalCount() == 0);
+        } else {
+            // don't know how it can get here but this is bad, so return false.
+            return false;
         }
     }
 }

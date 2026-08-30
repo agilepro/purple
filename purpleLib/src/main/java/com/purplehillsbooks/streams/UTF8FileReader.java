@@ -26,39 +26,31 @@ import java.io.Reader;
 /**
  * UTF8FileReader
  *
- * I often want to read a file using UTF8 and it is annoying having
- * to create two objects every time.   This class just combines
- * the FileInputStream and the InputStreamReader into a single
- * class using the character encoding UTF8.   Very simple.
+ * <p>I often want to read a file using UTF8 and it is annoying having to create two objects every
+ * time. This class just combines the FileInputStream and the InputStreamReader into a single class
+ * using the character encoding UTF8. Very simple.
  *
- * Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License:
- * This code is made available under the GNU Lesser GPL license.
+ * <p>Author: Keith Swenson Copyright: Keith Swenson, all rights reserved License: This code is made
+ * available under the GNU Lesser GPL license.
  */
 public class UTF8FileReader extends Reader {
-	private InputStreamReader out;
+    private InputStreamReader out;
 
-	/**
-	 * Creates the necessary objects to serve as a Writer
-	 * to files.
-	 */
-	public UTF8FileReader(File file) throws Exception {
-	    InputStream os = new FileInputStream(file);
-		out = new InputStreamReader(os, "UTF-8");
-	}
+    /** Creates the necessary objects to serve as a Writer to files. */
+    public UTF8FileReader(File file) throws Exception {
+        InputStream os = new FileInputStream(file);
+        out = new InputStreamReader(os, "UTF-8");
+    }
 
-
-
-	/**
-	 * Closes the wrapped OutputStream and terminates output.
-	 *
-	 * @exception IOException
-	 *                if the original Writer fails to be closed
-	 */
+    /**
+     * Closes the wrapped OutputStream and terminates output.
+     *
+     * @exception IOException if the original Writer fails to be closed
+     */
     @Override
-	public void close() throws IOException {
-		out.close();
-	}
-
+    public void close() throws IOException {
+        out.close();
+    }
 
     @Override
     public int read(char[] arg0, int arg1, int arg2) throws IOException {

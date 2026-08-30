@@ -1,73 +1,62 @@
 package com.purplehillsbooks.web;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.purplehillsbooks.json.JSONArray;
+import com.purplehillsbooks.json.JSONException;
+import com.purplehillsbooks.json.JSONObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.purplehillsbooks.json.JSONArray;
-import com.purplehillsbooks.json.JSONException;
-import com.purplehillsbooks.json.JSONObject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * JSONServlet is an abstract base class for a standard Java J2EE servlet that
- * sends and receives JSON formatted data.  You create a concrete subclass
- * of this, and install it into the J2EE container for execution.
+ * JSONServlet is an abstract base class for a standard Java J2EE servlet that sends and receives
+ * JSON formatted data. You create a concrete subclass of this, and install it into the J2EE
+ * container for execution.
  *
- * You provide a handler class (that extends JSONHandler).
- * An instance of the handler is created for
- * every request so that you can keep important intermediate data in the handler
- * members for processing the request efficiently.
+ * <p>You provide a handler class (that extends JSONHandler). An instance of the handler is created
+ * for every request so that you can keep important intermediate data in the handler members for
+ * processing the request efficiently.
  *
- * You provide a session manager class (that extends SessionManager) which
- * holds global information for the handler as well as being able to
- * generate your unique session objects.
+ * <p>You provide a session manager class (that extends SessionManager) which holds global
+ * information for the handler as well as being able to generate your unique session objects.
  *
- * The fourth class that is important is the WebRequest which is a final
- * class that makes it easier for the handler to accept and set http data.
- *
+ * <p>The fourth class that is important is the WebRequest which is a final class that makes it
+ * easier for the handler to accept and set http data.
  */
-
 @SuppressWarnings("serial")
 public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
     protected SessionManager smgr = null;
 
     /**
-     * If initError is null, it means it was initialized correctly.
-     * If it is not null, then something happened during initialization
-     * and it is NOT properly initialized.  Every request will then
-     * simply return the init error as JSON object.
+     * If initError is null, it means it was initialized correctly. If it is not null, then
+     * something happened during initialization and it is NOT properly initialized. Every request
+     * will then simply return the init error as JSON object.
      *
-     * This gives you only one chance to init.  We need a mechanism that
-     * retries init in a turtle-model, but that not implemented.
+     * <p>This gives you only one chance to init. We need a mechanism that retries init in a
+     * turtle-model, but that not implemented.
      */
     private Exception initError;
 
-
-
     /**
-     * This is the first method you must override to return your own private
-     * handler class that actually figures out what to do with the passed
-     * in JSON objects, and what JSON Objects to return.
+     * This is the first method you must override to return your own private handler class that
+     * actually figures out what to do with the passed in JSON objects, and what JSON Objects to
+     * return.
      */
     public abstract JSONHandler constructHandler(WebRequest wr) throws Exception;
 
-
     /**
-     * This is the second method you must override to return your own private
-     * handler class that actually figures out what to do with the passed
-     * in JSON objects, and what JSON Objects to return.
+     * This is the second method you must override to return your own private handler class that
+     * actually figures out what to do with the passed in JSON objects, and what JSON Objects to
+     * return.
      *
-     * something like return SessionManager.getSessionManagerSingleton(sc);
+     * <p>something like return SessionManager.getSessionManagerSingleton(sc);
      */
     public abstract SessionManager constructSessionManager(ServletContext sc) throws Exception;
-
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -77,19 +66,20 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
             ServletContext sc = config.getServletContext();
             File webInfFolder = new File(sc.getRealPath("/WEB-INF"));
             if (!webInfFolder.exists()) {
-                System.out.println("At 'init' the ServletContext reported invalid WEB-INF location:  "+webInfFolder);
+                System.out.println(
+                        "At 'init' the ServletContext reported invalid WEB-INF location:  "
+                                + webInfFolder);
             }
 
             smgr = constructSessionManager(sc);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             initError = new ServletException("Unable to initialize RestServlet", e);
         }
     }
 
     @Override
     public void destroy() {
-    	smgr=null;
+        smgr = null;
     }
 
     @Override
@@ -100,10 +90,12 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
         try {
             File webInfFolder = new File(req.getServletContext().getRealPath("/WEB-INF"));
             if (!webInfFolder.exists()) {
-                System.out.println("At 'service' the ServletContext reported invalid WEB-INF location:  "+webInfFolder);
+                System.out.println(
+                        "At 'service' the ServletContext reported invalid WEB-INF location:  "
+                                + webInfFolder);
             }
-            //first handle case where initialization failed
-            if (initError!=null) {
+            // first handle case where initialization failed
+            if (initError != null) {
                 resp.setStatus(400);
                 WebRequest.streamException(initError, req, resp, resp.getWriter());
                 return;
@@ -111,56 +103,51 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
             wr = new WebRequest(req, resp, resp.getWriter());
             rh = constructHandler(wr);
-        }
-        catch (Exception nonReturnable) {
-            //if this fails, then it is a failure communicating to the client
-            //and we can not return an error to them, so simply report to the
-            //server log file and give up.
-            System.out.println("AA-FATAL-ERROR:"+nonReturnable.toString());
+        } catch (Exception nonReturnable) {
+            // if this fails, then it is a failure communicating to the client
+            // and we can not return an error to them, so simply report to the
+            // server log file and give up.
+            System.out.println("AA-FATAL-ERROR:" + nonReturnable.toString());
             JSONException.traceException(nonReturnable, "RestServlet.service");
             resp.setStatus(501);
             return;
         }
         try {
             if (wr.isOptions()) {
-                //this is the CORS 'preflight' option getting headers before sending the
-                //actual object.  An option request should not cause the server to access
-                //data or burden it in any way, so handled here regardless of the path.
-                //Return all the normal headers, but an empty body.
+                // this is the CORS 'preflight' option getting headers before sending the
+                // actual object.  An option request should not cause the server to access
+                // data or burden it in any way, so handled here regardless of the path.
+                // Return all the normal headers, but an empty body.
                 wr.response.setContentLength(0);
                 wr.w.flush();
-                System.out.println("AA-OPTIONS,"+startTime+",0,"+req.getContextPath());
+                System.out.println("AA-OPTIONS," + startTime + ",0," + req.getContextPath());
                 return;
-            }
-            else {
+            } else {
                 JSONObject outObj = rh.handleRequest();
-                if (outObj!=null) {
-                    outObj.write(wr.w,2,0);
+                if (outObj != null) {
+                    outObj.write(wr.w, 2, 0);
                     wr.w.flush();
                 }
             }
-        }
-        catch (Throwable e) {
-            //NOTE: need to catch Throwable here because an Error (such as class not found)
-            //would otherwise result in an HTML error message being returned, and not a JSON error.
-            //This makes sure that anything that is thrown returns a JSON.
+        } catch (Throwable e) {
+            // NOTE: need to catch Throwable here because an Error (such as class not found)
+            // would otherwise result in an HTML error message being returned, and not a JSON error.
+            // This makes sure that anything that is thrown returns a JSON.
             //
-            //Controversial because this might be something critical and the server might not
-            //be stable enough to return the result, and trying to return a result might make
-            //things worse.   But then, if things are really so bad, who cares?
+            // Controversial because this might be something critical and the server might not
+            // be stable enough to return the result, and trying to return a result might make
+            // things worse.   But then, if things are really so bad, who cares?
             wr.streamException(e, smgr);
         }
         long endTime = System.currentTimeMillis();
         long dur = endTime - startTime;
-        System.out.println("AA-"+req.getMethod()+","+startTime+","+dur+","+wr.requestURL);
+        System.out.println(
+                "AA-" + req.getMethod() + "," + startTime + "," + dur + "," + wr.requestURL);
     }
 
-
-
-    /**
-     * this converts to JSON and includes some special rules for IBPM Model exceptions
-     */
-    public static JSONObject convertModelExceptionToJSON(Throwable e, String context) throws Exception {
+    /** this converts to JSON and includes some special rules for IBPM Model exceptions */
+    public static JSONObject convertModelExceptionToJSON(Throwable e, String context)
+            throws Exception {
         JSONObject responseBody = new JSONObject();
         JSONObject errorTag = new JSONObject();
         responseBody.put("error", errorTag);
@@ -175,28 +162,28 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
         Throwable nextRunner = e;
         List<ExceptionTracer> traceHolder = new ArrayList<ExceptionTracer>();
-        while (nextRunner!=null) {
-            //doing this at the top allows 'continues' statements to be safe
+        while (nextRunner != null) {
+            // doing this at the top allows 'continues' statements to be safe
             Throwable runner = nextRunner;
             nextRunner = runner.getCause();
 
-            String className =  runner.getClass().getName();
-            String msg =  runner.toString();
+            String className = runner.getClass().getName();
+            String msg = runner.toString();
 
-            //iflow has this annoying habit of including all the later causes in the response
-            //surrounded by braces.  This strips them off because we are going to iterate down
-            //to those causes anyway.
-            boolean isIFlow = className.indexOf("iflow")>0;
+            // iflow has this annoying habit of including all the later causes in the response
+            // surrounded by braces.  This strips them off because we are going to iterate down
+            // to those causes anyway.
+            boolean isIFlow = className.indexOf("iflow") > 0;
             if (isIFlow) {
                 int bracePos = msg.indexOf('{');
-                if (bracePos>0) {
-                    msg = msg.substring(0,bracePos);
+                if (bracePos > 0) {
+                    msg = msg.substring(0, bracePos);
                 }
             }
 
-            if (msg.startsWith(className) && msg.length()>className.length()+5) {
+            if (msg.startsWith(className) && msg.length() > className.length() + 5) {
                 int skipTo = className.length();
-                while (skipTo<msg.length()) {
+                while (skipTo < msg.length()) {
                     char ch = msg.charAt(skipTo);
                     if (ch != ':' && ch != ' ') {
                         break;
@@ -207,9 +194,12 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
             }
 
             if (lastMessage.equals(msg)) {
-                //model api has an incredibly stupid pattern of catching an exception, and then throwing a
-                //new exception with the exact same message.  This ends up in three or four duplicate messages.
-                //Check here for that problem, and eliminate duplicate messages by skipping rest of loop.
+                // model api has an incredibly stupid pattern of catching an exception, and then
+                // throwing a
+                // new exception with the exact same message.  This ends up in three or four
+                // duplicate messages.
+                // Check here for that problem, and eliminate duplicate messages by skipping rest of
+                // loop.
                 continue;
             }
 
@@ -223,32 +213,32 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
             JSONObject detailObj = new JSONObject();
             if (runner instanceof JSONException) {
-                JSONException jrun = (JSONException)runner;
-                if (jrun.params.length>0) {
+                JSONException jrun = (JSONException) runner;
+                if (jrun.params.length > 0) {
                     detailObj.put("template", jrun.template);
-                    for (int i=0; i<jrun.params.length; i++) {
-                        detailObj.put("param"+i,jrun.params[i]);
+                    for (int i = 0; i < jrun.params.length; i++) {
+                        detailObj.put("param" + i, jrun.params[i]);
                     }
                 }
             }
-            detailObj.put("message",msg);
+            detailObj.put("message", msg);
             int dotPos = className.lastIndexOf(".");
-            if (dotPos>0) {
-                className = className.substring(dotPos+1);
+            if (dotPos > 0) {
+                className = className.substring(dotPos + 1);
             }
-            detailObj.put("code",className);
+            detailObj.put("code", className);
             detailList.put(detailObj);
         }
 
         JSONObject innerError = new JSONObject();
         errorTag.put("innerError", innerError);
 
-        //now do them in the opposite order for the stack trace.
+        // now do them in the opposite order for the stack trace.
         JSONArray stackList = new JSONArray();
-        for (int i=traceHolder.size()-1;i>=0;i--) {
+        for (int i = traceHolder.size() - 1; i >= 0; i--) {
             ExceptionTracer et = traceHolder.get(i);
-            if (i>0) {
-                ExceptionTracer lower = traceHolder.get(i-1);
+            if (i > 0) {
+                ExceptionTracer lower = traceHolder.get(i - 1);
                 et.removeTail(lower.trace);
             }
             et.insertIntoArray(stackList);
@@ -257,6 +247,7 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
         return responseBody;
     }
+
     static class ExceptionTracer {
         public Throwable t;
         public String msg;
@@ -267,14 +258,22 @@ public abstract class JSONServlet extends jakarta.servlet.http.HttpServlet {
 
         public void captureTrace() {
             for (StackTraceElement ste : t.getStackTrace()) {
-                String line = "    "+ste.getFileName() + ": " + ste.getMethodName() + ": " + ste.getLineNumber();
+                String line =
+                        "    "
+                                + ste.getFileName()
+                                + ": "
+                                + ste.getMethodName()
+                                + ": "
+                                + ste.getLineNumber();
                 trace.add(line);
             }
         }
+
         public void removeTail(List<String> lower) {
-            int offUpper = trace.size()-1;
-            int offLower = lower.size()-1;
-            while (offUpper>0 && offLower>0
+            int offUpper = trace.size() - 1;
+            int offLower = lower.size() - 1;
+            while (offUpper > 0
+                    && offLower > 0
                     && trace.get(offUpper).equals(lower.get(offLower))) {
                 trace.remove(offUpper);
                 offUpper--;
