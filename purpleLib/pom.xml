@@ -3,7 +3,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.purplehillsbooks</groupId>
+  <!-- Continues the line published as 3.1, which also used this groupId.
+
+       Either com.purplehillsbooks.purple or com.purplehillsbooks works as long
+       as com.purplehillsbooks is verified on the Sonatype Central Portal: a
+       verified namespace covers every namespace beneath it, so verifying the
+       purplehillsbooks.com domain grants any groupId starting with
+       com.purplehillsbooks.  Keeping the longer form only because that is what
+       existing users of 3.1 already depend on. -->
+  <groupId>com.purplehillsbooks.purple</groupId>
   <artifactId>purple</artifactId>
   <version>4.0</version>
   <packaging>jar</packaging>
@@ -24,12 +32,11 @@
       <developerConnection>scm:git:ssh://github.com:agilepro/purple.git</developerConnection>
       <url>http://github.com/agilepro/purple</url>
   </scm>
-  <distributionManagement>
-      <snapshotRepository>
-        <id>ossrh</id>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-      </snapshotRepository>
-  </distributionManagement>
+  <!-- No <distributionManagement> is needed.  The old OSSRH endpoints
+       (oss.sonatype.org and s01.oss.sonatype.org) were shut down in 2025.
+       Publishing now goes through the Sonatype Central Portal, and the
+       central-publishing-maven-plugin in the "release" profile below knows
+       its own endpoint. -->
 
   <developers>
     <developer>
@@ -43,8 +50,29 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.source>21</maven.compiler.source>
+    <jackson.version>2.22.2</jackson.version>
   </properties>
-  
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- The Jackson BOM keeps jackson-core, jackson-databind and
+           jackson-annotations on matching versions.  Mixing versions across
+           those three is the usual source of odd Jackson breakage, so set the
+           version here in one place and leave it off the dependencies below.
+
+           This stays on the Jackson 2.x line.  Jackson 3 renamed the core and
+           databind packages to tools.jackson.*, which would be a breaking
+           change for anything that depends on purple. -->
+      <dependency>
+          <groupId>com.fasterxml.jackson</groupId>
+          <artifactId>jackson-bom</artifactId>
+          <version>${jackson.version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
         
     <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
@@ -61,17 +89,25 @@
         <scope>test</scope>
     </dependency>
 
+    <!-- Versions come from the jackson-bom import above -->
+
     <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.9.9</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.9.9</version>
+    </dependency>
+    <!-- The classes in com.purplehillsbooks.jack and .schema import
+         com.fasterxml.jackson.annotation directly, so it is declared rather
+         than picked up as a transitive of jackson-databind.
+         https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
     </dependency>
 
   </dependencies>
@@ -90,17 +126,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-              <groupId>org.sonatype.plugins</groupId>
-              <artifactId>nexus-staging-maven-plugin</artifactId>
-              <version>1.6.7</version>
-              <extensions>true</extensions>
-              <configuration>
-                <serverId>ossrh</serverId>
-                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                <autoReleaseAfterClose>true</autoReleaseAfterClose>
-              </configuration>
-            </plugin>
             <plugin>
                 <!-- March 2023: Must not use the Maven default surefire plugin because it
                 does not support JUnit 5 behaviors, so this is required until maven 
@@ -124,4 +149,101 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+          Everything needed to upload a build to Maven Central lives in this
+          profile, so that an ordinary "mvn clean package" stays fast and does
+          not need a GPG key.  Publish with:
+
+              mvn clean deploy -Prelease
+
+          See ../Publish-Instructions.txt for the one-time account, token and
+          GPG key setup that this profile depends on.
+        -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Central requires a -sources.jar alongside the main jar -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Central requires a -javadoc.jar alongside the main jar.
+                         doclint is off because this library predates the strict
+                         javadoc checking added in Java 8; turning it on would
+                         fail the release on comment formatting rather than on
+                         anything that matters. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.12.0</version>
+                        <configuration>
+                            <doclint>none</doclint>
+                            <quiet>true</quiet>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Central requires a .asc PGP signature for every uploaded
+                         file.  The passphrase comes from the gpg-agent, which
+                         pops up a pinentry dialog during the build.  To run
+                         unattended instead, set the gpg.passphrase property and
+                         see the loopback note in Publish-Instructions.txt. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.8</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Does the actual upload.  extensions=true makes this
+                         replace the default deploy plugin, so "mvn deploy"
+                         pushes a deployment bundle to the Central Portal
+                         instead of looking for distributionManagement. -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.11.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- matches the <server><id> in ~/.m2/settings.xml -->
+                            <publishingServerId>central</publishingServerId>
+                            <!-- "automatic" releases to Central as soon as the
+                                 upload validates.  Change to "user_managed" to
+                                 review the deployment on the Portal first. -->
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

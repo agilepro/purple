@@ -1,115 +1,280 @@
-signing.keyId=########
-signing.password=********
-signing.secretKeyRingFile=//c:/Users/USERNAME/.gradle/secret-keys.gpg
+HOW TO PUBLISH PURPLE TO MAVEN CENTRAL
+======================================
 
-ossrhUsername=Abcdefgh
-ossrhPassword=********
+Short version, once everything below is set up:
+
+    publish.bat
+
+    ...which is just:  cd purpleLib && mvn clean deploy -Prelease
+
+That builds the jar, the sources jar and the javadoc jar, PGP-signs all of
+them, uploads the bundle to the Sonatype Central Portal, and releases it.
+A few minutes later it is on Maven Central; search indexing takes longer,
+sometimes a few hours.
+
+The coordinates being published are:
+
+    com.purplehillsbooks.purple : purple : 4.0
+
+NOTE ON THE groupId: a verified namespace covers every namespace beneath it.
+Verifying "com.purplehillsbooks" (by DNS on purplehillsbooks.com) permits any
+groupId starting with com.purplehillsbooks, including the longer
+com.purplehillsbooks.purple used here.  So the two forms are equivalent as far
+as permissions go; the longer one is kept only because 3.1 was published under
+it and existing users depend on it.  Shortening it would be a coordinate change
+for them, not a permissions question.
+
+NOTE ON THE VERSION: Maven Central is append-only.  A version can be published
+exactly once and can never be replaced or deleted.  Bump <version> in
+purpleLib/pom.xml before every release.
 
 
----------------------------------
+WHAT CHANGED FROM THE OLD INSTRUCTIONS
+--------------------------------------
 
-This video was helpful:
+This file used to describe publishing with Gradle to OSSRH at
+s01.oss.sonatype.org.  Both of those are gone:
 
-    https://www.youtube.com/watch?v=24gsrR9jsF4&t=1238s
+  - The project builds with Maven now, not Gradle.
+  - The OSSRH servers (oss.sonatype.org and s01.oss.sonatype.org) and the
+    "close then release a staging repository" workflow were shut down by
+    Sonatype in 2025.  Everything goes through the Central Portal at
+    https://central.sonatype.com now, and the upload is done by the
+    central-publishing-maven-plugin rather than nexus-staging-maven-plugin.
 
-1================
+If you had an OSSRH account, it was migrated to the Central Portal
+automatically, along with any namespaces it had verified.  You still need to
+generate a new-style token for it (step 2).
 
-In order to get the "gradle publish" to work, you need to set up a few things.
-The above lines need to be placed in a file at the following place:
 
-    C:\Users\USERNAME\.gradle\gradle.properties
+ONE-TIME SETUP
+==============
 
-For USERNAME use the windows user you are logged into.  For unix the .gradle folder is in your user home directory.
+1 ===== Install GnuPG so that Maven can find it
 
-2================
+Maven Central requires every uploaded file to carry a PGP signature.
 
-Download Gnu Privacy Guard (GPG) from https://gpg4win.org/thanks-for-download.html
+Download Gpg4win from https://gpg4win.org and install it.  The plain "GnuPG"
+component is enough; you do not need Kleopatra or the Outlook plugin, though
+Kleopatra is a pleasant way to look at your keys.
 
-Install.
+Gpg4win puts gpg.exe on the Windows PATH, which is what matters -- Maven runs
+from a normal Windows shell and will not find the cut-down gpg that ships
+inside Git for Windows.  Confirm with:
 
-3 ===============
+    gpg --version
 
-You have to create a key for signing.   Create a key by using:
+in a NEW cmd or PowerShell window (not Git Bash).  If that fails, either fix
+the PATH or point Maven straight at the executable by adding this to the
+release profile invocation:
 
-    gpg --gen-key
-    
-    real user name: (enter your first and last name, just descriptive)
-    
-    email: (enter you email address)
-    
-    Password: (you will be prompted for a signing password, and confirmation)
+    -Dgpg.executable="C:\Program Files (x86)\GnuPG\bin\gpg.exe"
 
-This will generate the key and display the results.   The output can be redisplayed by executing 
+
+2 ===== Create a signing key
+
+    gpg --full-generate-key
+
+    Key type:  RSA and RSA (the default) or ECC/ed25519
+    Key size:  4096 if RSA
+    Expiry:    pick something you will actually renew, or 0 for no expiry
+    Real name: your first and last name
+    Email:     your email address
+    Password:  you will be prompted, and asked to confirm
+
+List what you made:
 
     gpg -K
 
-The display will be something like
+The output looks like:
 
     ------------------------------------------------
-    sec   ed25519 2021-12-31 [SC] [expires: 2023-12-31]
+    sec   ed25519 2026-01-15 [SC] [expires: 2028-01-15]
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXE8F13691
     uid           [ultimate] Keith Swenson <gpg@purplehillsbooks.com>
-    ssb   cv25519 2021-12-31 [E] [expires: 2023-12-31]
-    
-Note the last 8 digits of the very long hex number.  You will need that as your keyId.
+    ssb   cv25519 2026-01-15 [E] [expires: 2028-01-15]
 
-4 ==============
+That long hex string is the key fingerprint.  Keep it handy.
 
-You need to send this key to a public keystore.   That is done with:
-
-    gpg --keyserver hkp://keyserver.ubuntu.com --send-keys ########
-    
-Put your keyId in for the hash signs.
-
-5 ==============
-
-Generate the key ring that gradle needs to do the signing
-
-   gpg --expoert-secret-keys ######## > c:/Users/USERNAME/.gradle/secret-keys.gpg
-   
-Again, replace the pound signs with your keyId.   This file is referenced in the config file above.
-
-6 ==============
-
-Sign up for a group ID and repository access with sonatype.org.  I don't have the instructions here, but fairly good ones are available if you search.   
-
-From this you will need:
-
-group id: this is 'com.purplehillsbooks.purple' for this library
-
-userName: this is the user name you register there, called occasionally a Jira user it
-
-password: the password you set.
+If a key expires, Central will not accept new uploads signed with it.  Already
+published artifacts stay valid.  Extend an expiry with
+"gpg --edit-key <fingerprint>" then "expire", and re-send it in step 3.
 
 
-7 =============
+3 ===== Publish the public key to a keyserver
 
-Update the .gradle/gradle.properties file, as mentioned at the top
+Central verifies signatures against a public keyserver, so it has to be able
+to find your key:
 
-signing.keyId=       the same 8 digits from the key
-signing.password=    the password you set when generating the key
-signing.secretKeyRingFile=//c:/Users/USERNAME/.gradle/secret-keys.gpg
+    gpg --keyserver keyserver.ubuntu.com --send-keys <FINGERPRINT>
 
-ossrhUsername=       the user name from SonaType
-ossrhPassword=       the password from SonaType
+Use the full fingerprint from step 2.  Allow a few minutes for the keyserver
+to distribute it before the first release.  Sending to more than one server
+does no harm:
 
-
-8 ============
-
-If this is all set correctly, you can use the following command to upload a new version:
-
-    gradle publish
-    
-Then you need to use the repository manager and RELEASE the staged repo to the official repo
-
-    https://s01.oss.sonatype.org/#stagingRepositories
-
-    The library is uploaded as "open"
-    You need to "close" it
-    Then "release" it
-    
-
-    
-   
+    gpg --keyserver keys.openpgp.org --send-keys <FINGERPRINT>
 
 
+4 ===== Get a Central Portal account and verify the namespace
+
+Sign in at https://central.sonatype.com.
+
+IMPORTANT: if you ever published through OSSRH, sign in with the SAME username
+and password you used for OSSRH.  Sonatype migrated those accounts and their
+verified namespaces to the Portal automatically, but the namespaces belong to
+that specific account.  Signing up fresh -- with a GitHub login, for instance --
+gives you a brand new account with no namespaces on it, and every upload will
+be rejected with "Namespace ... is not allowed" even though the project has
+been published to Central before.  This is easy to do by accident.
+
+Now check https://central.sonatype.com/publishing/namespaces and confirm that
+"com.purplehillsbooks" is listed as VERIFIED.  That single entry is enough: a
+verified namespace covers everything beneath it, so it permits publishing under
+com.purplehillsbooks.purple as well.
+
+If nothing is listed, you are on the wrong account -- go back and sign in with
+the OSSRH credentials.  If you cannot recover that login, email
+central-support@sonatype.com, which is Sonatype's documented path for
+publishers who lost access to a migrated account.
+
+If you are genuinely starting fresh, add "com.purplehillsbooks" yourself.  The
+Portal gives you a TXT record to put on the purplehillsbooks.com DNS; add it,
+then click verify.  Note that the check is against the exact reversed domain --
+com.purplehillsbooks verifies against purplehillsbooks.com.
+
+
+5 ===== Generate a publishing token
+
+On the Portal, open your account menu and choose "Generate User Token".  You
+get back a username and a password, both opaque strings.  They are shown once,
+so copy them immediately.
+
+This is NOT your Portal login.  It is a separate token pair.
+
+
+6 ===== Put the token in your Maven settings
+
+Create or edit:
+
+    C:\Users\USERNAME\.m2\settings.xml
+
+For USERNAME use the Windows user you are logged in as.  On Unix the .m2
+folder is in your home directory.  The file should contain:
+
+    <settings>
+      <servers>
+        <server>
+          <id>central</id>
+          <username>TOKEN-USERNAME-FROM-STEP-5</username>
+          <password>TOKEN-PASSWORD-FROM-STEP-5</password>
+        </server>
+      </servers>
+    </settings>
+
+The id must be exactly "central" -- that is what <publishingServerId> in
+purpleLib/pom.xml refers to.
+
+This file holds live credentials.  It lives outside the repository, and it
+must stay that way; never move these values into pom.xml.
+
+
+RELEASING
+=========
+
+1. Bump <version> in purpleLib/pom.xml.  Central will reject a version that
+   has already been published.
+
+2. Make sure the build is clean first:
+
+       build.bat
+
+3. Run the release:
+
+       publish.bat
+
+   You will get a pinentry dialog asking for your GPG key passphrase, once per
+   signed file unless the gpg-agent caches it.
+
+4. Watch the output.  The plugin uploads a bundle, then blocks until Central
+   finishes validating and publishing it.  The pom is configured with
+   <autoPublish>true</autoPublish>, so there is no separate "close" and
+   "release" step the way OSSRH had.
+
+5. Confirm it landed:
+
+       https://central.sonatype.com/artifact/com.purplehillsbooks.purple/purple
+
+   and eventually
+
+       https://repo1.maven.org/maven2/com/purplehillsbooks/purple/purple/
+
+
+DRY RUN
+-------
+
+To exercise the whole release build without uploading anything:
+
+    cd purpleLib
+    mvn clean verify -Prelease
+
+That produces and signs purple-X.Y.jar, purple-X.Y-sources.jar and
+purple-X.Y-javadoc.jar under purpleLib/target, and stops short of the deploy
+phase.  Add -Dgpg.skip=true to skip signing as well, which is useful for
+checking that javadoc still builds before you go looking for your key.
+
+To upload but hold the release for manual review on the Portal, change
+<autoPublish> to false, or set <autoPublish>${autoPublish}</autoPublish> and
+pass it on the command line.
+
+
+UNATTENDED SIGNING
+------------------
+
+The default setup expects a human to type the passphrase into the pinentry
+dialog.  To sign without prompting -- on a build server, say -- supply the
+passphrase and tell gpg to accept it from Maven rather than from a dialog:
+
+    mvn clean deploy -Prelease ^
+        -Dgpg.passphrase=THEPASSPHRASE ^
+        -Dgpg.args="--pinentry-mode loopback"
+
+Better, put the passphrase in settings.xml next to the token, in a
+<profile><properties><gpg.passphrase> block, so it does not end up in your
+shell history.
+
+
+TROUBLESHOOTING
+---------------
+
+"gpg: signing failed: No secret key"
+    The key from step 2 is not visible to the gpg that Maven is running.  Very
+    often this means Maven found Git's gpg instead of Gpg4win's, and the two
+    have separate keyrings.  Check "where gpg" in cmd.
+
+"gpg: signing failed: Inappropriate ioctl for device"
+    gpg wants to prompt but has no terminal.  Use the loopback form above.
+
+401 Unauthorized from the Portal
+    The token in settings.xml is wrong, expired, or the <server><id> is not
+    "central".
+
+"Namespace com.purplehillsbooks.purple is not allowed"
+    The account that issued the token in settings.xml has no rights to that
+    namespace.  Changing the groupId will NOT help -- a verified
+    com.purplehillsbooks would already cover com.purplehillsbooks.purple, so if
+    the long form is refused the short one will be too.
+
+    Nearly always this means the token came from the wrong account: a new
+    Portal signup rather than the migrated OSSRH account that owns the
+    namespace.  Check https://central.sonatype.com/publishing/namespaces.  An
+    empty list confirms it.  Sign in with the old OSSRH username and password,
+    generate a new token from that account, and replace the one in
+    settings.xml.  See step 4.
+
+Validation failure about missing javadoc, sources, or signature
+    Something in the release profile did not run.  Check that you actually
+    passed -Prelease.
+
+Deployment rejected because the version already exists
+    Bump the version.  Maven Central is append-only; nothing published can be
+    replaced.
