@@ -94,7 +94,7 @@ public class JsonUtil {
         return mapper;
     }
 
-    public static Object loadOrCreateJsonFile(File filePath, Class<?> childClass) throws Exception {
+    public static <T extends Object> T loadOrCreateJsonFile(File filePath, Class<T> childClass) throws Exception {
         if (!filePath.exists()) {
             MemFile content = new MemFile();
             content.fillWithString("{}");
@@ -107,7 +107,7 @@ public class JsonUtil {
         return loadJsonFile(filePath, childClass);
     }
 
-    public static Object loadJsonFile(File filePath, Class<?> childClass) throws Exception {
+    public static <T extends Object> T loadJsonFile(File filePath, Class<T> childClass) throws Exception {
         try {
             if (!filePath.exists()) {
                 throw CommonException.newBasic(
@@ -120,7 +120,23 @@ public class JsonUtil {
         }
     }
 
-    public static void saveJsonFile(File filePath, Object contents) throws Exception {
+    public static <T extends Object> T readJson(Reader reader, Class<T> desiredClass) {
+        try {
+            return objectMapper.readValue(reader, desiredClass);
+        } catch (Exception e) {
+            throw CommonException.newWrap("Unable to load JSON file from InputStream", e);
+        }
+    }
+
+    public static <T extends Object> T parseJsonString(String json, Class<T> desiredClass) {
+        try {
+            return objectMapper.readValue(json, desiredClass);
+        } catch (Exception e) {
+            throw CommonException.newWrap("Unable to parse JSON string", e);
+        }
+    }
+
+    public static <T extends Object> void saveJsonFile(File filePath, T contents) throws Exception {
         try {
             File fileTempPath = new File(filePath.getParentFile(), filePath.getName() + "~TMP~");
             if (fileTempPath.exists()) {
@@ -138,26 +154,18 @@ public class JsonUtil {
         }
     }
 
-    public static void writeJson(Writer w, Object contents) throws Exception {
+    public static <T extends Object> void writeJson(Writer w, T contents) throws Exception {
         AvoidCloseWriter acw = new AvoidCloseWriter(w);
         prettyWriter.writeValue(acw, contents);
     }
 
     private JsonUtil() {}
 
-    public static String convertToJsonString(Object contents) throws Exception {
+    public static <T extends Object> String convertToJsonString(T contents) throws Exception {
         try {
             return prettyWriter.writeValueAsString(contents);
         } catch (Exception e) {
             throw CommonException.newWrap("Unable to convert to JSON string", e);
-        }
-    }
-
-    public static Object readJson(Reader reader, Class<?> desiredClass) {
-        try {
-            return objectMapper.readValue(reader, desiredClass);
-        } catch (Exception e) {
-            throw CommonException.newWrap("Unable to load JSON file from InputStream", e);
         }
     }
 

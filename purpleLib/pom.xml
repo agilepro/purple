@@ -13,7 +13,7 @@
        existing users of 3.1 already depend on. -->
   <groupId>com.purplehillsbooks.purple</groupId>
   <artifactId>purple</artifactId>
-  <version>4.0</version>
+  <version>4.1</version>
   <packaging>jar</packaging>
  
   <name>Purple Utility Classes</name>
